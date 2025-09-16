@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "sbtt",
+  "version": "${version}",
+  "name": "Slightly Better Terrible Tools",
+  "description": "An addon for Better Than Wolves: Community Edition 3.0.0 that gives the worst tools in the game a slight boost in utility.",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://github.com/AbbyRead",
+    "sources": "https://github.com/AbbyRead/BTW-SlightlyBetterTerribleTools"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/abbyread/sbtt/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.abbyread.SBTTMod"
+    ],
+    "btw:addon": [
+      "btw.community.abbyread.SBTT"
+    ]
+  },
+  "custom": {
+    "btw:addon_prefix": "EX"
+  },
+  "mixins": [
+    "abbyread.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.19",
+    "minecraft": "1.6.4"
+  }
+}

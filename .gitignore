@@ -1,0 +1,30 @@
+# gradle
+.gradle/
+build/
+build_BTW/
+out/
+classes/
+BTW-source-3.0.0-beta-6.0/
+BTW_Distributions/
+
+# eclipse
+*.launch
+
+# idea
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vscode
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# fabric
+run/
+
+# macos
+*.DS_Store
