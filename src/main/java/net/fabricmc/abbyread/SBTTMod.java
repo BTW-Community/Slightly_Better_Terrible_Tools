@@ -9,6 +9,6 @@ public class SBTTMod implements ModInitializer {
 		// However, some things (like resources) may still be uninitialized.
 		// Proceed with mild caution.
 
-		System.out.println("Hello BTW world!");
+		System.out.println(getClass().getName() + " running from ModInitializer.");
 	}
 }
