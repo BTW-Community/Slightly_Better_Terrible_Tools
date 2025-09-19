@@ -19,7 +19,7 @@ With that in mind I've made small, thoughtful changes to some of the worst items
 4) There should never be only one sane way to do something.  On that note, giving these tools other uses churns through materials faster, which might make it harder to decide what tool would be better to use in a situation.
 
 ### Short story long...
-This addon doesn’t try to turn pointy sticks or sharp stones into endgame tools. They’re still fragile, inefficient, and meant to be less-fun (but sane) options prior to renewable iron. They're just no longer *so bad* that you immediately write them off as a waste of time. Instead, they can serve as a somewhat viable option when you don’t have much access to better tools at any point, for any reason.
+This addon doesn’t try to turn Pointy Sticks or Sharp Stones into cheats. They’re still fragile, inefficient, and meant to be less-fun (but sane) options prior to renewable iron. They just won't be so bad you want to abandon them *literally* as soon as possible. Instead, they will serve as a somewhat viable option when you don’t have very much access to better tools... at any point, for any reason.
 
 ---
 
@@ -32,7 +32,7 @@ This addon doesn’t try to turn pointy sticks or sharp stones into endgame tool
 
 ## Installation
 1. Install Better Than Wolves: Community Edition 3.0.0 + Legacy Fabric by following along with the instructions on the [wiki](https://wiki.btwce.com/view/Main_Page).
-2. Choose between the `1_25` (+25%) and `1_5` (+50%) version of this mod, and add using the Prism Launcher Interface under this instance's `Mods` tab.
+2. On the Releases page of this repo, download the .jar file corresponding to your preferred base-efficiency bonus, either `_plus25` or `_plus50` percent, and add **only that one** using the Prism Launcher Interface under this instance's `Mods` tab.  If you add both, things might get weird.  It's supposed to be a choice between a more purist 25% and a more pleasant 50% boost.  I prefer using the `_plus50`.
 3. Launch Minecraft using the instance, and you should see this mod displaying to chat on world load.  Otherwise something was amiss in the installation process of it.  Go back and follow along again and/or ask for help on [Discord](https://discord.btwce.com/).
 
 ---
