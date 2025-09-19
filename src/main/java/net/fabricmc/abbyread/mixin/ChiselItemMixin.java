@@ -20,7 +20,7 @@ import javax.tools.Tool;
 @Mixin(ChiselItem.class)
 public class ChiselItemMixin {
 
-    @Inject(method = "isEfficientVsBlock", at = @At("RETURN"), remap = false)
+    //@Inject(method = "isEfficientVsBlock", at = @At("RETURN"), remap = false)
     public void abby$displayRelativeStats(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Boolean> cir) {
         String itemName = stack.getDisplayName();
         String blockName = block.getLocalizedName();

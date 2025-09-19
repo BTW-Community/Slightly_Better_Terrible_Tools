@@ -38,7 +38,7 @@ public class ItemInWorldManagerMixin {
         if (block instanceof BlockStone) {
             int abby$meta = theWorld.getBlockMetadata(x, y, z);
             if (((BlockStone) block).getIsCracked(abby$meta)){
-                cracked = " (Cracked)";
+                cracked = " (Status: Cracked)";
             }
         }
         ChatMessageComponent message = new ChatMessageComponent();

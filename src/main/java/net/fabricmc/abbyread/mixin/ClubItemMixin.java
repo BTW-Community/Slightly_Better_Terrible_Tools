@@ -46,8 +46,7 @@ public abstract class ClubItemMixin {
     @Inject(
             method = "onBlockDestroyed",
             at = @At("HEAD"),
-            cancellable = true,
-            remap = false
+            cancellable = true
     )
     private void abbyread$packLooseBlocks(
             ItemStack stack, World world, int iBlockID, int i, int j, int k,
