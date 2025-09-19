@@ -11,6 +11,7 @@
     "EntityLivingBaseMixin",
     "EntityPlayerMixin",
     "ItemInWorldManagerMixin",
+    "PickaxeItemMixin",
     "SBTTModMixin",
     "ToolItemMixin"
   ],

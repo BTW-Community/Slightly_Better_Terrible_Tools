@@ -52,8 +52,8 @@ public abstract class EntityPlayerMixin {
                 block.blockID == BTWBlocks.looseDirtSlab.blockID ||
                 block.blockID == Block.sand.blockID
             ) {
-                cir.setReturnValue(effMod);
-                modified = true;
+               // cir.setReturnValue(effMod);
+               // modified = true;
             } else {
                 // Chewed logs
                 for (Block chewed : BlockLog.chewedLogArray) {

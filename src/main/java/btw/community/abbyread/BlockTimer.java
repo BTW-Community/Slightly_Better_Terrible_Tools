@@ -2,6 +2,7 @@ package btw.community.abbyread;
 
 import net.minecraft.src.ChatMessageComponent;
 import net.minecraft.src.EntityPlayerMP;
+import btw.BTWMod;
 
 public class BlockTimer {
     public final int x, y, z;

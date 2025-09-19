@@ -1,9 +1,7 @@
 package net.fabricmc.abbyread.mixin;
 
 import btw.community.abbyread.BlockTimer;
-import net.minecraft.src.EntityPlayerMP;
-import net.minecraft.src.ItemInWorldManager;
-import net.minecraft.src.World;
+import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -21,7 +19,7 @@ public class ItemInWorldManagerMixin {
     @Shadow private int partiallyDestroyedBlockY;
     @Shadow private int partiallyDestroyedBlockZ;
     @Shadow private boolean isDestroyingBlock;
-    @Shadow private World theWorld;
+    @Shadow public World theWorld;
 
     @Shadow public EntityPlayerMP thisPlayerMP;
     // --- Our custom state (per ItemInWorldManager instance) ---
@@ -31,6 +29,24 @@ public class ItemInWorldManagerMixin {
     @Inject(method = "onBlockClicked", at = @At("HEAD"))
     private void abbyread$startTimer(int x, int y, int z, int side, CallbackInfo ci) {
         abbyread$activeTimer = new BlockTimer(x, y, z, thisPlayerMP);
+    }
+
+    @Inject(method = "onBlockClicked", at = @At("RETURN"))
+    private void abbyread$displayDetails(int x, int y, int z, int side, CallbackInfo ci) {
+        String cracked = "";
+        Block block = Block.blocksList[theWorld.getBlockId(x, y, z)];
+        if (block instanceof BlockStone) {
+            int abby$meta = theWorld.getBlockMetadata(x, y, z);
+            if (((BlockStone) block).getIsCracked(abby$meta)){
+                cracked = " (Cracked)";
+            }
+        }
+        ChatMessageComponent message = new ChatMessageComponent();
+        if (block != null) message.addText(block.getLocalizedName());
+        message.addText(cracked);
+        message.addText("     Side: " + side);
+        thisPlayerMP.sendChatToPlayer(message);
+
     }
 
     // --- Hook when block is removed fully ---
