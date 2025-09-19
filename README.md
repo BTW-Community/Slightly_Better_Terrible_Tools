@@ -38,7 +38,7 @@ This addon doesn’t try to turn Pointy Sticks or Sharp Stones into cheats. They
 ---
 
 ## Compatibility
-- Built against **BTW:CE 3.0.0 Beta Snapshot 6**.
+- Built against **BTW:CE 3.0.0 Beta Snapshot 6** but should be compatible with any CE 3.0 version as far as I'm aware.
 - It should work with other addons just fine if they don't dovetail too much with this addon in their features.  It's made using mixins instead of new item classes and overrides.
 
 ---
