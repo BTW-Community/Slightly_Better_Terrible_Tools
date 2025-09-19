@@ -45,7 +45,7 @@ This addon doesn’t try to turn Pointy Sticks or Sharp Stones into cheats. They
 
 ## License
 This project is released under the [BSD Zero-Clause License](LICENSE).  
-You’re free to use, modify, and share it as long as credit is given.
+You’re free to use, modify, and share it however you see fit.
 
 ---
 
