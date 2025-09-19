@@ -13,10 +13,10 @@ via [wikiquote](https://en.wikiquote.org/wiki/Sid_Meier)
 With that in mind I've made small, thoughtful changes to some of the worst items.
 
 ### Why?
-1) A notable portion of the early game is spent using them, and it sucks.  It doesn't feel good.  It shouldn't feel great, but it feels insulting how long it takes to harvest blocks.  Better Than Wolves has always been a bit off-putting, but I think the pendulum swung a little too far this time.
-2) Beyond the early game, I avoided them because it takes so long and feels so bad to use them.  If you avoid using something completely, you put it out of your mind as an option.  It instead becomes just a punishment for the early game.
-3) Games should feel good to play; they should reward or respect your time and attention.  If I'm considering putting a rubber-band around my mouse to hold-click just to harvest a single block, I think something went wrong with the game balance.  And not in a hard way; just in an irritating way.
-4) There should never be only one sane way to do something.  On that note, giving these tools other uses churns through materials faster, which might make it harder to decide what tool would be better to use in a situation.
+1. A large part of the early game is spent with these tools, and their extreme slowness makes that stage feel more punishing than challenging.
+2. Past the early game, they’re ignored entirely, which removes them as meaningful choices and leaves them as nothing but a one-time hurdle.
+3. Games should respect your time; if a tool makes you consider rubber-banding your mouse just to break a block, the balance has slipped from difficult into tedious.
+4. Good design offers more than one viable approach, and giving weak tools extra utility encourages trade-offs instead of forcing a single “correct” option.
 
 ### Short story long...
 This addon doesn’t try to turn Pointy Sticks or Sharp Stones into cheats. They’re still fragile, inefficient, and meant to be less-fun (but sane) options prior to renewable iron. They just won't be so bad you want to abandon them *literally* as soon as possible. Instead, they will serve as a somewhat viable option when you don’t have very much access to better tools... at any point, for any reason.
