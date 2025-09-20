@@ -3,6 +3,7 @@ package net.fabricmc.abbyread.mixin;
 import btw.block.BTWBlocks;
 import btw.block.blocks.FallingBlock;
 import btw.block.blocks.LooseDirtBlock;
+import btw.community.abbyread.LooseningHelper;
 import btw.item.items.ChiselItem;
 import btw.item.items.ChiselItemWood;
 import btw.item.items.ToolItem;
@@ -22,17 +23,10 @@ public class ChiselItemMixin {
 
     @Inject(method = "isEfficientVsBlock", at = @At("RETURN"), remap = false, cancellable = true)
     public void abby$conditionalBoost(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Boolean> cir) {
-        if (stack.getItem() instanceof ChiselItemWood) {
-            if (block instanceof BlockDirt) cir.setReturnValue(true);
-            if (block instanceof BlockGrass) cir.setReturnValue(true);
-            if (block.blockID == BTWBlocks.dirtSlab.blockID) cir.setReturnValue(true);
-            if (block.blockID == BTWBlocks.grassSlab.blockID) cir.setReturnValue(true);
-
-            if (block.blockID == BTWBlocks.looseDirt.blockID) cir.setReturnValue(false);
-            if (block.blockID == BTWBlocks.looseDirtSlab.blockID) cir.setReturnValue(false);
-            if (block.blockID == BTWBlocks.looseSparseGrass.blockID) cir.setReturnValue(false);
-            if (block.blockID == BTWBlocks.looseSparseGrassSlab.blockID) cir.setReturnValue(false);
+        if (stack.getItem() instanceof ChiselItemWood &&
+            LooseningHelper.canLoosenBlock(block.blockID))
+        {
+            cir.setReturnValue(true);
         }
-
     }
 }

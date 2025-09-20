@@ -1,6 +1,7 @@
 package net.fabricmc.abbyread.mixin;
 
 import btw.block.BTWBlocks;
+import btw.community.abbyread.LooseningHelper;
 import btw.community.abbyread.ToolState;
 import btw.item.BTWItems;
 import net.minecraft.src.BlockGrass;
@@ -19,25 +20,17 @@ public abstract class BlockGrassMixin {
         at = @At("HEAD"),
         cancellable = true
     )
-    private void abby$restoreGrassLoosening(World world, int x, int y, int z, int toFacing, CallbackInfo ci) {
+    private void abby$reimplementGrassDrop(World world, int x, int y, int z, int toFacing, CallbackInfo ci) {
         if (toFacing == 0) {
             world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
         }
-        ci.cancel(); // Prevents the original method
+        ci.cancel();
     }
-
-    @Inject(
-        method = "onBlockDestroyedWithImproperTool",
-        at = @At("HEAD"),
-        cancellable = true
-    )
-    private void abby$preventDropsFromLoosening(
-            World world, EntityPlayer player, int x, int y, int z,
-            int metadata, CallbackInfo ci
-    ){
+    @Inject( method = "onBlockDestroyedWithImproperTool", at = @At("HEAD"), cancellable = true ) private void abby$preventDropsFromLoosening(World world, EntityPlayer player, int x, int y, int z, int metadata, CallbackInfo ci ){
         ItemStack tool = ToolState.getCurrentTool();
-        if (tool != null &&
-            tool.getItem().itemID == BTWItems.pointyStick.itemID
-        ) { ci.cancel(); }
+        if (tool != null && tool.getItem().itemID == BTWItems.pointyStick.itemID ) {
+            LooseningHelper.tryLoosenBlock(tool, world, x, y, z);
+            ci.cancel();
+        }
     }
 }
