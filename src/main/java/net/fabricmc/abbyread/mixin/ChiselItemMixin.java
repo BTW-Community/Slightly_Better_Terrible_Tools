@@ -20,17 +20,6 @@ import javax.tools.Tool;
 @Mixin(ChiselItem.class)
 public class ChiselItemMixin {
 
-    //@Inject(method = "isEfficientVsBlock", at = @At("RETURN"), remap = false)
-    public void abby$displayRelativeStats(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Boolean> cir) {
-        String itemName = stack.getDisplayName();
-        String blockName = block.getLocalizedName();
-        int abby$iToolLevel = ((ToolItem) stack.getItem()).toolMaterial.getHarvestLevel();
-
-        int abby$iBlockToolLevel = block.getEfficientToolLevel(world, i, j, k);
-        System.out.println(itemName + "'s iToolLevel: " + abby$iToolLevel +
-                " vs. " + blockName + "'s iBlockToolLevel: " + abby$iBlockToolLevel);
-    }
-
     @Inject(method = "isEfficientVsBlock", at = @At("RETURN"), remap = false, cancellable = true)
     public void abby$conditionalBoost(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Boolean> cir) {
         if (stack.getItem() instanceof ChiselItemWood) {
@@ -39,11 +28,10 @@ public class ChiselItemMixin {
             if (block.blockID == BTWBlocks.dirtSlab.blockID) cir.setReturnValue(true);
             if (block.blockID == BTWBlocks.grassSlab.blockID) cir.setReturnValue(true);
 
-
-            if (block.blockID == BTWBlocks.looseDirt.blockID) cir.setReturnValue(true);
-            if (block.blockID == BTWBlocks.looseDirtSlab.blockID) cir.setReturnValue(true);
-            if (block.blockID == BTWBlocks.looseSparseGrass.blockID) cir.setReturnValue(true);
-            if (block.blockID == BTWBlocks.looseSparseGrassSlab.blockID) cir.setReturnValue(true);
+            if (block.blockID == BTWBlocks.looseDirt.blockID) cir.setReturnValue(false);
+            if (block.blockID == BTWBlocks.looseDirtSlab.blockID) cir.setReturnValue(false);
+            if (block.blockID == BTWBlocks.looseSparseGrass.blockID) cir.setReturnValue(false);
+            if (block.blockID == BTWBlocks.looseSparseGrassSlab.blockID) cir.setReturnValue(false);
         }
 
     }

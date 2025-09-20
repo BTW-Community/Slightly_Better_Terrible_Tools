@@ -1,9 +1,8 @@
 package net.fabricmc.abbyread.mixin;
 
-import btw.block.BTWBlocks;
+import btw.block.blocks.DirtSlabBlock;
 import btw.community.abbyread.ToolState;
 import btw.item.BTWItems;
-import net.minecraft.src.BlockGrass;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
@@ -12,24 +11,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(BlockGrass.class)
-public abstract class BlockGrassMixin {
+@Mixin(DirtSlabBlock.class)
+public class DirtSlabBlockMixin {
     @Inject(
-        method = "onNeighborDirtDugWithImproperTool",
-        at = @At("HEAD"),
-        cancellable = true
-    )
-    private void abby$restoreGrassLoosening(World world, int x, int y, int z, int toFacing, CallbackInfo ci) {
-        if (toFacing == 0) {
-            world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
-        }
-        ci.cancel(); // Prevents the original method
-    }
-
-    @Inject(
-        method = "onBlockDestroyedWithImproperTool",
-        at = @At("HEAD"),
-        cancellable = true
+            method = "onBlockDestroyedWithImproperTool",
+            at = @At("HEAD"),
+            cancellable = true
     )
     private void abby$preventDropsFromLoosening(
             World world, EntityPlayer player, int x, int y, int z,
@@ -37,7 +24,7 @@ public abstract class BlockGrassMixin {
     ){
         ItemStack tool = ToolState.getCurrentTool();
         if (tool != null &&
-            tool.getItem().itemID == BTWItems.pointyStick.itemID
+                tool.getItem().itemID == BTWItems.pointyStick.itemID
         ) { ci.cancel(); }
     }
 }
