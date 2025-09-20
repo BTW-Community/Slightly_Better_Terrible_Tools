@@ -36,11 +36,14 @@ public class ChiselItemMixin {
         if (stack.getItem() instanceof ChiselItemWood) {
             if (block instanceof BlockDirt) cir.setReturnValue(true);
             if (block instanceof BlockGrass) cir.setReturnValue(true);
+            if (block.blockID == BTWBlocks.dirtSlab.blockID) cir.setReturnValue(true);
+            if (block.blockID == BTWBlocks.grassSlab.blockID) cir.setReturnValue(true);
+
+
             if (block.blockID == BTWBlocks.looseDirt.blockID) cir.setReturnValue(true);
             if (block.blockID == BTWBlocks.looseDirtSlab.blockID) cir.setReturnValue(true);
             if (block.blockID == BTWBlocks.looseSparseGrass.blockID) cir.setReturnValue(true);
-            if (block.blockID == BTWBlocks.dirtSlab.blockID) cir.setReturnValue(true);
-            if (block.blockID == BTWBlocks.grassSlab.blockID) cir.setReturnValue(true);
+            if (block.blockID == BTWBlocks.looseSparseGrassSlab.blockID) cir.setReturnValue(true);
         }
 
     }
