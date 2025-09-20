@@ -8,11 +8,9 @@
     "ChiselItemMixin",
     "ChiselItemStoneMixin",
     "ChiselItemWoodMixin",
-    //"ClubItemMixin",
     "EntityLivingBaseMixin",
     "EntityPlayerMixin",
     "ItemInWorldManagerMixin",
-    //"PickaxeItemMixin",
     "ToolItemMixin"
   ],
   "client": [

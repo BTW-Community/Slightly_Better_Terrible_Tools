@@ -33,18 +33,16 @@ public class ItemInWorldManagerMixin {
 
     @Inject(method = "onBlockClicked", at = @At("RETURN"))
     private void abbyread$displayDetails(int x, int y, int z, int side, CallbackInfo ci) {
-        String cracked = "";
+        ChatMessageComponent message = new ChatMessageComponent();
         Block block = Block.blocksList[theWorld.getBlockId(x, y, z)];
+        if (block != null) message.addText(block.getLocalizedName());
         if (block instanceof BlockStone) {
             int abby$meta = theWorld.getBlockMetadata(x, y, z);
             if (((BlockStone) block).getIsCracked(abby$meta)){
-                cracked = " (Status: Cracked)";
+                message.addText(" (Status: Cracked)");
             }
         }
-        ChatMessageComponent message = new ChatMessageComponent();
-        if (block != null) message.addText(block.getLocalizedName());
-        message.addText(cracked);
-        message.addText("     Side: " + side);
+        // message.addText("     Side: " + side);
         thisPlayerMP.sendChatToPlayer(message);
 
     }

@@ -16,9 +16,11 @@ public abstract class EntityLivingBaseMixin {
     @Inject(method = "attackEntityFrom", at = @At("HEAD"))
     private void abby$debugDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         // Print to console for debugging
+        /*
         if (isClientWorld()) {
             System.out.println("Entity " + ((EntityLivingBase)(Object)this).getClass().getSimpleName() + " is taking " + amount + " damage from " + source.damageType);
         }
+        */
         // If a player is the source, we can also send chat
         if (isClientWorld() && source.getEntity() instanceof EntityPlayer player) {
             player.sendChatToPlayer(
