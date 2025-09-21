@@ -35,11 +35,16 @@ public class ItemInWorldManagerMixin {
     private void abbyread$displayDetails(int x, int y, int z, int side, CallbackInfo ci) {
         ChatMessageComponent message = new ChatMessageComponent();
         Block block = Block.blocksList[theWorld.getBlockId(x, y, z)];
-        if (block != null) message.addText(block.getLocalizedName());
+        if (block != null) message.addText(block.getClass().getName());
         if (block instanceof BlockStone) {
             int abby$meta = theWorld.getBlockMetadata(x, y, z);
             if (((BlockStone) block).getIsCracked(abby$meta)){
                 message.addText(" (Status: Cracked)");
+            }
+        }
+        if (block instanceof BlockGrass) {
+            if (((BlockGrass) block).isSparse(theWorld, x, y, z)){
+                message.addText(" (Status: Sparse)");
             }
         }
         // message.addText("     Side: " + side);

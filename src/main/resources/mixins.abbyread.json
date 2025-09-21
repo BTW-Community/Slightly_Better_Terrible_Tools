@@ -8,13 +8,11 @@
     "BlockGrassMixin",
     "BlockMixin",
     "ChiselItemMixin",
-    "ChiselItemStoneMixin",
     "ChiselItemWoodMixin",
     "DirtSlabBlockMixin",
-    //"EntityLivingBaseMixin",
-    //"EntityPlayerMixin",
-    "GrassSlabBlockMixin",
-    //"ItemInWorldManagerMixin",
+    "InventoryPlayerMixin",
+    "ItemInWorldManagerMixin",
+    "ItemMixin",
     "ToolItemMixin"
   ],
   "client": [

@@ -13,8 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ChiselItemWood.class)
 public abstract class ChiselItemWoodMixin {
     @Unique
-    private final float effMod = UniformEfficiencyModifier.UNIFORM_EFFICIENCY_MODIFIER;
-
+    private final float effMod = UniformEfficiencyModifier.VALUE;
     /*
 	Change the third arg to be passed to the ChiselItem constructor
 	*/
@@ -29,15 +28,4 @@ public abstract class ChiselItemWoodMixin {
     private static int abbyread$increaseUses(int original) {
         return 4;
     }
-
-    @Inject(
-            method = "applyStandardEfficiencyModifiers",
-            at = @At("RETURN"),
-            remap = false
-    )
-    private void tweakEfficiency(CallbackInfo ci)
-    {
-        ((ToolItem)(Object)this).addCustomEfficiencyMultiplier(effMod);
-    }
-
 }
