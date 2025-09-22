@@ -10,7 +10,6 @@
     "ChiselItemMixin",
     "ChiselItemStoneMixin",
     "ChiselItemWoodMixin",
-    "DirtSlabBlockMixin",
     "InventoryPlayerMixin",
     "ItemInWorldManagerMixin",
     "ItemMixin",
