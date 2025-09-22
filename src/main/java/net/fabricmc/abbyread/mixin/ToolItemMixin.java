@@ -1,5 +1,6 @@
 package net.fabricmc.abbyread.mixin;
 
+import btw.community.abbyread.BlockBreakingOverrides;
 import btw.community.abbyread.EfficiencyHelper;
 import btw.item.BTWItems;
 import btw.item.items.ChiselItemStone;
@@ -16,6 +17,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ToolItem.class)
 public abstract class ToolItemMixin {
+    /**
+     * Adjust getStrVsBlock to enforce boosted efficiency on blocks defined
+     * in BlockBreakingOverrides, ignoring ChiselItemWood's /=4 divisor.
+     */
+    @Inject(
+            method = "getStrVsBlock",
+            at = @At("HEAD"),
+            cancellable = true,
+            remap = false
+    )
+    private void abbyread$boostInefficientBlock(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
+        System.out.println("Pointy stick debuff override working maybe");
+        if (block == null) return;
+        if (stack == null) return;
+        if (stack.getItem() instanceof ChiselItemWood){
+            float originalStrength = cir.getReturnValueF();
+            float boostedStrength = BlockBreakingOverrides.getBoostedStrength(block);
+
+            // Only override if the block is meant to be boosted and original is less than boosted
+            if (boostedStrength > 1.0F && originalStrength < boostedStrength) {
+                cir.setReturnValue(boostedStrength);
+            }
+        }
+    }
 
     // --- Efficiency override for pointy stick / sharp stone ---
     @Inject(method = "getStrVsBlock", at = @At("HEAD"), cancellable = true, remap = false)
