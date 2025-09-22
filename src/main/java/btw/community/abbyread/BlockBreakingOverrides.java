@@ -6,8 +6,9 @@ import net.minecraft.src.BlockLog;
 
 public class BlockBreakingOverrides {
     static final float effMod = UniformEfficiencyModifier.VALUE;
-    /** Returns the boosted efficiency for this block. */
-    public static float getBoostedStrength(Block block) {
+
+    // The minimum efficiency at which anything should break these blocks
+    public static float baselineEfficiency(Block block) {
         if (block == null) return 1.0F;
 
         // Small boost for sandy blocks
@@ -28,10 +29,5 @@ public class BlockBreakingOverrides {
 
         // No boost by default
         return 1.0F;
-    }
-
-    /** Whether we want to force a boost for this block */
-    public static boolean shouldBoost(Block block) {
-        return getBoostedStrength(block) > 1.0F;
     }
 }

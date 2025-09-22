@@ -42,7 +42,7 @@ public class ChiselItemStoneMixin {
         if (block == null) return;
 
         float originalStrength = cir.getReturnValueF();
-        float boostedStrength = BlockBreakingOverrides.getBoostedStrength(block);
+        float boostedStrength = BlockBreakingOverrides.baselineEfficiency(block);
 
         // Only override if the block is meant to be boosted and original is less than boosted
         if (boostedStrength > 1.0F && originalStrength < boostedStrength) {

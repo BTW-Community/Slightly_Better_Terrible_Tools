@@ -32,7 +32,7 @@ public abstract class ToolItemMixin {
 
         if (stack.getItem() instanceof ChiselItemWood){
             float originalStrength = cir.getReturnValueF();
-            float boostedStrength = BlockBreakingOverrides.getBoostedStrength(block);
+            float boostedStrength = BlockBreakingOverrides.baselineEfficiency(block);
 
             // Only override if the block is meant to be boosted and original is less than boosted
             if (boostedStrength > 1.0F && originalStrength < boostedStrength) {
