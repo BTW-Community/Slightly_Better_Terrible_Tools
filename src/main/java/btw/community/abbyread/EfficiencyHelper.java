@@ -25,6 +25,7 @@ public class EfficiencyHelper {
             final int DIRTSLAB_DIRT = 0;
             final int PACKED_EARTH = 6;
             if (block instanceof BlockDirt) return true;
+            if (block instanceof BlockStone) return true;
             if (block instanceof DirtSlabBlock && metadata == DIRTSLAB_DIRT) return true;
             if (block instanceof BlockGrass && metadata == GRASS_SPARSE) return true;
             if (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(metadata)) return true;
@@ -36,6 +37,9 @@ public class EfficiencyHelper {
             final int DIRTSLAB_GRASS = 1;
             if (block instanceof DirtSlabBlock && metadata == DIRTSLAB_GRASS) return false;
             if (block instanceof BlockGrass && metadata == GRASS_FULL) return false;
+            if (block instanceof BlockLog) return false;
+            if (block instanceof ChewedLogBlock) return false;
+            if (block instanceof LogSpikeBlock) return false;
             if (block instanceof RoughStoneBlock /* && ((RoughStoneBlock) block).strataLevel != 0 */) return false;
             if (block instanceof BlockGlass) return false;
             if (block instanceof BlockGlowStone) return false;
@@ -43,8 +47,6 @@ public class EfficiencyHelper {
             if (block instanceof BlockPane) return false;
             if (block instanceof BlockRedstoneLight) return false;
             if (block instanceof LightBlock) return false;
-            if (block instanceof ChewedLogBlock) return false;
-            if (block instanceof BlockWood) return false;
         }
 
         // --- Sharp Stone (stone chisel) ---
@@ -54,6 +56,9 @@ public class EfficiencyHelper {
             final int DIRTSLAB_GRASS = 1;
             if (block instanceof DirtSlabBlock && metadata == DIRTSLAB_GRASS) return true;
             if (block instanceof BlockGrass && metadata == GRASS_FULL) return true;
+            if (block instanceof BlockLog) return true;
+            if (block instanceof ChewedLogBlock) return true;
+            if (block instanceof LogSpikeBlock) return true;
             if (block instanceof RoughStoneBlock && ((RoughStoneBlock) block).strataLevel == 0) return true;
             if (block instanceof BlockGlass) return true;
             if (block instanceof BlockGlowStone) return true;
@@ -66,12 +71,11 @@ public class EfficiencyHelper {
             final int GRASS_SPARSE = 1;
             final int DIRTSLAB_DIRT = 0;
             final int PACKED_EARTH = 6;
-            if (block instanceof DirtSlabBlock && metadata == DIRTSLAB_DIRT) return true;
-            if (block instanceof BlockGrass && metadata == GRASS_SPARSE) return true;
-            if (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(metadata)) return true;
-            if (block instanceof BlockDirt) return true;
-            if (block instanceof AestheticOpaqueEarthBlock && metadata == PACKED_EARTH)
-                return true;
+            if (block instanceof DirtSlabBlock && metadata == DIRTSLAB_DIRT) return false;
+            if (block instanceof BlockGrass && metadata == GRASS_SPARSE) return false;
+            if (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(metadata)) return false;
+            if (block instanceof BlockDirt) return false;
+            if (block instanceof AestheticOpaqueEarthBlock && metadata == PACKED_EARTH) return false;
         }
         return false;
     }
