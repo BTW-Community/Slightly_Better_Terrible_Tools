@@ -1,27 +1,14 @@
 package net.fabricmc.abbyread.mixin;
 
 import btw.community.abbyread.UniformEfficiencyModifier;
-import btw.item.items.ChiselItemWood;
+import btw.item.items.ChiselItemStone;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ChiselItemWood.class)
-public abstract class ChiselItemWoodMixin {
-
-    // Increase uses to 4
-    @ModifyArg(
-            method = "<init>",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lbtw/item/items/ChiselItem;<init>(ILnet/minecraft/src/EnumToolMaterial;I)V"
-            ),
-            index = 2
-    )
-    private static int abbyread$increaseUses(int original) {
-        return 4;
-    }
-
+@Mixin(ChiselItemStone.class)
+public class ChiselItemStoneMixin {
     // Apply effMod after normal routine
     @Inject(
             method = "applyStandardEfficiencyModifiers",
