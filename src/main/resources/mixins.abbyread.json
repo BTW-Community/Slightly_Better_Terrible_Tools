@@ -10,7 +10,7 @@
     "ChiselItemMixin",
     "ChiselItemStoneMixin",
     "ChiselItemWoodMixin",
-    "InventoryPlayerMixin",
+    "EntityPlayerMixin",
     "ItemInWorldManagerMixin",
     "ItemMixin",
     "ToolItemAccessor",
