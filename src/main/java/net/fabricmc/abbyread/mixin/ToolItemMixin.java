@@ -2,7 +2,7 @@ package net.fabricmc.abbyread.mixin;
 
 import btw.community.abbyread.BlockBreakingOverrides;
 import btw.community.abbyread.EfficiencyHelper;
-import btw.item.BTWItems;
+
 import btw.item.items.ChiselItemStone;
 import btw.item.items.ChiselItemWood;
 import btw.item.items.ToolItem;
@@ -28,9 +28,8 @@ public abstract class ToolItemMixin {
             remap = false
     )
     private void abbyread$boostInefficientBlock(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
-        System.out.println("Pointy stick debuff override working maybe");
         if (block == null) return;
-        if (stack == null) return;
+
         if (stack.getItem() instanceof ChiselItemWood){
             float originalStrength = cir.getReturnValueF();
             float boostedStrength = BlockBreakingOverrides.getBoostedStrength(block);
@@ -42,17 +41,16 @@ public abstract class ToolItemMixin {
         }
     }
 
-    // --- Efficiency override for pointy stick / sharp stone ---
+    // --- Efficiency override for pointy stick ---
     @Inject(method = "getStrVsBlock", at = @At("HEAD"), cancellable = true, remap = false)
     private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block, int x, int y, int z,
                                         CallbackInfoReturnable<Float> cir) {
         if (stack == null) return;
 
-        int id = stack.getItem().itemID;
-        if (id == BTWItems.pointyStick.itemID || id == BTWItems.sharpStone.itemID) {
+        if (stack.getItem() instanceof ChiselItemWood) {
             if (world != null && EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z)) {
-                float eff = ((ToolItemAccessor) this).getEfficiencyOnProperMaterial();
-                cir.setReturnValue(eff);
+                float efficiency = ((ToolItemAccessor) this).getEfficiencyOnProperMaterial();
+                cir.setReturnValue(efficiency);
             } else {
                 cir.setReturnValue(1.0F);
             }

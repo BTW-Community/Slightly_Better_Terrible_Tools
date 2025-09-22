@@ -21,7 +21,8 @@ public class BlockBreakingOverrides {
                 block instanceof LooseSparseGrassSlabBlock ||
                 block instanceof LooseDirtSlabBlock ||
                 block instanceof ChewedLogBlock ||
-                block instanceof BlockLog) {
+                block instanceof BlockLog ||
+                block instanceof LogSpikeBlock) {
             return effMod * 1.5F;
         }
 

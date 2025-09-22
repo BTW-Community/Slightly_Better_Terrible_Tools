@@ -13,8 +13,7 @@ public abstract class EntityPlayerMixin {
     @ModifyVariable(
             method = "getCurrentPlayerStrVsBlock",
             at = @At("RETURN"),
-            ordinal = 0,
-            remap = false
+            ordinal = 0
     )
     private float abbyread$applyBoostedStrength(float original, Block block, int meta) {
         if (block == null) return original;
@@ -23,10 +22,7 @@ public abstract class EntityPlayerMixin {
         float boosted = BlockBreakingOverrides.getBoostedStrength(block);
 
         // Only apply boost if vanilla strength is lower
-        if (original < boosted) {
-            return boosted;
-        }
+        return Math.max(original, boosted);
 
-        return original;
     }
 }
