@@ -24,6 +24,10 @@ public class BlockMixin {
             method = "canConvertBlock", at = @At("HEAD"), cancellable = true
     )
     private void abbyread$canConvertBlock(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir){
+        if (stack == null) {
+            cir.setReturnValue(false);
+            return;
+        }
         if (stack.getItem() instanceof ChiselItemWood  && this.blockID == BTWBlocks.dirtSlab.blockID) {
             @SuppressWarnings("ConstantConditions")
             DirtSlabBlock slab = (DirtSlabBlock) (Object) this;
@@ -50,6 +54,10 @@ public class BlockMixin {
             method = "convertBlock", at = @At("HEAD"), cancellable = true
     )
     private void abbyread$convertBlock(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir){
+        if (stack == null) {
+            cir.setReturnValue(false);
+            return;
+        }
         if ((stack.getItem() instanceof ChiselItemWood)
                 && this.blockID == BTWBlocks.dirtSlab.blockID) {
             @SuppressWarnings("ConstantConditions")
