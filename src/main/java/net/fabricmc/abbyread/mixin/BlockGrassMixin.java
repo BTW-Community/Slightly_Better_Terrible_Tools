@@ -35,7 +35,7 @@ public abstract class BlockGrassMixin {
     @Inject(
         method = "canConvertBlock", at = @At("HEAD"), cancellable = true
     )
-    private void abby$addCanConvertInclusions(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir){
+    private void abbyread$canConvertBlock(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir){
         if (stack != null && stack.getItem() instanceof ChiselItemWood && this.isSparse(world.getBlockMetadata(x, y, z))) {
             cir.setReturnValue(true);
         } else if (stack != null && stack.getItem() instanceof ChiselItemStone && !this.isSparse(world.getBlockMetadata(x, y, z))) {
@@ -46,7 +46,8 @@ public abstract class BlockGrassMixin {
     @Inject(
             method = "convertBlock", at = @At("HEAD"), cancellable = true
     )
-    private void abby$addConvertByPointyStick(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir){
+    private void abbyread$convertBlock(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir){
+        // --- Pointy stick converts sparse grass ---
         if (stack != null && stack.getItem() instanceof ChiselItemWood && this.isSparse(world.getBlockMetadata(x, y, z))) {
             if (!world.isRemote) {
                 world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
@@ -54,15 +55,11 @@ public abstract class BlockGrassMixin {
             }
             cir.setReturnValue(true);
         }
-    }
 
-    @Inject(
-            method = "convertBlock", at = @At("HEAD"), cancellable = true
-    )
-    private void abby$addConvertBySharpStone(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir){
+        // --- Sharp stone converts full grass ---
         if (stack != null && stack.getItem() instanceof ChiselItemStone && !(this.isSparse(world.getBlockMetadata(x, y, z)))) {
             final int SPARSE = 1;
-            final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
+            final int VERY_LOW_HEMP_SEED_CHANCE = 2000;
             if (!world.isRemote) {
                 world.setBlockMetadataWithNotify(x, y, z, SPARSE);
                 world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);

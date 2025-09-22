@@ -1,8 +1,10 @@
 package net.fabricmc.abbyread.mixin;
 
 import btw.community.abbyread.BlockBreakingOverrides;
+import btw.community.abbyread.EfficiencyHelper;
 import btw.community.abbyread.UniformEfficiencyModifier;
 import btw.item.items.ChiselItemStone;
+import btw.item.items.ChiselItemWood;
 import net.minecraft.src.Block;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
@@ -28,25 +30,19 @@ public class ChiselItemStoneMixin {
         accessor.setEfficiencyOnProperMaterial(original * effMod);
     }
 
-    /**
-     * Adjust getStrVsBlock to enforce boosted efficiency on blocks defined
-     * in BlockBreakingOverrides, ignoring ChiselItemStone's /=2 divisor.
-     */
-    @Inject(
-            method = "getStrVsBlock",
-            at = @At("RETURN"),
-            cancellable = true,
-            remap = false
-    )
-    private void abbyread$boostInefficientBlock(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
-        if (block == null) return;
+    // --- Efficiency override for pointy stick ---
+    @Inject(method = "getStrVsBlock", at = @At("HEAD"), cancellable = true)
+    private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block, int x, int y, int z,
+                                        CallbackInfoReturnable<Float> cir) {
+        if (stack == null) return;
 
-        float originalStrength = cir.getReturnValueF();
-        float boostedStrength = BlockBreakingOverrides.baselineEfficiency(block);
-
-        // Only override if the block is meant to be boosted and original is less than boosted
-        if (boostedStrength > 1.0F && originalStrength < boostedStrength) {
-            cir.setReturnValue(boostedStrength);
+        if (stack.getItem() instanceof ChiselItemWood) {
+            if (world != null && EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z)) {
+                float efficiency = ((ToolItemAccessor) this).getEfficiencyOnProperMaterial();
+                cir.setReturnValue(efficiency);
+            } else {
+                cir.setReturnValue(1F); // When ToolItem determines it's not efficient, it calls to Item for this value.
+            }
         }
     }
 }

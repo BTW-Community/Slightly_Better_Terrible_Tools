@@ -7,12 +7,18 @@ import net.minecraft.src.*;
 
 
 // Currently only checks & assigns efficiencies for pointy stick and sharp stone
+// Efficiency is mostly for item damage checks right now
 public class EfficiencyHelper {
 
     // World-based entry point
     public static boolean isToolItemEfficientVsBlock(ItemStack stack, World world, Block block, int x, int y, int z) {
         int meta = world != null ? world.getBlockMetadata(x, y, z) : 0;
-        return isToolItemEfficientVsBlock(stack, block, meta);
+        if (stack.getItem() instanceof ChiselItemWood ||
+                stack.getItem() instanceof ChiselItemStone) {
+            return isToolItemEfficientVsBlock(stack, block, meta);
+        } else {
+            return stack.getItem().isEfficientVsBlock(stack, world, block, x, y, z);
+        }
     }
 
     // Core logic using stack, block, and metadata
@@ -27,16 +33,19 @@ public class EfficiencyHelper {
             if (block instanceof BlockDirt) return true;
             if (block instanceof BlockStone) return true;
             if (block instanceof DirtSlabBlock && metadata == DIRTSLAB_DIRT) return true;
-            if (block instanceof BlockGrass && metadata == GRASS_SPARSE) return true;
-            if (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(metadata)) return true;
-            if (block instanceof AestheticOpaqueEarthBlock && metadata == PACKED_EARTH)
+            if (block instanceof BlockGrass && (((BlockGrass) block).isSparse(metadata))) {
+                System.out.println("Found Sparse Grass Block");
                 return true;
+            }
+            if (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(metadata)) return true;
+            if (block instanceof AestheticOpaqueEarthBlock && metadata == PACKED_EARTH) return true;
 
             // Prevent efficiency toward full-grass blocks and glass-likes, wood, and rough stone
             final int GRASS_FULL = 0;
             final int DIRTSLAB_GRASS = 1;
             if (block instanceof DirtSlabBlock && metadata == DIRTSLAB_GRASS) return false;
-            if (block instanceof BlockGrass && metadata == GRASS_FULL) return false;
+            if (block instanceof BlockGrass && !(((BlockGrass) block).isSparse(metadata))) return false;
+            if (block instanceof GrassSlabBlock && !((GrassSlabBlock) block).isSparse(metadata)) return false;
             if (block instanceof BlockLog) return false;
             if (block instanceof ChewedLogBlock) return false;
             if (block instanceof LogSpikeBlock) return false;
@@ -55,11 +64,14 @@ public class EfficiencyHelper {
             final int GRASS_FULL = 0;
             final int DIRTSLAB_GRASS = 1;
             if (block instanceof DirtSlabBlock && metadata == DIRTSLAB_GRASS) return true;
-            if (block instanceof BlockGrass && metadata == GRASS_FULL) return true;
+            if (block instanceof BlockGrass && ((BlockGrass) block).isSparse(metadata)) {
+                return true;
+            }
             if (block instanceof BlockLog) return true;
             if (block instanceof ChewedLogBlock) return true;
             if (block instanceof LogSpikeBlock) return true;
-            if (block instanceof RoughStoneBlock && ((RoughStoneBlock) block).strataLevel == 0) return true;
+            if (block instanceof RoughStoneBlock &&
+                    ((RoughStoneBlock) block).strataLevel == 0) return true;
             if (block instanceof BlockGlass) return true;
             if (block instanceof BlockGlowStone) return true;
             if (block instanceof BlockIce) return true;

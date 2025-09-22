@@ -25,8 +25,7 @@ public abstract class ChiselItemWoodMixin {
     // Follow-up BTW's efficiencyOnProperMaterial /= 4 with a *= effMod
     @Inject(
             method = "applyStandardEfficiencyModifiers",
-            at = @At("TAIL"),
-            remap = false
+            at = @At("TAIL"), remap = false
     )
     private void abbyread$effModApplication(CallbackInfo ci) {
         ToolItemAccessor accessor = (ToolItemAccessor) this;

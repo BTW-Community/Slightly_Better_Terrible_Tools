@@ -12,7 +12,6 @@
     "ChiselItemWoodMixin",
     "EntityPlayerMixin",
     "ItemInWorldManagerMixin",
-    "ItemMixin",
     "ToolItemAccessor",
     "ToolItemMixin"
   ],

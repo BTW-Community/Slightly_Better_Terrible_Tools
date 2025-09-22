@@ -35,7 +35,7 @@ public class ItemInWorldManagerMixin {
     private void abbyread$displayDetails(int x, int y, int z, int side, CallbackInfo ci) {
         ChatMessageComponent message = new ChatMessageComponent();
         Block block = Block.blocksList[theWorld.getBlockId(x, y, z)];
-        if (block != null) message.addText(block.getClass().getName());
+        /* if (block != null) message.addText(block.getClass().getName());
         if (block instanceof BlockStone) {
             int abby$meta = theWorld.getBlockMetadata(x, y, z);
             if (((BlockStone) block).getIsCracked(abby$meta)){
@@ -49,7 +49,7 @@ public class ItemInWorldManagerMixin {
         }
         // message.addText("     Side: " + side);
         thisPlayerMP.sendChatToPlayer(message);
-
+        */
     }
 
     // --- Hook when block is removed fully ---
