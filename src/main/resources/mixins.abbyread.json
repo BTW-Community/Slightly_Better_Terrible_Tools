@@ -8,12 +8,13 @@
     "BlockGrassMixin",
     "BlockMixin",
     "ChiselItemMixin",
-    "ToolItemAccessor",
+    "ChiselItemStoneMixin",
     "ChiselItemWoodMixin",
     "DirtSlabBlockMixin",
     "InventoryPlayerMixin",
     "ItemInWorldManagerMixin",
     "ItemMixin",
+    "ToolItemAccessor",
     "ToolItemMixin"
   ],
   "client": [

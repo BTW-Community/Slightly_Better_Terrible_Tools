@@ -25,7 +25,7 @@ public abstract class BlockGrassMixin {
         at = @At("HEAD"),
         cancellable = true
     )
-    private void abby$reimplementGrassDrop(World world, int x, int y, int z, int toFacing, CallbackInfo ci) {
+    private void abby$reimplementHardcoreGrassDrop(World world, int x, int y, int z, int toFacing, CallbackInfo ci) {
         if (toFacing == 0) {
             world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
         }
@@ -48,8 +48,8 @@ public abstract class BlockGrassMixin {
     )
     private void abby$addConvertByPointyStick(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir){
         if (stack != null && stack.getItem() instanceof ChiselItemWood && this.isSparse(world.getBlockMetadata(x, y, z))) {
-            world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
             if (!world.isRemote) {
+                world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
                 world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
             }
             cir.setReturnValue(true);
@@ -60,11 +60,11 @@ public abstract class BlockGrassMixin {
             method = "convertBlock", at = @At("HEAD"), cancellable = true
     )
     private void abby$addConvertBySharpStone(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir){
-        if (stack != null && stack.getItem() instanceof ChiselItemStone && !this.isSparse(world.getBlockMetadata(x, y, z))) {
+        if (stack != null && stack.getItem() instanceof ChiselItemStone && !(this.isSparse(world.getBlockMetadata(x, y, z)))) {
             final int SPARSE = 1;
             final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
-            world.setBlockMetadataWithNotify(x, y, z, SPARSE);
             if (!world.isRemote) {
+                world.setBlockMetadataWithNotify(x, y, z, SPARSE);
                 world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
                 if (world.rand.nextInt(VERY_LOW_HEMP_SEED_CHANCE) == 0) {
                     ItemUtils.ejectStackFromBlockTowardsFacing(world, x, y, z, new ItemStack(BTWItems.hempSeeds), fromSide);

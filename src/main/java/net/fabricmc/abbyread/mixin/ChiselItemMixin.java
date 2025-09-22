@@ -44,7 +44,7 @@ public class ChiselItemMixin {
         }
     }
 
-    @Inject(method = "isEfficientVsBlock", at = @At("RETURN"), remap = false, cancellable = true)
+    @Inject(method = "isEfficientVsBlock", at = @At("HEAD"), remap = false, cancellable = true)
     public void abby$sharpStoneEfficiencies(ItemStack stack, World world, Block block, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
         if (stack.getItem() instanceof ChiselItemStone)
         {
@@ -65,11 +65,11 @@ public class ChiselItemMixin {
             final int GRASS_SPARSE = 1;
             final int DIRTSLAB_DIRT = 0;
             final int PACKED_EARTH = 6;
-            if (block instanceof DirtSlabBlock && world.getBlockMetadata(x, y, z) == DIRTSLAB_DIRT) cir.setReturnValue(true);
-            if (block instanceof BlockGrass && world.getBlockMetadata(x, y, z) == GRASS_SPARSE) cir.setReturnValue(true);
-            if (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(world, x, y, z)) cir.setReturnValue(true);
-            if (block instanceof BlockDirt) cir.setReturnValue(true);
-            if (block instanceof AestheticOpaqueEarthBlock && world.getBlockMetadata(x, y, z) == PACKED_EARTH) cir.setReturnValue(true);
+            if (block instanceof BlockDirt) cir.setReturnValue(false);
+            if (block instanceof BlockGrass && world.getBlockMetadata(x, y, z) == GRASS_SPARSE) cir.setReturnValue(false);
+            if (block instanceof DirtSlabBlock && world.getBlockMetadata(x, y, z) == DIRTSLAB_DIRT) cir.setReturnValue(false);
+            if (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(world, x, y, z)) cir.setReturnValue(false);
+            if (block instanceof AestheticOpaqueEarthBlock && world.getBlockMetadata(x, y, z) == PACKED_EARTH) cir.setReturnValue(false);
         }
     }
 }

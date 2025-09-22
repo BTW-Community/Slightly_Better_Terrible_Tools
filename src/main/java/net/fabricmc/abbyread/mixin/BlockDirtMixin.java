@@ -28,8 +28,8 @@ public class BlockDirtMixin {
     )
     private void abby$addConvertByPointyStick(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir){
         if (stack != null && stack.getItem() instanceof ChiselItemWood) {
-            world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
             if (!world.isRemote) {
+                world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
                 world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
             }
             cir.setReturnValue(true);
