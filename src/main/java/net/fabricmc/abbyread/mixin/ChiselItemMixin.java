@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ChiselItem.class)
 public class ChiselItemMixin {
 
+    // ChiselItemWood inherits isEfficientVsBlock directly from ChiselItem, so...
     @Inject(method = "isEfficientVsBlock", at = @At("HEAD"), cancellable = true)
     public void abby$pointyStickEfficiencies(ItemStack stack, World world, Block block, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
         if (stack.getItem() instanceof ChiselItemWood)
@@ -44,6 +45,7 @@ public class ChiselItemMixin {
         }
     }
 
+    // ChiselItemStone inherits isEfficientVsBlock directly from ChiselItem, so...
     @Inject(method = "isEfficientVsBlock", at = @At("HEAD"), remap = false, cancellable = true)
     public void abby$sharpStoneEfficiencies(ItemStack stack, World world, Block block, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
         if (stack.getItem() instanceof ChiselItemStone)

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ChiselItemWood.class)
 public abstract class ChiselItemWoodMixin {
 
-    // Increase uses to 4
+    // Increase pointy stick uses to 4
     @ModifyArg(
             method = "<init>",
             at = @At(
@@ -22,7 +22,7 @@ public abstract class ChiselItemWoodMixin {
         return 4;
     }
 
-    // Apply effMod after normal routine
+    // Follow-up BTW's efficiencyOnProperMaterial /= 4 with a *= effMod
     @Inject(
             method = "applyStandardEfficiencyModifiers",
             at = @At("TAIL"),

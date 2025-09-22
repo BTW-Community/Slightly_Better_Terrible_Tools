@@ -9,7 +9,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ChiselItemStone.class)
 public class ChiselItemStoneMixin {
-    // Apply effMod after normal routine
+
+    // Follow-up BTW's efficiencyOnProperMaterial /= 2 with a *= effMod
     @Inject(
             method = "applyStandardEfficiencyModifiers",
             at = @At("TAIL"),

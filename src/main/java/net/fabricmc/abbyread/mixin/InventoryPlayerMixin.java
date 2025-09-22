@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(InventoryPlayer.class)
 public class InventoryPlayerMixin {
     @Unique float effMod = UniformEfficiencyModifier.VALUE;
+
+    // Boost empty-handed
     @Inject(method = "getStrVsBlock", at = @At("RETURN"), cancellable = true)
     private void abbyread$effModBoost(World world, Block block, int x, int y, int z, CallbackInfoReturnable<Float> cir){
         @SuppressWarnings("ConstantConditions")
