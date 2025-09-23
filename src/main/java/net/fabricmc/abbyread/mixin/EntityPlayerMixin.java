@@ -26,7 +26,6 @@ public abstract class EntityPlayerMixin {
         EntityPlayer self = (EntityPlayer) (Object) this;
         ItemStack held = self.getCurrentEquippedItem();
         if (held != null && held.getItem() != null) {
-            System.out.println("[DEBUG] Held: "
                     + held.getDisplayName() + " -> "
                     + held.getItem().getClass().getName());
         }

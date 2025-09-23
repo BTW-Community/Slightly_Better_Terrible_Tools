@@ -1,7 +1,6 @@
 package net.fabricmc.abbyread.mixin;
 
 import btw.community.abbyread.EfficiencyHelper;
-import btw.community.abbyread.UniformEfficiencyModifier;
 import btw.item.items.ChiselItemStone;
 import net.minecraft.src.Block;
 import net.minecraft.src.ItemStack;
@@ -24,7 +23,7 @@ public class ChiselItemStoneMixin {
     private void abbyread$effModApplication(CallbackInfo ci) {
         ToolItemAccessor accessor = (ToolItemAccessor) this;
         float original = accessor.getEfficiencyOnProperMaterial();
-        final float effMod = UniformEfficiencyModifier.VALUE;
+        final float effMod = EfficiencyHelper.effMod;
         accessor.setEfficiencyOnProperMaterial(original * effMod);
     }
 

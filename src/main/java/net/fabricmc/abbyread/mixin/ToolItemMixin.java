@@ -27,10 +27,7 @@ public abstract class ToolItemMixin {
                                             CallbackInfoReturnable<Boolean> cir) {
         if (stack == null) return;
         if (!world.isRemote) {
-            System.out.println("Handling check for item damage.");
-            System.out.println("EfficiencyHelper.getLastEffective(): " + EfficiencyHelper.getLastEffective());
             if (EfficiencyHelper.getLastEffective()) {
-                System.out.println("Is effective.  Damaging.");
                 stack.damageItem(1, entity);
             }
         }

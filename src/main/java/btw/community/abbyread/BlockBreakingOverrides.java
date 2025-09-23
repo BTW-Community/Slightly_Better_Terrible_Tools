@@ -6,7 +6,7 @@ import net.minecraft.src.BlockLog;
 import net.minecraft.src.BlockSand;
 
 public class BlockBreakingOverrides {
-    static final float effMod = UniformEfficiencyModifier.VALUE;
+    static final float effMod = EfficiencyHelper.effMod;
 
     public static boolean isUniversallyEasyBlock(Block block) {
         if (block == null) return false;

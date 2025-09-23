@@ -9,6 +9,8 @@ import net.minecraft.src.*;
 
 public class EfficiencyHelper {
 
+    public static final float effMod = 1.5F;
+
     // Store last computed efficiency (1.0 if ineffective) for damage check
     private static boolean lastEffective = false;
 
@@ -26,21 +28,17 @@ public class EfficiencyHelper {
         if (stack == null || block == null) return minimum;
 
         if (world != null) {
-            System.out.println("genericGetStrVsBlock invoked with valid arguments.");
             ToolItemAccessor accessor = (ToolItemAccessor) stack.getItem();
             float effProp = accessor.getEfficiencyOnProperMaterial();
             // Check efficiency between tool and the block it's used on.
             boolean effective = EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z);
             if (effective) {
-                System.out.println("Tool IS effective on block.");
                 EfficiencyHelper.setLastEffective(true);
                 return effProp;
             } else {
                 // Not effective: Shouldn't boost, shouldn't damage item
-                System.out.println("Tool not effective on block.");
                 float potentialOverride = minimum;
                 if (BlockBreakingOverrides.isUniversallyEasyBlock(block)) {
-                    System.out.println("Block is universally easy.");
                     potentialOverride = BlockBreakingOverrides.baselineEfficiency(block);
                 }
                 EfficiencyHelper.setLastEffective(false);
@@ -55,45 +53,33 @@ public class EfficiencyHelper {
     public static float getStrVsBlock(ItemStack stack, World world, Block block,
                                       int x, int y, int z) {
         float minimum = 1F;
-        System.out.println("Inject into ToolItem.getStrVsBlock triggered.");
 
         if (world != null) {
-            System.out.println("Arguments validated.");
             float strength = EfficiencyHelper.genericGetStrVsBlock(stack, world, block, x, y, z);
-            System.out.println("genericGetStrVsBlock returned.");
-            System.out.println("strength: " + strength);
 
-            // Specific boosts
+            // Specific boosts and nerfs
             if (getLastEffective()) {
-                System.out.println(stack.getItem() + " was effective on " + block + ".");
                 int metadata = world.getBlockMetadata(x, y, z);
-                System.out.println(block + " has metadata value: " + metadata);
 
                 // Pointy stick loosening blocks
                 if (stack.getItem() instanceof ChiselItemWood &&
                         EfficiencyHelper.loosenWithPointyStick(block, metadata)) {
                     float boost = 8F;
-                    System.out.println("Pointy stick is gonna get a * " + boost + " boost to loosen " + block + ".");
                     strength *= boost;
-                    System.out.println("strength is " + strength + " now.");
                 }
 
                 // Sharp stone for grass cutting
                 if (stack.getItem() instanceof ChiselItemStone &&
                         cutWithSharpStone(block, metadata)) {
                     float boost = 6F;
-                    System.out.println("Sharp stone is gonna get a * " + boost + " boost to cut " + block + ".");
                     strength *= boost;
-                    System.out.println("strength is " + strength + " now.");
                 }
 
                 // Sharp stone to mine the last bits of upper-strata stone faster
                 if (stack.getItem() instanceof ChiselItemStone &&
                         sharpStoneRoughStoneExtra(block, metadata)) {
-                    float boost = 2F;  // halve the slowness to be less painful
-                    System.out.println("Sharp stone is gonna get a * " + boost + " boost to cut " + block + ".");
+                    float boost = 2.5F;  // halve the slowness to be less painful
                     strength *= boost;
-                    System.out.println("strength is " + strength + " now.");
                 }
 
                 // Sharp stone to be fast on glass-likes maybe
@@ -101,9 +87,7 @@ public class EfficiencyHelper {
                 if (stack.getItem() instanceof ChiselItemStone &&
                         sharpStoneRoughStoneExtra(block, metadata)) {
                     float boost = 1F;  // KEEP DEFAULT UNLESS BOOST IS NEEDED
-                    System.out.println("Sharp stone is gonna get a * " + boost + " boost to cut " + block + ".");
                     strength *= boost;
-                    System.out.println("strength is " + strength + " now.");
                 }
             }
             return strength;
@@ -192,7 +176,6 @@ public class EfficiencyHelper {
         final int PACKED_EARTH = 6;
 
         return (   (block instanceof BlockDirt)
-                || (block instanceof BlockStone)
                 || (block instanceof DirtSlabBlock && metadata == DIRTSLAB_DIRT)
                 || (block instanceof BlockGrass && ((BlockGrass) block).isSparse(metadata))
                 || (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(metadata))
