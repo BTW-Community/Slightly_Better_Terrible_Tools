@@ -24,7 +24,6 @@ public class AxeItemMixin {
                                             int x, int y, int z,
                                             EntityLivingBase entity,
                                             CallbackInfoReturnable<Boolean> cir) {
-        if (stack == null || world == null) return;
         Block block = Block.blocksList[blockID];
         if (this.isEfficientVsBlock(stack, world, block, x, y, z)) {
             if (!world.isRemote) {
