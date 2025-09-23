@@ -28,10 +28,9 @@ public class ChiselItemStoneMixin {
     }
     */
 
+    // Remove the special case for webs in favor of making sharp stone efficient toward them elsewhere
     @Inject(method = "getStrVsBlock", at = @At("HEAD"), cancellable = true)
-    private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block,
-                                        int x, int y, int z,
-                                        CallbackInfoReturnable<Float> cir) {
+    private void overrideTheOverride(ItemStack stack, World world, Block block, int x, int y, int z, CallbackInfoReturnable<Float> cir) {
         cir.setReturnValue(EfficiencyHelper.getStrVsBlock(stack, world, block, x, y, z));
     }
 }

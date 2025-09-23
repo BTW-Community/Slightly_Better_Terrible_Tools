@@ -6,7 +6,11 @@ import btw.item.items.ChiselItemWood;
 import net.fabricmc.abbyread.mixin.ToolItemAccessor;
 import net.minecraft.src.*;
 
-
+// Important notes:
+// - These checks influence what the game considers "proper material"
+//    when it checks for strength of the item against a block.
+// - Being "effective" against a block as determined here means the
+//    item will be damaged when it destroys or harvests from the block.
 public class EfficiencyHelper {
 
     public static final float effMod = 1.5F;
@@ -143,7 +147,8 @@ public class EfficiencyHelper {
             final int DIRTSLAB_GRASS = 1;
             final int PACKED_EARTH = 6;
 
-            if (       (block instanceof DirtSlabBlock && metadata == DIRTSLAB_GRASS)
+            if (       (block instanceof BlockWeb) // Hacky buff in ChiselItemStone replaced with this
+                    || (block instanceof DirtSlabBlock && metadata == DIRTSLAB_GRASS)
                     || (block instanceof BlockGrass && !((BlockGrass) block).isSparse(metadata))
                     || (block instanceof GrassSlabBlock && !((GrassSlabBlock) block).isSparse(metadata))
                     || (block instanceof RoughStoneBlock && ((RoughStoneBlock) block).strataLevel == 0)
