@@ -10,6 +10,7 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -18,12 +19,47 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ToolItemMixin {
     // ThreadLocal cache of effectiveness between getStrVsBlock and onBlockDestroyed
 
+    @Unique
+    private float genericGetStrVsBlock (ItemStack stack, World world, Block block,
+                                        int x, int y, int z) {
+        // 1F is the default getStrVsBlock
+        float minimum = 1F;
+        if (stack == null || block == null) return minimum;
+
+        if (world != null) {
+            System.out.println("genericGetStrVsBlock used in place of specific.");
+            ToolItemAccessor accessor = (ToolItemAccessor) this;
+            float effProp = accessor.getEfficiencyOnProperMaterial();
+            // Check efficiency between tool and the block it's used on.
+            boolean effective = EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z);
+            if (effective) {
+                System.out.println("Tool IS effective on block.");
+                EfficiencyHelper.setLastEffective(true);
+                return effProp;
+            } else {
+                // Not effective: Shouldn't boost, shouldn't damage item
+                System.out.println("Tool not effective on block.");
+                float potentialOverride = minimum;
+                if (BlockBreakingOverrides.isUniversallyEasyBlock(block)) {
+                    System.out.println("Block is universally easy.");
+                    potentialOverride = BlockBreakingOverrides.baselineEfficiency(block);
+                }
+                EfficiencyHelper.setLastEffective(false);
+                // Prevent boost by picking minimum.
+                //   (universally easy blocks already max to potentialOverride)
+                return Math.min(potentialOverride, minimum); // 1F is the default getStrVsBlock
+            }
+        }
+        return minimum;
+    }
+
     @Inject(method = "getStrVsBlock", at = @At("HEAD"), cancellable = true)
     private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block,
                                         int x, int y, int z,
                                         CallbackInfoReturnable<Float> cir) {
         if (stack == null || block == null) return;
 
+        float minimum = 1F;
         if (stack.getItem() instanceof ChiselItemWood) {
             if (world != null) {
                 System.out.println("ChiselItemWood detected.");
@@ -38,8 +74,7 @@ public abstract class ToolItemMixin {
                 } else {
                     // Not effective: Shouldn't boost, shouldn't damage item
                     System.out.println("Tool not effective on block.");
-                    float minimum = 1F;
-                    float potentialOverride = 1F;
+                    float potentialOverride = minimum;
                     if (BlockBreakingOverrides.isUniversallyEasyBlock(block)){
                         System.out.println("Block is universally easy.");
                         potentialOverride = BlockBreakingOverrides.baselineEfficiency(block);
@@ -47,22 +82,15 @@ public abstract class ToolItemMixin {
                     EfficiencyHelper.setLastEffective(false);
                     // Prevent boost by picking minimum.
                     //   (universally easy blocks already max to potentialOverride)
-                    cir.setReturnValue(Math.min(potentialOverride, minimum)); // 1F is the default getStrVsBlock
+                    cir.setReturnValue(Math.min(potentialOverride, minimum));
                 }
                 return;
             }
         }
 
+        // Handle anything that isn't a pointy stick
         if (world != null) {
-            boolean effective = EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z);
-            if (effective) {
-                EfficiencyHelper.setLastEffective(true);
-                ToolItemAccessor accessor = (ToolItemAccessor) this;
-                cir.setReturnValue(accessor.getEfficiencyOnProperMaterial());
-            } else {
-                // Not effective -> maybe boosted fallback
-                EfficiencyHelper.setLastEffective(false);
-            }
+            cir.setReturnValue(genericGetStrVsBlock(stack, world, block, x, y, z));
         }
     }
 
