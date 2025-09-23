@@ -2,15 +2,14 @@ package net.fabricmc.abbyread.mixin;
 
 import btw.community.abbyread.BlockBreakingOverrides;
 import btw.community.abbyread.EfficiencyHelper;
-import btw.community.abbyread.UniformEfficiencyModifier;
 import btw.item.items.ChiselItemWood;
 import btw.item.items.ToolItem;
 import net.minecraft.src.Block;
 import net.minecraft.src.EntityLivingBase;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
+
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -27,18 +26,28 @@ public abstract class ToolItemMixin {
 
         if (stack.getItem() instanceof ChiselItemWood) {
             if (world != null) {
+                System.out.println("ChiselItemWood detected.");
                 ToolItemAccessor accessor = (ToolItemAccessor) this;
                 float effProp = accessor.getEfficiencyOnProperMaterial();
-                float effMod = UniformEfficiencyModifier.VALUE;
-                float effBoost = effProp * effMod * 4;
+                // Check efficiency between tool and the block it's used on.
                 boolean effective = EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z);
                 if (effective) {
+                    System.out.println("Tool IS effective on block.");
                     EfficiencyHelper.setLastEffective(true);
-                    cir.setReturnValue(effBoost);
+                    cir.setReturnValue(effProp);
                 } else {
-                    float minimum = BlockBreakingOverrides.baselineEfficiency(block);
+                    // Not effective: Shouldn't boost, shouldn't damage item
+                    System.out.println("Tool not effective on block.");
+                    float minimum = 1F;
+                    float potentialOverride = 1F;
+                    if (BlockBreakingOverrides.isUniversallyEasyBlock(block)){
+                        System.out.println("Block is universally easy.");
+                        potentialOverride = BlockBreakingOverrides.baselineEfficiency(block);
+                    }
                     EfficiencyHelper.setLastEffective(false);
-                    cir.setReturnValue(Math.max(effProp, minimum));
+                    // Prevent boost by picking minimum.
+                    //   (universally easy blocks already max to potentialOverride)
+                    cir.setReturnValue(Math.min(potentialOverride, minimum)); // 1F is the default getStrVsBlock
                 }
                 return;
             }
@@ -53,8 +62,6 @@ public abstract class ToolItemMixin {
             } else {
                 // Not effective -> maybe boosted fallback
                 EfficiencyHelper.setLastEffective(false);
-                float baselineStrength = BlockBreakingOverrides.baselineEfficiency(block);
-                cir.setReturnValue(Math.max(baselineStrength, 1.0F));
             }
         }
     }
@@ -65,7 +72,6 @@ public abstract class ToolItemMixin {
                                             EntityLivingBase entity,
                                             CallbackInfoReturnable<Boolean> cir) {
         if (stack == null) return;
-        boolean effective = false;
         if (!world.isRemote) {
             System.out.println("Handling check for item damage.");
             System.out.println("EfficiencyHelper.getLastEffective(): " + EfficiencyHelper.getLastEffective());

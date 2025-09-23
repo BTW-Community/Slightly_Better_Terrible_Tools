@@ -11,6 +11,7 @@
     "ChiselItemWoodMixin",
     "EntityPlayerMixin",
     "ItemInWorldManagerMixin",
+    "ItemStackMixin",
     "ToolItemAccessor",
     "ToolItemMixin"
   ],

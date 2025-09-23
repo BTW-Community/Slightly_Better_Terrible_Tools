@@ -2,29 +2,23 @@ package net.fabricmc.abbyread.mixin;
 
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import btw.community.abbyread.BlockBreakingOverrides;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityPlayer.class)
 public abstract class EntityPlayerMixin {
 
-    @Shadow public InventoryPlayer inventory;
-
-    @ModifyVariable(
+    @Inject(
             method = "getCurrentPlayerStrVsBlock",
             at = @At("RETURN"),
-            ordinal = 0
-    )
-    private float abbyread$getMinimumStrVsBlock(float current, Block block, int meta) {
-        if (block == null) return current;
-
+            cancellable = true)
+    private void abbyread$enforceMinimumStr(Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
+        if (block == null) return;
+        float current = cir.getReturnValue();
         float minimum = BlockBreakingOverrides.baselineEfficiency(block);
-        return Math.max(current, minimum);
-
+        cir.setReturnValue(Math.max(current, minimum));
     }
 /* Check item held class
     @Inject(method = "onUpdate", at = @At("TAIL"))
