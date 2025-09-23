@@ -113,6 +113,7 @@ public class EfficiencyHelper {
             if (        block instanceof BlockDirt
                     ||  block instanceof BlockStone
                     || (block instanceof RoughStoneBlock && ((RoughStoneBlock) block).strataLevel == 0)
+                    || (block instanceof OreBlock && ((OreBlock) block).getStrata(metadata) == 0)
                     || (block instanceof DirtSlabBlock && metadata == DIRTSLAB_DIRT)
                     || (block instanceof BlockGrass && ((BlockGrass) block).isSparse(metadata))
                     || (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(metadata))
@@ -146,6 +147,7 @@ public class EfficiencyHelper {
                     || (block instanceof BlockGrass && !((BlockGrass) block).isSparse(metadata))
                     || (block instanceof GrassSlabBlock && !((GrassSlabBlock) block).isSparse(metadata))
                     || (block instanceof RoughStoneBlock && ((RoughStoneBlock) block).strataLevel == 0)
+                    || (block instanceof OreBlock && ((OreBlock) block).getStrata(metadata) == 0)
                     ||  block instanceof BlockStone
                     ||  block instanceof BlockLog
                     ||  block instanceof ChewedLogBlock
