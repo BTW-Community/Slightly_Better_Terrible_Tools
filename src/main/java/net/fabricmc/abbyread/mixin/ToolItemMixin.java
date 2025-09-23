@@ -17,8 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ToolItem.class)
 public abstract class ToolItemMixin {
     // ThreadLocal cache of effectiveness between getStrVsBlock and onBlockDestroyed
-    @Unique
-    private static final ThreadLocal<Boolean> LAST_EFFECTIVE = ThreadLocal.withInitial(() -> false);
 
     @Inject(method = "getStrVsBlock", at = @At("HEAD"), cancellable = true)
     private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block,
@@ -26,28 +24,20 @@ public abstract class ToolItemMixin {
                                         CallbackInfoReturnable<Float> cir) {
         if (stack == null || block == null) return;
 
-        boolean effective = world != null &&
-                EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z);
-
-        // cache effectiveness for durability handling
-        LAST_EFFECTIVE.set(effective);
-
-        if (effective) {
-            // full tool efficiency
-            float efficiency = ((ToolItemAccessor) this).getEfficiencyOnProperMaterial();
-            cir.setReturnValue(efficiency);
-            return;
+        if (world != null) {
+            boolean effective = EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z);
+            if (effective) {
+                EfficiencyHelper.setLastEffective(true);
+                ToolItemAccessor accessor = (ToolItemAccessor) this;
+                cir.setReturnValue(accessor.getEfficiencyOnProperMaterial());
+            } else {
+                // Not effective -> maybe boosted fallback
+                EfficiencyHelper.setLastEffective(false);
+                float baselineStrength = BlockBreakingOverrides.baselineEfficiency(block);
+                cir.setReturnValue(Math.max(baselineStrength, 1.0F));
+            }
         }
 
-        // Not effective -> maybe boosted fallback
-        float boostedStrength = BlockBreakingOverrides.baselineEfficiency(block);
-        if (boostedStrength > 1.0F) {
-            cir.setReturnValue(boostedStrength);
-            return;
-        }
-
-        // Default ineffective value
-        cir.setReturnValue(1.0F);
     }
 
     @Inject(method = "onBlockDestroyed", at = @At("HEAD"), cancellable = true)
@@ -59,15 +49,14 @@ public abstract class ToolItemMixin {
         boolean effective = false;
         if (!world.isRemote) {
             System.out.println("Handling check for item damage.");
-            System.out.println("LAST_EFFECTIVE.get(): " + LAST_EFFECTIVE.get());
-            if (LAST_EFFECTIVE.get()) {
+            System.out.println("EfficiencyHelper.getLastEffective(): " + EfficiencyHelper.getLastEffective());
+            if (EfficiencyHelper.getLastEffective()) {
                 System.out.println("Is effective.  Damaging.");
                 stack.damageItem(1, entity);
             }
         }
 
-        LAST_EFFECTIVE.remove(); // cleanup for next call
-
+        EfficiencyHelper.setLastEffective(false); // cleanup for next call
 
         cir.setReturnValue(true);
     }

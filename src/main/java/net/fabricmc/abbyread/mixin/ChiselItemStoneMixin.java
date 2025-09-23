@@ -30,18 +30,23 @@ public class ChiselItemStoneMixin {
         accessor.setEfficiencyOnProperMaterial(original * effMod);
     }
 
-    // --- Efficiency override for pointy stick ---
     @Inject(method = "getStrVsBlock", at = @At("HEAD"), cancellable = true)
-    private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block, int x, int y, int z,
+    private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block,
+                                        int x, int y, int z,
                                         CallbackInfoReturnable<Float> cir) {
-        if (stack == null) return;
+        if (stack == null || block == null) return;
 
-        if (stack.getItem() instanceof ChiselItemWood) {
-            if (world != null && EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z)) {
-                float efficiency = ((ToolItemAccessor) this).getEfficiencyOnProperMaterial();
-                cir.setReturnValue(efficiency);
+        if (world != null) {
+            boolean effective = EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z);
+            if (effective) {
+                EfficiencyHelper.setLastEffective(true);
+                ToolItemAccessor accessor = (ToolItemAccessor) this;
+                cir.setReturnValue(accessor.getEfficiencyOnProperMaterial());
             } else {
-                cir.setReturnValue(1F); // When ToolItem determines it's not efficient, it calls to Item for this value.
+                // Not effective -> maybe boosted fallback
+                EfficiencyHelper.setLastEffective(false);
+                float baselineStrength = BlockBreakingOverrides.baselineEfficiency(block);
+                cir.setReturnValue(Math.max(baselineStrength, 1.0F));
             }
         }
     }

@@ -7,7 +7,6 @@
     "BlockDirtMixin",
     "BlockGrassMixin",
     "BlockMixin",
-    "ChiselItemMixin",
     "ChiselItemStoneMixin",
     "ChiselItemWoodMixin",
     "EntityPlayerMixin",
