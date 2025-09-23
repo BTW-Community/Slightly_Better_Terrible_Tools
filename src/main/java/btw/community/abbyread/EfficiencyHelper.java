@@ -195,6 +195,8 @@ public class EfficiencyHelper {
                 (((RoughStoneBlock) block).strataLevel == 0) &&
                 metadata >= 8   );
     }
+
+    @SuppressWarnings("unused")
     public static boolean glassLike(Block block, int ignoredMetadata) {
         return (   (block instanceof BlockGlass)
                 || (block instanceof BlockGlowStone)
