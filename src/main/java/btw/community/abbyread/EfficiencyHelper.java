@@ -40,7 +40,6 @@ public class EfficiencyHelper {
                 return true;
             }
             if (block instanceof BlockGrass && (((BlockGrass) block).isSparse(metadata))) {
-                System.out.println("Found Sparse Grass Block");
                 return true;
             }
             if (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(metadata))  {

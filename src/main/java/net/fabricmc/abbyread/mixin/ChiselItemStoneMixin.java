@@ -4,7 +4,6 @@ import btw.community.abbyread.BlockBreakingOverrides;
 import btw.community.abbyread.EfficiencyHelper;
 import btw.community.abbyread.UniformEfficiencyModifier;
 import btw.item.items.ChiselItemStone;
-import btw.item.items.ChiselItemWood;
 import net.minecraft.src.Block;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
@@ -30,6 +29,7 @@ public class ChiselItemStoneMixin {
         accessor.setEfficiencyOnProperMaterial(original * effMod);
     }
 
+    // Override in the source code calls the original before
     @Inject(method = "getStrVsBlock", at = @At("HEAD"), cancellable = true)
     private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block,
                                         int x, int y, int z,
@@ -37,16 +37,18 @@ public class ChiselItemStoneMixin {
         if (stack == null || block == null) return;
 
         if (world != null) {
+            ToolItemAccessor accessor = (ToolItemAccessor) this;
+            float effProp = accessor.getEfficiencyOnProperMaterial();
+            float effMod = UniformEfficiencyModifier.VALUE;
+            float effBoost = effProp * effMod * 2;
             boolean effective = EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z);
             if (effective) {
                 EfficiencyHelper.setLastEffective(true);
-                ToolItemAccessor accessor = (ToolItemAccessor) this;
-                cir.setReturnValue(accessor.getEfficiencyOnProperMaterial());
+                cir.setReturnValue(effBoost);
             } else {
-                // Not effective -> maybe boosted fallback
+                float minimum = BlockBreakingOverrides.baselineEfficiency(block);
                 EfficiencyHelper.setLastEffective(false);
-                float baselineStrength = BlockBreakingOverrides.baselineEfficiency(block);
-                cir.setReturnValue(Math.max(baselineStrength, 1.0F));
+                cir.setReturnValue(Math.max(effProp, minimum));
             }
         }
     }

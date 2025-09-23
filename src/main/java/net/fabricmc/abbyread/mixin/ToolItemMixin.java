@@ -2,6 +2,7 @@ package net.fabricmc.abbyread.mixin;
 
 import btw.community.abbyread.BlockBreakingOverrides;
 import btw.community.abbyread.EfficiencyHelper;
+import btw.community.abbyread.UniformEfficiencyModifier;
 import btw.item.items.ChiselItemWood;
 import btw.item.items.ToolItem;
 import net.minecraft.src.Block;
@@ -24,6 +25,25 @@ public abstract class ToolItemMixin {
                                         CallbackInfoReturnable<Float> cir) {
         if (stack == null || block == null) return;
 
+        if (stack.getItem() instanceof ChiselItemWood) {
+            if (world != null) {
+                ToolItemAccessor accessor = (ToolItemAccessor) this;
+                float effProp = accessor.getEfficiencyOnProperMaterial();
+                float effMod = UniformEfficiencyModifier.VALUE;
+                float effBoost = effProp * effMod * 4;
+                boolean effective = EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z);
+                if (effective) {
+                    EfficiencyHelper.setLastEffective(true);
+                    cir.setReturnValue(effBoost);
+                } else {
+                    float minimum = BlockBreakingOverrides.baselineEfficiency(block);
+                    EfficiencyHelper.setLastEffective(false);
+                    cir.setReturnValue(Math.max(effProp, minimum));
+                }
+                return;
+            }
+        }
+
         if (world != null) {
             boolean effective = EfficiencyHelper.isToolItemEfficientVsBlock(stack, world, block, x, y, z);
             if (effective) {
@@ -37,7 +57,6 @@ public abstract class ToolItemMixin {
                 cir.setReturnValue(Math.max(baselineStrength, 1.0F));
             }
         }
-
     }
 
     @Inject(method = "onBlockDestroyed", at = @At("HEAD"), cancellable = true)
