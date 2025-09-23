@@ -153,10 +153,18 @@ public class EfficiencyHelper {
                     || (block instanceof GrassSlabBlock && !((GrassSlabBlock) block).isSparse(metadata))
                     || (block instanceof RoughStoneBlock && ((RoughStoneBlock) block).strataLevel == 0)
                     || (block instanceof OreBlock && ((OreBlock) block).getStrata(metadata) == 0)
-                    ||  block instanceof BlockStone
                     ||  block instanceof BlockLog
                     ||  block instanceof ChewedLogBlock
                     ||  block instanceof LogSpikeBlock
+                    ||  block instanceof BlockStone
+                    ||  block instanceof BlockSandStone
+                    ||  block instanceof SandstoneStairsBlock
+                    ||  block instanceof LooseCobblestoneBlock
+                    ||  block instanceof LooseCobblestoneSlabBlock
+                    ||  block instanceof LooseCobblestoneStairsBlock
+                    ||  block instanceof LooseBrickBlock
+                    ||  block instanceof LooseBrickSlabBlock
+                    ||  block instanceof LooseBrickStairsBlock
                     ||  block instanceof BlockGlass
                     ||  block instanceof BlockGlowStone
                     ||  block instanceof BlockIce
