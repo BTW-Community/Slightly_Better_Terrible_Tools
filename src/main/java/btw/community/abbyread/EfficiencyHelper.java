@@ -51,6 +51,7 @@ public class EfficiencyHelper {
         }
         return minimum;
     }
+
     public static float getStrVsBlock(ItemStack stack, World world, Block block,
                                       int x, int y, int z) {
         float minimum = 1F;
@@ -71,14 +72,35 @@ public class EfficiencyHelper {
                 // Pointy stick loosening blocks
                 if (stack.getItem() instanceof ChiselItemWood &&
                         EfficiencyHelper.loosenWithPointyStick(block, metadata)) {
-                    float boost = 6F;
+                    float boost = 8F;
                     System.out.println("Pointy stick is gonna get a * " + boost + " boost to loosen " + block + ".");
                     strength *= boost;
                     System.out.println("strength is " + strength + " now.");
                 }
+
+                // Sharp stone for grass cutting
                 if (stack.getItem() instanceof ChiselItemStone &&
                         cutWithSharpStone(block, metadata)) {
                     float boost = 6F;
+                    System.out.println("Sharp stone is gonna get a * " + boost + " boost to cut " + block + ".");
+                    strength *= boost;
+                    System.out.println("strength is " + strength + " now.");
+                }
+
+                // Sharp stone to mine the last bits of upper-strata stone faster
+                if (stack.getItem() instanceof ChiselItemStone &&
+                        sharpStoneRoughStoneExtra(block, metadata)) {
+                    float boost = 2F;  // halve the slowness to be less painful
+                    System.out.println("Sharp stone is gonna get a * " + boost + " boost to cut " + block + ".");
+                    strength *= boost;
+                    System.out.println("strength is " + strength + " now.");
+                }
+
+                // Sharp stone to be fast on glass-likes maybe
+                //    (only "proper material" boost implemented right now)
+                if (stack.getItem() instanceof ChiselItemStone &&
+                        sharpStoneRoughStoneExtra(block, metadata)) {
+                    float boost = 1F;  // KEEP DEFAULT UNLESS BOOST IS NEEDED
                     System.out.println("Sharp stone is gonna get a * " + boost + " boost to cut " + block + ".");
                     strength *= boost;
                     System.out.println("strength is " + strength + " now.");
@@ -106,6 +128,7 @@ public class EfficiencyHelper {
 
             if (        block instanceof BlockDirt
                     ||  block instanceof BlockStone
+                    || (block instanceof RoughStoneBlock && ((RoughStoneBlock) block).strataLevel == 0)
                     || (block instanceof DirtSlabBlock && metadata == DIRTSLAB_DIRT)
                     || (block instanceof BlockGrass && ((BlockGrass) block).isSparse(metadata))
                     || (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(metadata))
@@ -119,7 +142,6 @@ public class EfficiencyHelper {
                     ||  block instanceof BlockLog
                     ||  block instanceof LogSpikeBlock
                     ||  block instanceof ChewedLogBlock
-                    ||  block instanceof RoughStoneBlock
                     ||  block instanceof BlockGlass
                     ||  block instanceof BlockGlowStone
                     ||  block instanceof BlockIce
@@ -140,6 +162,7 @@ public class EfficiencyHelper {
                     || (block instanceof BlockGrass && !((BlockGrass) block).isSparse(metadata))
                     || (block instanceof GrassSlabBlock && !((GrassSlabBlock) block).isSparse(metadata))
                     || (block instanceof RoughStoneBlock && ((RoughStoneBlock) block).strataLevel == 0)
+                    ||  block instanceof BlockStone
                     ||  block instanceof BlockLog
                     ||  block instanceof ChewedLogBlock
                     ||  block instanceof LogSpikeBlock
@@ -183,12 +206,14 @@ public class EfficiencyHelper {
                 || (block instanceof GrassSlabBlock && !((GrassSlabBlock) block).isSparse(metadata))   );
     }
 
-    public static boolean chipWithSharpStone(Block block, int ignoredMetadata) {
-        return (   (block instanceof BlockLog)
-                || (block instanceof ChewedLogBlock)
-                || (block instanceof LogSpikeBlock)
-                || (block instanceof RoughStoneBlock && ((RoughStoneBlock) block).strataLevel == 0)
-                || (block instanceof BlockGlass)
+    // Check if it's the last (normally very slow) hits of upper-strata stone
+    public static boolean sharpStoneRoughStoneExtra(Block block, int metadata) {
+        return (block instanceof RoughStoneBlock &&
+                (((RoughStoneBlock) block).strataLevel == 0) &&
+                metadata >= 8   );
+    }
+    public static boolean glassLike(Block block, int ignoredMetadata) {
+        return (   (block instanceof BlockGlass)
                 || (block instanceof BlockGlowStone)
                 || (block instanceof BlockIce)
                 || (block instanceof BlockPane)
