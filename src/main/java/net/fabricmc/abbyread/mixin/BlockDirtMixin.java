@@ -16,7 +16,10 @@ public class BlockDirtMixin {
 
     @Inject(method = "onBlockDestroyedWithImproperTool", at = @At("HEAD"), cancellable = true)
     private void abby$overrideDisturbanceFromStoneShovel(World world, EntityPlayer player, int x, int y, int z, int metadata, CallbackInfo ci) {
-        if (player.inventory.getCurrentItem().getItem() instanceof ShovelItemStone) {
+        ItemStack stack = player.inventory.getCurrentItem();
+        if (stack == null) return;
+
+        if (stack.getItem() instanceof ShovelItemStone) {
 
             // Unrolled: super.onBlockDestroyedWithImproperTool(world, player, x, y, z, metadata);
             world.playAuxSFX( BTWEffectManager.BLOCK_DESTROYED_WITH_IMPROPER_TOOL_EFFECT_ID, x, y, z, world.getBlockId(x, y, z) + ( metadata << 12 ) );
