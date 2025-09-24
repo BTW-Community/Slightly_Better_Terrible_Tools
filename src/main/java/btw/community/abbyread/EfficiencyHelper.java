@@ -67,21 +67,21 @@ public class EfficiencyHelper {
 
                 // Pointy stick loosening blocks
                 if (stack.getItem() instanceof ChiselItemWood &&
-                        EfficiencyHelper.loosenWithPointyStick(block, metadata)) {
+                        EfficiencyHelper.firmDirt(block, metadata)) {
                     float boost = 8F;
                     strength *= boost;
                 } else
 
                 // Sharp stone for grass cutting
                 if (stack.getItem() instanceof ChiselItemStone &&
-                        cutWithSharpStone(block, metadata)) {
+                        fullGrass(block, metadata)) {
                     float boost = 6F;
                     strength *= boost;
                 } else
 
                 // Sharp stone to mine the last bits of upper-strata stone faster
                 if (stack.getItem() instanceof ChiselItemStone &&
-                        sharpStoneRoughStoneExtra(block, metadata)) {
+                        roughStoneExtra(block, metadata)) {
                     float boost = 2.5F;  // halve the slowness to be less painful
                     strength *= boost;
                 } else
@@ -110,15 +110,8 @@ public class EfficiencyHelper {
 
                 // Sharp stone to be fast on glass-likes maybe
                 //    (only "proper material" boost implemented right now)
-                if (stack.getItem() instanceof ChiselItemStone &&
-                        (   block instanceof BlockGlass
-                        ||  block instanceof BlockGlowStone
-                        ||  block instanceof BlockIce
-                        ||  block instanceof BlockPane
-                        ||  block instanceof BlockRedstoneLight
-                        ||  block instanceof LightBlock   )
-                ) {
-                    float boost = 2F;
+                if (glassLike(block, metadata) && stack.getItem() instanceof ChiselItemStone) {
+                    float boost = 4F;
                     strength *= boost;
                 }
             }
@@ -214,7 +207,7 @@ public class EfficiencyHelper {
     }
 
     // For extra efficiency boosts (more than efficiency on proper material *effMod)
-    public static boolean loosenWithPointyStick(Block block, int metadata) {
+    public static boolean firmDirt(Block block, int metadata) {
         final int DIRTSLAB_DIRT = 0;
         final int PACKED_EARTH = 6;
 
@@ -224,7 +217,7 @@ public class EfficiencyHelper {
                 || (block instanceof GrassSlabBlock && ((GrassSlabBlock) block).isSparse(metadata))
                 || (block instanceof AestheticOpaqueEarthBlock && metadata == PACKED_EARTH)   );
     }
-    public static boolean cutWithSharpStone(Block block, int metadata) {
+    public static boolean fullGrass(Block block, int metadata) {
         final int DIRTSLAB_GRASS = 1;
 
         return (   (block instanceof DirtSlabBlock && metadata == DIRTSLAB_GRASS)
@@ -233,7 +226,7 @@ public class EfficiencyHelper {
     }
 
     // Check if it's the last (normally very slow) hits of upper-strata stone
-    public static boolean sharpStoneRoughStoneExtra(Block block, int metadata) {
+    public static boolean roughStoneExtra(Block block, int metadata) {
         return (block instanceof RoughStoneBlock &&
                 (((RoughStoneBlock) block).strataLevel == 0) &&
                 metadata >= 8   );
