@@ -1,6 +1,7 @@
 package net.fabricmc.abbyread.mixin;
 
 import btw.item.items.ToolItem;
+import net.minecraft.src.EnumToolMaterial;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -18,5 +19,11 @@ public interface ToolItemAccessor {
     float getEfficiencyOnProperMaterial();
 
     @Accessor(remap = false)
-    public void setEfficiencyOnProperMaterial(float efficiencyOnProperMaterial);
+    void setEfficiencyOnProperMaterial(float efficiencyOnProperMaterial);
+
+    @Accessor(remap = false)
+    EnumToolMaterial getToolMaterial();
+
+    @Accessor(remap = false)
+    void setToolMaterial(EnumToolMaterial toolMaterial);
 }

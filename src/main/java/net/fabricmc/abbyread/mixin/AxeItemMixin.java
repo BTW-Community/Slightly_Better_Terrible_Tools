@@ -13,12 +13,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AxeItem.class)
 public class AxeItemMixin {
 
+    // Ensure damage is calculated correctly
+    // TODO: make this an either/or situation favoring "effective" state (for damage)
     @Inject(method = "isToolTypeEfficientVsBlockType", at = @At("RETURN"), remap = false)
     private void abbyread$tellHelper(Block block, CallbackInfoReturnable<Boolean> cir) {
         EfficiencyHelper.setLastEffective(cir.getReturnValue());
     }
     @Inject(method = "canHarvestBlock", at = @At("RETURN"), remap = false)
     private void abbyread$tellHelper2(ItemStack stack, World world, Block block, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
-        EfficiencyHelper.setLastEffective(cir.getReturnValue());
+        if (stack.getItem().itemID == AxeItem.axeStone.itemID ||
+            stack.getItem().itemID == AxeItem.axeGold.itemID) {
+            EfficiencyHelper.setLastEffective(true);
+        } else {
+            EfficiencyHelper.setLastEffective(cir.getReturnValue());
+        }
     }
 }

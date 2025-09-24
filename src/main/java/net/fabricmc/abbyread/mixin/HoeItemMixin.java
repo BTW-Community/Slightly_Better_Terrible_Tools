@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(HoeItem.class)
 public class HoeItemMixin {
 
+    // Ensure damage is calculated correctly
     @Inject(method = "isToolTypeEfficientVsBlockType", at = @At("RETURN"), remap = false)
     private void abbyread$tellHelper(Block block, CallbackInfoReturnable<Boolean> cir) {
         EfficiencyHelper.setLastEffective(cir.getReturnValue());

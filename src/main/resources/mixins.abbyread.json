@@ -15,11 +15,13 @@
     "ChiselItemWoodMixin",
     "EntityPlayerMixin",
     "HoeItemMixin",
+    "ItemAccessor",
     "ItemStackMixin",
     "MyceliumBlockMixin",
     "PickaxeItemMixin",
     "PickaxeItemSteelMixin",
     "ShovelItemMixin",
+    "ShovelItemStoneMixin",
     "ToolItemAccessor",
     "ToolItemMixin"
   ],
