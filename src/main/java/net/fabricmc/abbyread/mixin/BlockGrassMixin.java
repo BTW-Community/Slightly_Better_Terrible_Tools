@@ -5,10 +5,9 @@ import btw.client.fx.BTWEffectManager;
 import btw.item.BTWItems;
 import btw.item.items.ChiselItemStone;
 import btw.item.items.ChiselItemWood;
+import btw.item.items.ShovelItemStone;
 import btw.item.util.ItemUtils;
-import net.minecraft.src.BlockGrass;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.World;
+import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,6 +29,19 @@ public abstract class BlockGrassMixin {
             world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
         }
         ci.cancel();
+    }
+
+    @Inject(method = "onBlockDestroyedWithImproperTool", at = @At("HEAD"), cancellable = true)
+    private void abby$overrideDisturbanceFromStoneShovel(World world, EntityPlayer player, int x, int y, int z, int metadata, CallbackInfo ci) {
+        if (player.inventory.getCurrentItem().getItem() instanceof ShovelItemStone) {
+
+            // Unrolled: super.onBlockDestroyedWithImproperTool(world, player, x, y, z, metadata);
+            world.playAuxSFX( BTWEffectManager.BLOCK_DESTROYED_WITH_IMPROPER_TOOL_EFFECT_ID, x, y, z, world.getBlockId(x, y, z) + ( metadata << 12 ) );
+            ((Block)(Object)this).dropComponentItemsOnBadBreak(world, x, y, z, metadata, 1F);
+
+            ci.cancel();
+            // Skips the call to onDirtDugWithImproperTool, which would loosen neighboring blocks.
+        }
     }
 
     @Inject(
