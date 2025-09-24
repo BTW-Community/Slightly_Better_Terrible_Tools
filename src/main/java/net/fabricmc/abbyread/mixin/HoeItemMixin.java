@@ -1,18 +1,17 @@
 package net.fabricmc.abbyread.mixin;
 
 import btw.community.abbyread.EfficiencyHelper;
-import btw.item.items.AxeItem;
+import btw.item.items.HoeItem;
 import net.minecraft.src.Block;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(AxeItem.class)
-public class AxeItemMixin {
-
+@Mixin(HoeItem.class)
+public class HoeItemMixin {
     @Inject(method = "isToolTypeEfficientVsBlockType", at = @At("HEAD"), remap = false)
     private void abbyread$additionalEfficiencyChecks(Block block, CallbackInfoReturnable<Boolean> cir) {
-        if (block.blockMaterial.getAxesEfficientOn() || block.areAxesEffectiveOn()) EfficiencyHelper.setLastEffective(true);
+        if (block.areHoesEffectiveOn()) EfficiencyHelper.setLastEffective(true);
     }
 }
