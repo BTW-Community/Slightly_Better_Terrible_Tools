@@ -70,27 +70,55 @@ public class EfficiencyHelper {
                         EfficiencyHelper.loosenWithPointyStick(block, metadata)) {
                     float boost = 8F;
                     strength *= boost;
-                }
+                } else
 
                 // Sharp stone for grass cutting
                 if (stack.getItem() instanceof ChiselItemStone &&
                         cutWithSharpStone(block, metadata)) {
                     float boost = 6F;
                     strength *= boost;
-                }
+                } else
 
                 // Sharp stone to mine the last bits of upper-strata stone faster
                 if (stack.getItem() instanceof ChiselItemStone &&
                         sharpStoneRoughStoneExtra(block, metadata)) {
                     float boost = 2.5F;  // halve the slowness to be less painful
                     strength *= boost;
-                }
+                } else
+
+                // Sharp stone Sandstone boost
+                if (stack.getItem() instanceof ChiselItemStone &&
+                        (   block instanceof BlockSandStone
+                        ||  block instanceof SandstoneStairsBlock   )
+                ) {
+                    float boost = 4F;
+                    strength *= boost;
+                } else
+
+                //  Sharp stone loose and hard efficiency boost
+                if (stack.getItem() instanceof ChiselItemStone &&
+                        (   block instanceof LooseCobblestoneBlock
+                                ||  block instanceof LooseCobblestoneSlabBlock
+                                ||  block instanceof LooseCobblestoneStairsBlock
+                                ||  block instanceof LooseBrickBlock
+                                ||  block instanceof LooseBrickSlabBlock
+                                ||  block instanceof LooseBrickStairsBlock   )
+                ) {
+                    float boost = 2F;
+                    strength *= boost;
+                } else
 
                 // Sharp stone to be fast on glass-likes maybe
                 //    (only "proper material" boost implemented right now)
                 if (stack.getItem() instanceof ChiselItemStone &&
-                        sharpStoneRoughStoneExtra(block, metadata)) {
-                    float boost = 1F;  // KEEP DEFAULT UNLESS BOOST IS NEEDED
+                        (   block instanceof BlockGlass
+                        ||  block instanceof BlockGlowStone
+                        ||  block instanceof BlockIce
+                        ||  block instanceof BlockPane
+                        ||  block instanceof BlockRedstoneLight
+                        ||  block instanceof LightBlock   )
+                ) {
+                    float boost = 2F;
                     strength *= boost;
                 }
             }
