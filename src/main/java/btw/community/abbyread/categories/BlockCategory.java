@@ -1,21 +1,58 @@
 package btw.community.abbyread.categories;
 
 public enum BlockCategory {
+    // Block shapes
+    CUBE,
+    SLAB,
+    STAIR,
+    GROUNDCOVER,
+
+    // Dirtlike tags
     DIRTLIKE,
-    DIRTLIKE_LOOSE,
-    DIRTLIKE_FIRM,
-    DIRTLIKE_PACKED,
-    GRASSLIKE,
-    GRASSLIKE_SPARSE,
-    GRASSLIKE_FULL,
+    DIRT,
     SAND,
     GRAVEL,
-    SNOW_BLOCK,
-    GROUNDCOVER,
-    GROUNDCOVER_SNOW,
-    LOGLIKE,
-    LOGLIKE_BARK,
-    LOGLIKE_SAPWOOD,
-    GLASSLIKE,
-    STONELIKE
+    LOOSE,
+    FIRM,
+    PACKED,
+
+    // Grass tags
+    GRASSLIKE,
+    GRASS,
+    SPARSE,
+    LUSH,
+
+    // Wood tags
+    ASH,
+    LOG,
+    BARK,
+    TIMBER,
+
+    // Stone-like tags
+    STONE,
+    CRACKED,
+    ROUGH,
+    STRATA_0,
+    STRATA_1,
+    STRATA_2,
+    STRATA_3,
+    ORE,
+    IRON,
+    COAL,
+    DIAMOND,
+    EMERALD,
+    GOLD,
+    REDSTONE,
+
+    // Whole vs. combined
+    PURE,
+    MIXED,
+
+    // Cold tags
+    SNOW,
+    ICE,
+
+    // Glass-like tags
+    GLASS,
+    SHATTERABLE,
 }
