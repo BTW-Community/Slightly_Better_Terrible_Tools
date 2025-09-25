@@ -1,4 +1,4 @@
-package net.fabricmc.abbyread.mixin;
+package btw.community.abbyread.sbtt.oldMixins;
 
 import btw.item.items.ToolItem;
 import net.minecraft.src.EnumToolMaterial;

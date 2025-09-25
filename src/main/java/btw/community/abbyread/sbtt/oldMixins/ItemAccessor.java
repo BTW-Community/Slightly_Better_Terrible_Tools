@@ -1,4 +1,4 @@
-package net.fabricmc.abbyread.mixin;
+package btw.community.abbyread.sbtt.oldMixins;
 
 import net.minecraft.src.Item;
 import org.spongepowered.asm.mixin.Mixin;

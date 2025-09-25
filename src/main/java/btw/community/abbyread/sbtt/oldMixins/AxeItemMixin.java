@@ -1,4 +1,4 @@
-package net.fabricmc.abbyread.mixin;
+package btw.community.abbyread.sbtt.oldMixins;
 
 import btw.community.abbyread.EfficiencyHelper;
 import btw.item.items.AxeItem;

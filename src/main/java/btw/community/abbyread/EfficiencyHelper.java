@@ -3,7 +3,7 @@ package btw.community.abbyread;
 import btw.block.blocks.*;
 import btw.item.items.ChiselItemStone;
 import btw.item.items.ChiselItemWood;
-import net.fabricmc.abbyread.mixin.ToolItemAccessor;
+import btw.community.abbyread.sbtt.oldMixins.ToolItemAccessor;
 import net.minecraft.src.*;
 
 // Important notes:
