@@ -148,6 +148,7 @@ public class ItemInWorldManagerMixin {
     private void onOnBlockClicked(int par1, int par2, int par3, int par4, CallbackInfo ci) {
         ItemInWorldManager self = (ItemInWorldManager) (Object) this;
 
+        System.out.println("ItemInWorldManager.onBlockClicked() called");
         // if (!this.gameType.isAdventure() || this.thisPlayerMP.isCurrentToolAdventureModeExempt(par1, par2, par3))
         if (!gameType.isAdventure() || thisPlayerMP.isCurrentToolAdventureModeExempt(par1, par2, par3)) {
             // if (this.isCreative())
@@ -216,6 +217,7 @@ public class ItemInWorldManagerMixin {
     private void onUncheckedTryHarvestBlock(int par1, int par2, int par3, CallbackInfo ci) {
         ItemInWorldManager self = (ItemInWorldManager) (Object) this;
 
+        System.out.println("ItemInWorldManager.uncheckedTryHarvestBlock() called");
         // if (par1 == this.partiallyDestroyedBlockX && par2 == this.partiallyDestroyedBlockY && par3 == this.partiallyDestroyedBlockZ)
         if (par1 == partiallyDestroyedBlockX && par2 == partiallyDestroyedBlockY && par3 == partiallyDestroyedBlockZ) {
             // int var4 = this.curblockDamage - this.initialDamage;
@@ -273,7 +275,7 @@ public class ItemInWorldManagerMixin {
     @Inject(method = "cancelDestroyingBlock", at = @At("HEAD"), cancellable = true)
     private void onCancelDestroyingBlock(int par1, int par2, int par3, CallbackInfo ci) {
         ItemInWorldManager self = (ItemInWorldManager) (Object) this;
-
+        System.out.println("ItemInWorldManager.cancelDestroyingBlock called.");
         // this.isDestroyingBlock = false;
         isDestroyingBlock = false;
 
@@ -286,6 +288,7 @@ public class ItemInWorldManagerMixin {
 
     @Inject(method = "removeBlock", at = @At("HEAD"), cancellable = true)
     private void onRemoveBlock(int par1, int par2, int par3, CallbackInfoReturnable<Boolean> cir) {
+        System.out.println("ItemInWorldManager.removeBlock called.");
         ItemInWorldManager self = (ItemInWorldManager) (Object) this;
 
         // Block var4 = Block.blocksList[this.theWorld.getBlockId(par1, par2, par3)];
@@ -318,6 +321,7 @@ public class ItemInWorldManagerMixin {
     private void onTryHarvestBlock(int par1, int par2, int par3, CallbackInfoReturnable<Boolean> cir) {
         ItemInWorldManager self = (ItemInWorldManager) (Object) this;
 
+        System.out.println("ItemInWorldManager.tryHarvestBlock() called");
         // if (this.gameType.isAdventure() && !this.thisPlayerMP.isCurrentToolAdventureModeExempt(par1, par2, par3))
         if (gameType.isAdventure() && !thisPlayerMP.isCurrentToolAdventureModeExempt(par1, par2, par3)) {
             // return false;
@@ -382,6 +386,7 @@ public class ItemInWorldManagerMixin {
     private void onTryUseItem(EntityPlayer par1EntityPlayer, World par2World, ItemStack par3ItemStack, CallbackInfoReturnable<Boolean> cir) {
         ItemInWorldManager self = (ItemInWorldManager) (Object) this;
 
+        System.out.println("ItemInWorldManager.tryUseItem() called");
         // int var4 = par3ItemStack.stackSize;
         int originalStackSize = par3ItemStack.stackSize;
 
@@ -434,6 +439,8 @@ public class ItemInWorldManagerMixin {
     private void onActivateBlockOrUseItem(EntityPlayer par1EntityPlayer, World par2World, ItemStack par3ItemStack, int par4, int par5, int par6, int par7, float par8, float par9, float par10, CallbackInfoReturnable<Boolean> cir) {
         ItemInWorldManager self = (ItemInWorldManager) (Object) this;
 
+
+        System.out.println("ItemInWorldManager.activateBlockOrUseItem() called");
         // int var11;
         int blockId;
 
