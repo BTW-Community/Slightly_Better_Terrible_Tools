@@ -4,27 +4,8 @@
   "package": "net.fabricmc.abbyread.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    /*
-    "btw.community.abbyread.sbtt.oldMixins.AxeItemMixin",
-    "btw.community.abbyread.sbtt.oldMixins.BattleAxeItemMixin",
-    "btw.community.abbyread.sbtt.oldMixins.BlockDirtMixin",
-    "btw.community.abbyread.sbtt.oldMixins.BlockGrassMixin",
-    "btw.community.abbyread.sbtt.oldMixins.BlockMixin",
-    "btw.community.abbyread.sbtt.oldMixins.BlockMyceliumMixin",
-    "btw.community.abbyread.sbtt.oldMixins.ChiselItemMixin",
-    "btw.community.abbyread.sbtt.oldMixins.ChiselItemStoneMixin",
-    "btw.community.abbyread.sbtt.oldMixins.ChiselItemWoodMixin",
-    "btw.community.abbyread.sbtt.oldMixins.EntityPlayerMixin",
-    "btw.community.abbyread.sbtt.oldMixins.HoeItemMixin",
-    "btw.community.abbyread.sbtt.oldMixins.ItemAccessor",
-    "btw.community.abbyread.sbtt.oldMixins.ItemStackMixin",
-    "btw.community.abbyread.sbtt.oldMixins.MyceliumBlockMixin",
-    "btw.community.abbyread.sbtt.oldMixins.PickaxeItemMixin",
-    "btw.community.abbyread.sbtt.oldMixins.PickaxeItemSteelMixin",
-    "btw.community.abbyread.sbtt.oldMixins.ShovelItemMixin",
-    "btw.community.abbyread.sbtt.oldMixins.ShovelItemStoneMixin",
-    "btw.community.abbyread.sbtt.oldMixins.ToolItemAccessor",
-    "btw.community.abbyread.sbtt.oldMixins.ToolItemMixin" */
+    "ItemInWorldManagerAccessor",
+    "ItemInWorldManagerMixin"
   ],
   "client": [
   ],

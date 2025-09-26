@@ -18,26 +18,30 @@ public class BlockCategories {
         Set<BlockCategory> categories = new HashSet<>();
 
         if (block == Block.dirt) {
+            categories.add(BlockCategory.CUBE);
             categories.add(BlockCategory.DIRTLIKE);
-            categories.add(BlockCategory.DIRTLIKE_FIRM);
+            categories.add(BlockCategory.DIRT);
         }
 
         if (block == BTWBlocks.looseDirt) {
+            categories.add(BlockCategory.CUBE);
             categories.add(BlockCategory.DIRTLIKE);
-            categories.add(BlockCategory.DIRTLIKE_LOOSE);
-            categories.add(BlockCategory.LOOSE_BLOCK);
+            categories.add(BlockCategory.LOOSE);
         }
 
         // Fixed: call isSparse on the instance, not the class
         if (block instanceof BlockGrass && ((BlockGrass) block).isSparse(meta)) {
-            categories.add(BlockCategory.GRASSLIKE);
-            categories.add(BlockCategory.GRASSLIKE_SPARSE);
+            categories.add(BlockCategory.CUBE);
+            categories.add(BlockCategory.GRASS);
+            categories.add(BlockCategory.SPARSE);
+            categories.add(BlockCategory.DIRTLIKE);
         }
 
         // Optional: add full grass case
         if (block instanceof BlockGrass && !((BlockGrass) block).isSparse(meta)) {
-            categories.add(BlockCategory.GRASSLIKE);
-            categories.add(BlockCategory.GRASSLIKE_FULL);
+            categories.add(BlockCategory.CUBE);
+            categories.add(BlockCategory.GRASS);
+            categories.add(BlockCategory.LUSH);
         }
 
         return categories;

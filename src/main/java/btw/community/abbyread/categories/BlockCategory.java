@@ -23,10 +23,11 @@ public enum BlockCategory {
     LUSH,
 
     // Wood tags
-    ASH,
     LOG,
     BARK,
     TIMBER,
+    BURNING,
+    ASH,
 
     // Stone-like tags
     STONE,
@@ -36,6 +37,10 @@ public enum BlockCategory {
     STRATA_1,
     STRATA_2,
     STRATA_3,
+
+    // Whole vs. combined
+    PURE,
+    MIXED,
     ORE,
     IRON,
     COAL,
@@ -44,10 +49,6 @@ public enum BlockCategory {
     GOLD,
     REDSTONE,
 
-    // Whole vs. combined
-    PURE,
-    MIXED,
-
     // Cold tags
     SNOW,
     ICE,
@@ -55,4 +56,5 @@ public enum BlockCategory {
     // Glass-like tags
     GLASS,
     SHATTERABLE,
+    LUMINOUS
 }
