@@ -4,6 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import net.minecraft.src.ItemInWorldManager;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(ItemInWorldManager.class)
 public interface ItemInWorldManagerAccessor {
@@ -79,4 +80,7 @@ public interface ItemInWorldManagerAccessor {
 
     @Accessor("partiallyDestroyedBlockZ")
     void setPartiallyDestroyedBlockZ(int value);
+
+    @Invoker("tryHarvestBlock")
+    boolean invokeTryHarvestBlock(int x, int y, int z);
 }
