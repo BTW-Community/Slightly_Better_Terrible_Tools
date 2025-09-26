@@ -1,4 +1,4 @@
-package btw.community.abbyread;
+package btw.community.abbyread.sbtt;
 
 import btw.AddonHandler;
 import btw.BTWAddon;

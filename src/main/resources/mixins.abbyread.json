@@ -4,10 +4,19 @@
   "package": "net.fabricmc.abbyread.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ItemInWorldManagerAccessor",
-    "ItemInWorldManagerMixin"
+    "BlockDirtMixin",
+    "BlockGrassMixin",
+    "BlockMixin",
+    "BlockMyceliumMixin",
+    "ChiselItemWoodMixin",
+    "ItemAccessor",
+    "ItemStackMixin",
+    "MyceliumBlockMixin",
+    "ShovelItemStoneMixin"
   ],
   "client": [
+    "GuiMainMenuMixin",
+    "GuiWinGameMixin"
   ],
   "injectors": {
     "defaultRequire": 1

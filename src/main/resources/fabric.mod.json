@@ -12,14 +12,14 @@
     "sources": "https://github.com/abbyread/BTW-SlightlyBetterTerribleTools"
   },
   "license": "0BSD",
-  "icon": "assets/ttrb/icon.png",
+  "icon": "assets/abbyread/sbtt/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
       "net.fabricmc.abbyread.SBTTMod"
     ],
     "btw:addon": [
-      "btw.community.abbyread.SlightlyBetterTerribleTools"
+      "btw.community.abbyread.sbtt.SlightlyBetterTerribleTools"
     ]
   },
   "custom": {

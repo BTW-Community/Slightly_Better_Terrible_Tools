@@ -1,4 +1,4 @@
-package btw.community.abbyread.sbtt.oldMixins;
+package net.fabricmc.abbyread.mixin;
 
 import btw.block.BTWBlocks;
 import btw.block.blocks.DirtSlabBlock;

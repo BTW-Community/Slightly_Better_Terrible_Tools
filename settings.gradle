@@ -21,3 +21,6 @@ gradle.rootProject {
 	version = version
 	description = description
 }
+include 'ToolEffectiveness'
+include 'PreventWastedUses'
+
