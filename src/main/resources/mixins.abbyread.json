@@ -10,6 +10,7 @@
     "BlockMyceliumMixin",
     "ChiselItemWoodMixin",
     "ItemAccessor",
+    "ItemMixin",
     "ItemStackMixin",
     "MyceliumBlockMixin",
     "ShovelItemStoneMixin"

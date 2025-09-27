@@ -4,7 +4,7 @@ import btw.AddonHandler;
 import btw.BTWAddon;
 
 public class SlightlyBetterTerribleTools extends BTWAddon {
-    private final float effMod = EfficiencyHelper.effMod;
+    private final float effMod = Efficiency.modifier;
     private final String percentage = String.format("%.0f%%", effMod * 100 - 100);
     public SlightlyBetterTerribleTools() {
         super();

@@ -2,11 +2,9 @@ package btw.community.abbyread.categories;
 
 import btw.block.blocks.AestheticOpaqueEarthBlock;
 import btw.block.blocks.DirtSlabBlock;
-import btw.community.abbyread.categories.BlockCategory;
 import net.minecraft.src.Block;
 import net.minecraft.src.BlockGrass;
 import btw.block.BTWBlocks;
-import net.minecraft.src.World;
 
 import java.util.HashSet;
 import java.util.Set;

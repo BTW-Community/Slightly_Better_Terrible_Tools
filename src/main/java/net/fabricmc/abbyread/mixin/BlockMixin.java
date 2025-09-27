@@ -4,9 +4,13 @@ import btw.block.BTWBlocks;
 import btw.block.blocks.DirtSlabBlock;
 import btw.block.blocks.GrassSlabBlock;
 import btw.client.fx.BTWEffectManager;
+import btw.community.abbyread.categories.BlockCategories;
+import btw.community.abbyread.categories.BlockCategory;
+import btw.community.abbyread.sbtt.Efficiency;
 import btw.item.items.ChiselItemStone;
 import btw.item.items.ChiselItemWood;
 import net.minecraft.src.Block;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
 import org.spongepowered.asm.mixin.Final;
@@ -15,6 +19,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Set;
 
 @Mixin(Block.class)
 public class BlockMixin {
@@ -95,6 +101,27 @@ public class BlockMixin {
                 }
                 cir.setReturnValue(true);
             }
+        }
+    }
+
+    @Inject(
+            method = "getPlayerRelativeBlockHardness",
+            at = @At("RETURN"),
+            cancellable = true
+    )
+    private void abbyread$boostLooseBlocks(EntityPlayer player, World world, int x, int y, int z, CallbackInfoReturnable<Float> cir) {
+        Block self = (Block)(Object)this;
+        int meta = world.getBlockMetadata(x, y, z);
+
+        Set<BlockCategory> cats = BlockCategories.of(self, meta);
+        if (cats.contains(BlockCategory.LOOSE)) {
+            float base = cir.getReturnValue();
+            cir.setReturnValue(base * Efficiency.modifier * 2);
+        }
+
+        if (cats.contains(BlockCategory.LOG)) {
+            float base = cir.getReturnValue();
+            cir.setReturnValue(base * Efficiency.modifier * 2);
         }
     }
 }
