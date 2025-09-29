@@ -14,12 +14,12 @@ public enum BlockCategory {
     GRAVEL,
     LOOSE,
     FIRM,
-    PACKED,
+    PACKED_EARTH,
 
     // Grass tags
-    GRASSLIKE,
     GRASS,
     SPARSE,
+    STATICALLY_SPARSE,
     LUSH,
 
     // Wood tags
