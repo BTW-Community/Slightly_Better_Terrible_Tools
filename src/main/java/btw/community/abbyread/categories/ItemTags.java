@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Field;
 import java.util.*;
 
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class ItemTags {
 
     // ===== Explicitly mapped items =====
@@ -82,6 +83,14 @@ public class ItemTags {
     public static boolean isNot(ItemStack stack, ItemTag tag) {
         Set<ItemTag> stackTags = getTags(stack);
         return !stackTags.contains(tag);
+    }
+
+    public static boolean isNotAny(ItemStack stack, ItemTag... tags) {
+        return  !isAny(stack, tags);
+    }
+
+    public static boolean isNotAll(ItemStack stack, ItemTag... tags) {
+        return  !isAll(stack, tags);
     }
 
     public static boolean isAny(ItemStack stack, ItemTag... tags) {

@@ -50,10 +50,52 @@ public class BlockTags {
     }
 
     private static final Set<Block> CUBE_BLOCKS = Set.of(
+            Block.cobblestone,
             Block.dirt,
-            BTWBlocks.looseDirt,
             Block.grass,
-            BTWBlocks.looseSparseGrass
+            Block.gravel,
+            Block.mycelium,
+            Block.sand,
+            Block.stone,
+            BTWBlocks.creeperOysterBlock,
+            BTWBlocks.looseBrick,
+            BTWBlocks.looseCobblestone,
+            BTWBlocks.looseDirt,
+            BTWBlocks.looseNetherBrick,
+            BTWBlocks.looseSnow,
+            BTWBlocks.looseSparseGrass,
+            BTWBlocks.looseStoneBrick,
+            BTWBlocks.rottenFleshBlock,
+            BTWBlocks.stoneBrickDoubleSlab,
+            BTWBlocks.stoneDoubleSlab,
+            BTWBlocks.solidSnow,
+            BTWBlocks.spiderEyeBlock,
+            BTWBlocks.wickerBlock
+    );
+
+    private static final Set<Block> SLAB_BLOCKS = Set.of(
+            BTWBlocks.boneSlab,
+            BTWBlocks.cobblestoneSlab,
+            BTWBlocks.creeperOysterSlab,
+            BTWBlocks.dirtSlab,
+            BTWBlocks.grassSlab,
+            BTWBlocks.looseBrickSlab,
+            BTWBlocks.looseCobblestoneSlab,
+            BTWBlocks.looseDirtSlab,
+            BTWBlocks.looseNetherBrickSlab,
+            BTWBlocks.looseSnowSlab,
+            BTWBlocks.looseSparseGrassSlab,
+            BTWBlocks.looseStoneBrickSlab,
+            BTWBlocks.myceliumSlab,
+            BTWBlocks.rottenFleshSlab,
+            BTWBlocks.sandAndGravelSlab,
+            BTWBlocks.solidSnowSlab,
+            BTWBlocks.spiderEyeSlab,
+            BTWBlocks.stoneBrickSlab,
+            BTWBlocks.stoneSlab,
+            BTWBlocks.wickerSlab,
+            BTWBlocks.woolSlab,
+            BTWBlocks.woolSlabTop
     );
 
     private static final Set<Block> SPARSE_BLOCKS = Set.of(
@@ -109,29 +151,6 @@ public class BlockTags {
         if (block instanceof DirtSlabBlock)
             return metadata == DirtSlabBlock.SUBTYPE_PACKED_EARTH;
         return false;
-    }
-
-    // ===== Automatic tagging using reflection =====
-
-    private static final Logger LOGGER = LogManager.getLogger("BlockTags");
-
-    // Automatically populate the SLAB_BLOCKS Set by referencing the block name
-    private static final Set<Block> SLAB_BLOCKS;
-    static {
-        Set<Block> temp = new HashSet<>();
-        Field[] fields = BTWBlocks.class.getFields(); // all public static fields
-
-        for (Field field : fields) {
-            try {
-                Object value = field.get(null); // static field
-                if (value instanceof Block && field.getName().contains("Slab")) {
-                    temp.add((Block) value);
-                }
-            } catch (IllegalAccessException e) {
-                LOGGER.error("Failed to access BTWBlocks field: {}", field.getName(), e);
-            }
-        }
-        SLAB_BLOCKS = Set.copyOf(temp); // immutable
     }
 
     // ===== Public API =====
