@@ -19,8 +19,6 @@ public enum BlockCategory {
     // Grass tags
     GRASS,
     SPARSE,
-    STATICALLY_SPARSE,
-    LUSH,
 
     // Wood tags
     LOG,
