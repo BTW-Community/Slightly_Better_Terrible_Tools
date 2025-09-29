@@ -100,11 +100,11 @@ public class ItemTags {
         return true;
     }
 
-    public static boolean isThisButNotThese(ItemStack stack, ItemTag isTag, ItemTag... notTags) {
+    public static boolean isButNot(ItemStack stack, ItemTag isTag, ItemTag... notTags) {
         return is(stack, isTag) && !isAny(stack, notTags);
     }
 
-    // ===== Automatic discovery example =====
+    // ===== Automatic tagging using reflection =====
 
     private static final Logger LOGGER = LogManager.getLogger("ItemTags");
 

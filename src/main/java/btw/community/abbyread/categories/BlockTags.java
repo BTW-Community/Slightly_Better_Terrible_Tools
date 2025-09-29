@@ -111,7 +111,7 @@ public class BlockTags {
         return false;
     }
 
-    // ===== Somewhat confusing hacks =====
+    // ===== Automatic tagging using reflection =====
 
     private static final Logger LOGGER = LogManager.getLogger("BlockTags");
 
@@ -132,5 +132,44 @@ public class BlockTags {
             }
         }
         SLAB_BLOCKS = Set.copyOf(temp); // immutable
+    }
+
+    // ===== Public API =====
+
+    public static Set<BlockTag> getTags(Block block, int metadata) {
+        return of(block, metadata); // reuse your existing of() method
+    }
+
+    public static boolean is(Block block, int metadata, BlockTag tag) {
+        Set<BlockTag> blockTags = getTags(block, metadata);
+        return blockTags.contains(tag);
+    }
+
+    public static boolean isNot(Block block, int metadata, BlockTag... tags) {
+        Set<BlockTag> blockTags = getTags(block, metadata);
+        for (BlockTag tag : tags) {
+            if (blockTags.contains(tag)) return false;
+        }
+        return true;
+    }
+
+    public static boolean isAny(Block block, int metadata, BlockTag... tags) {
+        Set<BlockTag> blockTags = getTags(block, metadata);
+        for (BlockTag tag : tags) {
+            if (blockTags.contains(tag)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isAll(Block block, int metadata, BlockTag... tags) {
+        Set<BlockTag> blockTags = getTags(block, metadata);
+        for (BlockTag tag : tags) {
+            if (!blockTags.contains(tag)) return false;
+        }
+        return true;
+    }
+
+    public static boolean isButNot(Block block, int metadata, BlockTag isTag, BlockTag... notTags) {
+        return is(block, metadata, isTag) && !isAny(block, metadata, notTags);
     }
 }

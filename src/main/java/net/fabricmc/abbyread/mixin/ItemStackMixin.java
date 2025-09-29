@@ -40,7 +40,7 @@ public class ItemStackMixin {
             if (didAffectTool) {
                 player.addStat(StatList.objectUseStats[self.itemID], 1);
             }
-
+/*
             // Optional: log for debugging
             System.out.printf(
                     "[Tool Check] %s vs %s at (%d,%d,%d): tool=%.3f, bare=%.3f, x%.2f%n",
@@ -49,6 +49,8 @@ public class ItemStackMixin {
                     x, y, z,
                     toolSpeed, bareHandSpeed, multiplier
             );
+
+ */
         }
 
         // Cancel original to prevent double-calling
