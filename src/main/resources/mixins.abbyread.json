@@ -13,6 +13,8 @@
     "ItemMixin",
     "ItemStackMixin",
     "MyceliumBlockMixin",
+    "RoughStoneBlock_BlockMixin",
+    "RoughStoneBlockMixin",
     "ShovelItemStoneMixin"
   ],
   "client": [

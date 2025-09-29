@@ -74,7 +74,7 @@ public abstract class BlockGrassMixin {
         // --- Sharp stone converts full grass ---
         if (stack != null && stack.getItem() instanceof ChiselItemStone && !(this.isSparse(world.getBlockMetadata(x, y, z)))) {
             final int SPARSE = 1;
-            final int VERY_LOW_HEMP_SEED_CHANCE = 2000;
+            final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
             if (!world.isRemote) {
                 world.setBlockMetadataWithNotify(x, y, z, SPARSE);
                 world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);

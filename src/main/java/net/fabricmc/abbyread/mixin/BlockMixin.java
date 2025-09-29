@@ -35,6 +35,7 @@ public class BlockMixin {
             return;
         }
         if (stack.getItem() instanceof ChiselItemWood  && this.blockID == BTWBlocks.dirtSlab.blockID) {
+
             @SuppressWarnings("ConstantConditions")
             DirtSlabBlock slab = (DirtSlabBlock) (Object) this;
             int subtype = slab.getSubtype(world, x, y, z);
@@ -96,6 +97,19 @@ public class BlockMixin {
             boolean sparse = slab.isSparse(world, x, y, z);
             if (sparse) {
                 world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirtSlab.blockID);
+                if (!world.isRemote) {
+                    world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
+                }
+                cir.setReturnValue(true);
+            }
+        }
+        if (stack.getItem() instanceof ChiselItemStone &&
+                this.blockID == BTWBlocks.dirtSlab.blockID) {
+            @SuppressWarnings("ConstantConditions")
+            DirtSlabBlock slab = (DirtSlabBlock) (Object) this;
+            int meta = slab.getSubtype(world, x, y, z);
+            if (meta == 1) {
+                world.setBlockAndMetadataWithNotify(x, y, z, BTWBlocks.dirtSlab.blockID, 0);
                 if (!world.isRemote) {
                     world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
                 }

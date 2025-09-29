@@ -53,7 +53,7 @@ public enum ItemCategory {
 
     // Weapon types
     WEAPON,
-    IMPROV_WEAPON, // e.g. tools used as weapons
+    IMPROVISED_WEAPON, // e.g. tools used as weapons
     CLUB,
     SWORD,
     BOW,

@@ -26,12 +26,13 @@ public class ItemMixin {
     private void abbyread$cutGrassWithSharpStone(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
         if (stack == null || block == null) return;
 
-        // Check if item is a CHISEL
+        // Check if item is a STONE CHISEL
         Set<ItemCategory> itemCats = ItemCategories.getCategories(stack);
         if (!itemCats.contains(ItemCategory.CHISEL) || !itemCats.contains(ItemCategory.STONE)) return;
 
-        // Check if block is DIRT-like
-        Set<BlockCategory> blockCats = BlockCategories.of(block, 0); // meta is ignored here; expand if needed
+        // Check if block is GRASS
+        int meta = world.getBlockMetadata(i, j, k);
+        Set<BlockCategory> blockCats = BlockCategories.of(block, meta);
         if (blockCats.contains(BlockCategory.GRASS)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier * 2);
@@ -55,7 +56,7 @@ public class ItemMixin {
         Set<BlockCategory> blockCats = BlockCategories.of(block, meta); // meta is ignored here; expand if needed
         if (blockCats.contains(BlockCategory.DIRTLIKE) && !blockCats.contains(BlockCategory.LOOSE)) {
             float base = cir.getReturnValue();
-            cir.setReturnValue(base * Efficiency.modifier * 2); // TODO: figure out why this isn't working
+            cir.setReturnValue(base * Efficiency.modifier * 2);
         }
     }
 }
