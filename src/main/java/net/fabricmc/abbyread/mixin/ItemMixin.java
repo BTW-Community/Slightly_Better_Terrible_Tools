@@ -1,9 +1,9 @@
 package net.fabricmc.abbyread.mixin;
 
-import btw.community.abbyread.categories.BlockCategories;
-import btw.community.abbyread.categories.BlockCategory;
-import btw.community.abbyread.categories.ItemCategories;
-import btw.community.abbyread.categories.ItemCategory;
+import btw.community.abbyread.categories.BlockTags;
+import btw.community.abbyread.categories.BlockTag;
+import btw.community.abbyread.categories.ItemTags;
+import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.sbtt.Efficiency;
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
@@ -27,13 +27,13 @@ public class ItemMixin {
         if (stack == null || block == null) return;
 
         // Check if item is a STONE CHISEL
-        Set<ItemCategory> itemCats = ItemCategories.getCategories(stack);
-        if (!itemCats.contains(ItemCategory.CHISEL) || !itemCats.contains(ItemCategory.STONE)) return;
+        Set<ItemTag> itemCats = ItemTags.getTags(stack);
+        if (!itemCats.contains(ItemTag.CHISEL) || !itemCats.contains(ItemTag.STONE)) return;
 
         // Check if block is GRASS
         int meta = world.getBlockMetadata(i, j, k);
-        Set<BlockCategory> blockCats = BlockCategories.of(block, meta);
-        if (blockCats.contains(BlockCategory.GRASS)) {
+        Set<BlockTag> blockCats = BlockTags.of(block, meta);
+        if (blockCats.contains(BlockTag.GRASS)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier * 2);
         }
@@ -48,13 +48,13 @@ public class ItemMixin {
         if (stack == null || block == null) return;
 
         // Check if item is a CHISEL
-        Set<ItemCategory> itemCats = ItemCategories.getCategories(stack);
-        if (!itemCats.contains(ItemCategory.CHISEL) || !itemCats.contains(ItemCategory.WOOD)) return;
+        Set<ItemTag> itemCats = ItemTags.getTags(stack);
+        if (!itemCats.contains(ItemTag.CHISEL) || !itemCats.contains(ItemTag.WOOD)) return;
 
         // Check if block is DIRT-like
         int meta = world.getBlockMetadata(i, j, k);
-        Set<BlockCategory> blockCats = BlockCategories.of(block, meta); // meta is ignored here; expand if needed
-        if (blockCats.contains(BlockCategory.DIRTLIKE) && !blockCats.contains(BlockCategory.LOOSE)) {
+        Set<BlockTag> blockCats = BlockTags.of(block, meta); // meta is ignored here; expand if needed
+        if (blockCats.contains(BlockTag.DIRTLIKE) && !blockCats.contains(BlockTag.LOOSE)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier * 2);
         }

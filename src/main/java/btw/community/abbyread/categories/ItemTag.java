@@ -1,6 +1,6 @@
 package btw.community.abbyread.categories;
 
-public enum ItemCategory {
+public enum ItemTag {
     // Misc
     NULL,
     UNHELPFUL,

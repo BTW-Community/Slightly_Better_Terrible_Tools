@@ -4,8 +4,8 @@ import btw.block.BTWBlocks;
 import btw.block.blocks.DirtSlabBlock;
 import btw.block.blocks.GrassSlabBlock;
 import btw.client.fx.BTWEffectManager;
-import btw.community.abbyread.categories.BlockCategories;
-import btw.community.abbyread.categories.BlockCategory;
+import btw.community.abbyread.categories.BlockTags;
+import btw.community.abbyread.categories.BlockTag;
 import btw.community.abbyread.sbtt.Efficiency;
 import btw.item.items.ChiselItemStone;
 import btw.item.items.ChiselItemWood;
@@ -127,13 +127,13 @@ public class BlockMixin {
         Block self = (Block)(Object)this;
         int meta = world.getBlockMetadata(x, y, z);
 
-        Set<BlockCategory> cats = BlockCategories.of(self, meta);
-        if (cats.contains(BlockCategory.LOOSE)) {
+        Set<BlockTag> cats = BlockTags.of(self, meta);
+        if (cats.contains(BlockTag.LOOSE)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier * 2);
         }
 
-        if (cats.contains(BlockCategory.LOG)) {
+        if (cats.contains(BlockTag.LOG)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier * 2);
         }

@@ -13,8 +13,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-// Handles static and metadata-based block categories
-public class BlockCategories {
+// Handles static and metadata-based block tags
+public class BlockTags {
 
     // ===== Static block sets =====
 
@@ -63,23 +63,23 @@ public class BlockCategories {
 
     // ===== Public method =====
 
-    public static Set<BlockCategory> of(Block block, int metadata) {
-        Set<BlockCategory> categories = new HashSet<>();
+    public static Set<BlockTag> of(Block block, int metadata) {
+        Set<BlockTag> tags = new HashSet<>();
 
-        // --- Static categories ---
-        if (DIRTLIKE_BLOCKS.contains(block)) categories.add(BlockCategory.DIRTLIKE);
-        if (LOOSE_BLOCKS.contains(block)) categories.add(BlockCategory.LOOSE);
-        if (DIRT_BLOCKS.contains(block)) categories.add(BlockCategory.DIRT);
-        if (CUBE_BLOCKS.contains(block)) categories.add(BlockCategory.CUBE);
-        if (SLAB_BLOCKS.contains(block)) categories.add(BlockCategory.SLAB);
+        // --- Static tags ---
+        if (DIRTLIKE_BLOCKS.contains(block)) tags.add(BlockTag.DIRTLIKE);
+        if (LOOSE_BLOCKS.contains(block)) tags.add(BlockTag.LOOSE);
+        if (DIRT_BLOCKS.contains(block)) tags.add(BlockTag.DIRT);
+        if (CUBE_BLOCKS.contains(block)) tags.add(BlockTag.CUBE);
+        if (SLAB_BLOCKS.contains(block)) tags.add(BlockTag.SLAB);
 
-        // --- Metadata-dependent categories ---
-        if (isDirt(block, metadata)) categories.add(BlockCategory.DIRT);
-        if (isGrass(block, metadata)) categories.add(BlockCategory.GRASS);
-        if (isSparse(block, metadata)) categories.add(BlockCategory.SPARSE);
-        if (isPackedEarth(block, metadata)) categories.add(BlockCategory.PACKED_EARTH);
+        // --- Metadata-dependent tags ---
+        if (isDirt(block, metadata)) tags.add(BlockTag.DIRT);
+        if (isGrass(block, metadata)) tags.add(BlockTag.GRASS);
+        if (isSparse(block, metadata)) tags.add(BlockTag.SPARSE);
+        if (isPackedEarth(block, metadata)) tags.add(BlockTag.PACKED_EARTH);
 
-        return categories;
+        return tags;
     }
 
     // ===== Metadata-dependent helper methods =====
@@ -113,7 +113,7 @@ public class BlockCategories {
 
     // ===== Somewhat confusing hacks =====
 
-    private static final Logger LOGGER = LogManager.getLogger("BlockCategories");
+    private static final Logger LOGGER = LogManager.getLogger("BlockTags");
 
     // Automatically populate the SLAB_BLOCKS Set by referencing the block name
     private static final Set<Block> SLAB_BLOCKS;

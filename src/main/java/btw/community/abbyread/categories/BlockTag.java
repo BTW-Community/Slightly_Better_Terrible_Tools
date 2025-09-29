@@ -1,6 +1,6 @@
 package btw.community.abbyread.categories;
 
-public enum BlockCategory {
+public enum BlockTag {
     // Block shapes
     CUBE,
     SLAB,
