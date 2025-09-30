@@ -12,6 +12,8 @@
     "ChiselItemStoneMixin",
     "ChiselItemWood_ToolItemMixin",
     "ChiselItemWoodMixin",
+    "ClubItem_ItemMixin",
+    "ClubItemMixin",
     "ItemAccessor",
     "ItemMixin",
     "ItemStackMixin",

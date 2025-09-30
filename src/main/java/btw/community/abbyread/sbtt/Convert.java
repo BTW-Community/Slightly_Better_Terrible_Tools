@@ -28,15 +28,9 @@ public class Convert {
             return BlockTags.is(block, meta, BlockTag.GRASS);
         }
 
-        // Allow firming-up loose dirtlikes using shovel right-click
-        /*
-        // I think canConvert and convert are for left-click block harvesting only.
-        // Using convert alone might prevent left-click but allow converting.
-        if (ItemTags.is(stack, ItemTag.SHOVEL)) {
-            return BlockTags.is(block, meta, BlockTag.LOOSE) &&
-                    (BlockTags.is(block, meta, BlockTag.DIRT) || BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE));
+        if (ItemTags.is(stack, ItemTag.CLUB)) {
+            return BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE);
         }
-        */
 
         return false;
     }
@@ -57,7 +51,14 @@ public class Convert {
             return sparsen(stack, block, meta, world, x, y, z, fromSide);
         }
 
-        // Firm-up loose dirtlikes using shovel right-click
+        // Firm-up loose dirtlikes slowly using club
+        if (ItemTags.is(stack, ItemTag.CLUB)) {
+            if (BlockTags.isAll(block, meta, BlockTag.LOOSE, BlockTag.DIRTLIKE)) {
+                return firm(stack, block, meta, world, x, y, z, fromSide);
+            }
+        }
+
+        // Firm-up loose dirtlikes instantly using shovel right-click
         if (ItemTags.is(stack, ItemTag.SHOVEL)) {
             if (BlockTags.isAll(block, meta, BlockTag.LOOSE, BlockTag.DIRTLIKE)) {
                 return firm(stack, block, meta, world, x, y, z, fromSide);

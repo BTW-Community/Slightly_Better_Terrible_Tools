@@ -1,5 +1,9 @@
 package net.fabricmc.abbyread.mixin;
 
+import btw.community.abbyread.categories.BlockTag;
+import btw.community.abbyread.categories.BlockTags;
+import btw.community.abbyread.categories.ItemTag;
+import btw.community.abbyread.categories.ItemTags;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -51,6 +55,16 @@ public class ItemStackMixin {
             );
 
  */
+        // Damage override for converting to firm using club (because it's slower than punching)
+        } else if (!world.isRemote && ItemTags.is(self, ItemTag.CLUB)) {
+            int meta = world.getBlockMetadata(x, y, z);
+            if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE)) {
+                player.addStat(StatList.objectUseStats[self.itemID], 1);
+                int itemDamage = 0;
+                if (ItemTags.is(self, ItemTag.WOOD)) itemDamage = 2;
+                if (ItemTags.is(self, ItemTag.BONE)) itemDamage = 1;
+                self.damageItem(itemDamage, player);
+            }
         }
 
         // Cancel original to prevent double-calling
