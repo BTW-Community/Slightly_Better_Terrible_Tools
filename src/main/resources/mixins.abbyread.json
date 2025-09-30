@@ -20,6 +20,7 @@
     "MyceliumBlockMixin",
     "RoughStoneBlock_BlockMixin",
     "RoughStoneBlockMixin",
+    "ShovelItem_ToolItemMixin",
     "ShovelItemStoneMixin",
     "ToolItemAccessor"
   ],

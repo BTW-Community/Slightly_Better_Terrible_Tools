@@ -21,5 +21,9 @@ public class ChiselItemStoneMixin {
             float strength = cir.getReturnValue();
             cir.setReturnValue(strength * Efficiency.modifier);
         }
+        if (BlockTags.is(block, meta, BlockTag.WEB)) {
+            float strength = cir.getReturnValue();
+            cir.setReturnValue(strength * Efficiency.modifier);
+        }
     }
 }

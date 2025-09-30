@@ -1,5 +1,6 @@
 package btw.community.abbyread.categories;
 
+@SuppressWarnings("unused")
 public enum BlockTag {
     // Block shapes
     CUBE,
@@ -55,5 +56,8 @@ public enum BlockTag {
     // Glass-like tags
     GLASS,
     SHATTERABLE,
-    LUMINOUS
+    LUMINOUS,
+
+    // Decoration
+    WEB
 }

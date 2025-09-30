@@ -24,7 +24,7 @@ public class LooseSparseGrassBlockMixin {
 
     @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
     private void abbyread$convertBlock(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir) {
-        if (stack == null || world.isRemote) return;
+        if (stack == null) return;
         Block block = (Block)(Object)this;
         int meta = world.getBlockMetadata(x, y, z);
         if (Convert.convert(stack, block, meta, world, x, y, z, fromSide)) {

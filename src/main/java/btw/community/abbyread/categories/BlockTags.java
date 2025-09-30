@@ -112,6 +112,7 @@ public class BlockTags {
         if (CUBE_BLOCKS.contains(block)) tags.add(BlockTag.CUBE);
         if (SLAB_BLOCKS.contains(block)) tags.add(BlockTag.SLAB);
         if (isFirm(block, metadata)) tags.add(BlockTag.FIRM);
+        if (block == Block.web || block == BTWBlocks.web) tags.add(BlockTag.WEB);
 
         // --- Metadata-dependent tags ---
         if (isDirt(block, metadata)) tags.add(BlockTag.DIRT);

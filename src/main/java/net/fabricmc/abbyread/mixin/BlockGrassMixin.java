@@ -15,8 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockGrass.class)
 public abstract class BlockGrassMixin {
 
-    @Shadow public abstract boolean isSparse(int metadata);
-
     @Inject(
         method = "onNeighborDirtDugWithImproperTool",
         at = @At("HEAD"),
@@ -57,7 +55,7 @@ public abstract class BlockGrassMixin {
 
     @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
     private void abbyread$convertBlock(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir) {
-        if (stack == null || world.isRemote) return;
+        if (stack == null) return;
         Block block = (Block)(Object)this;
         int meta = world.getBlockMetadata(x, y, z);
         if (Convert.convert(stack, block, meta, world, x, y, z, fromSide)) {

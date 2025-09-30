@@ -29,11 +29,12 @@ public class Convert {
         }
 
         // Allow firming-up loose dirtlikes using shovel right-click
-        /* // I think canConvert and convert are for left-click block harvesting only
+        /*
+        // I think canConvert and convert are for left-click block harvesting only.
+        // Using convert alone might prevent left-click but allow converting.
         if (ItemTags.is(stack, ItemTag.SHOVEL)) {
             return BlockTags.is(block, meta, BlockTag.LOOSE) &&
                     (BlockTags.is(block, meta, BlockTag.DIRT) || BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE));
-
         }
         */
 
@@ -57,8 +58,8 @@ public class Convert {
         }
 
         // Firm-up loose dirtlikes using shovel right-click
-        if (ItemTags.isAll(stack, ItemTag.SHOVEL)) {
-            if (BlockTags.is(block, meta, BlockTag.LOOSE) && BlockTags.is(block, meta, BlockTag.DIRTLIKE)) {
+        if (ItemTags.is(stack, ItemTag.SHOVEL)) {
+            if (BlockTags.isAll(block, meta, BlockTag.LOOSE, BlockTag.DIRTLIKE)) {
                 return firm(stack, block, meta, world, x, y, z, fromSide);
             }
         }
@@ -136,7 +137,7 @@ public class Convert {
         }
         if (block == BTWBlocks.looseSparseGrassSlab) {
             newBlock = BTWBlocks.grassSlab;
-            newMeta = 1; // 1: Sparse
+            newMeta = 2; // 2: Sparse
         }
 
         if (newBlock != null) {
@@ -152,7 +153,7 @@ public class Convert {
             }
 
             if (!world.isRemote && swapped) {
-                world.playAuxSFX(BTWEffectManager.BLOCK_PLACE_EFFECT_ID, x, y, z, 0);
+                world.playAuxSFX(BTWEffectManager.BLOCK_CONVERT_EFFECT_ID, x, y, z, 0);
             }
         }
 
