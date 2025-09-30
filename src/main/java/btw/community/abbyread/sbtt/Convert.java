@@ -153,7 +153,7 @@ public class Convert {
             }
 
             if (!world.isRemote && swapped) {
-                world.playAuxSFX(BTWEffectManager.BLOCK_CONVERT_EFFECT_ID, x, y, z, 0);
+                world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
             }
         }
 
@@ -204,7 +204,7 @@ public class Convert {
             else if (BlockTags.isAll(block, meta, BlockTag.LOOSE, BlockTag.SPARSE)) {
                 newBlock = BTWBlocks.looseDirtSlab;
             }
-            // LOOSE and FULLY_GROWN is not possible
+            // LOOSE while FULLY_GROWN is not possible
 
         }
 
