@@ -51,7 +51,6 @@ public class Convert {
         // Sparsen grass using sharp stone
         if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL) &&
                 BlockTags.is(block, meta, BlockTag.GRASS)) {
-            System.out.println("about to call sparsen.");
             return sparsen(stack, block, meta, world, x, y, z, fromSide);
         }
 
@@ -173,40 +172,34 @@ public class Convert {
         if (BlockTags.is(block, meta, BlockTag.CUBE)) {
             // firm fully-grown grass block → firm sparse grass block
             if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.FULLY_GROWN)) {
+                newBlock = block;
                 newMeta = 1; // 1: Sparse
-                newBlock = Block.grass;
-                System.out.println("Firm, fully-grown cube");
             }
             // firm sparse → firm dirt
             else if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.SPARSE)) {
                 newBlock = Block.dirt;
                 newMeta = 0; // dirt has no sparse variant
-                System.out.println("Firm, sparse cube");
             }
             // loose sparse grass → loose dirt
             else if (BlockTags.isAll(block, meta, BlockTag.LOOSE, BlockTag.SPARSE)) {
                 newBlock = BTWBlocks.looseDirt;
-                System.out.println("Loose, sparse cube");
             }
             // LOOSE and FULLY_GROWN is not possible
 
         } else if (BlockTags.is(block, meta, BlockTag.SLAB)) {
             // firm fully-grown grass slab → firm sparse grass slab
             if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.FULLY_GROWN)) {
-                newBlock = BTWBlocks.grassSlab;
-                newMeta = 1; // 1: Sparse
-                System.out.println("Firm, fully-grown slab");
+                newBlock = block;
+                newMeta = 2; // 2: Sparse
             }
             // firm sparse slab → firm dirt slab
             else if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.SPARSE)) {
                 newBlock = BTWBlocks.dirtSlab;
                 newMeta = 0; // no longer needs sparseness metadata value
-                System.out.println("Firm, sparse slab");
             }
             // loose sparse slab → loose dirt slab
             else if (BlockTags.isAll(block, meta, BlockTag.LOOSE, BlockTag.SPARSE)) {
                 newBlock = BTWBlocks.looseDirtSlab;
-                System.out.println("Loose, sparse slab");
             }
             // LOOSE and FULLY_GROWN is not possible
 
