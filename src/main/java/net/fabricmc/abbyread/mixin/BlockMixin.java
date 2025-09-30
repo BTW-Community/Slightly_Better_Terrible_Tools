@@ -9,11 +9,9 @@ import btw.community.abbyread.categories.BlockTag;
 import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.categories.ItemTags;
 import btw.community.abbyread.sbtt.Efficiency;
-import btw.community.abbyread.sbtt.Helper;
-import btw.item.items.ChiselItemStone;
+import btw.community.abbyread.sbtt.Convert;
 import btw.item.items.ChiselItemWood;
 import net.minecraft.src.*;
-import org.lwjgl.Sys;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -36,78 +34,57 @@ public class BlockMixin {
             return;
         }
 
-
         Block block = (Block)(Object) this;
         int meta = world.getBlockMetadata(x, y, z);
-        boolean swapped = false;
 
-        if (stack.getItem() instanceof ChiselItemWood  && this.blockID == BTWBlocks.dirtSlab.blockID) {
-
-            @SuppressWarnings("ConstantConditions")
-            DirtSlabBlock slab = (DirtSlabBlock) (Object) this;
-            int subtype = slab.getSubtype(world, x, y, z);
-            if (subtype == DirtSlabBlock.SUBTYPE_DIRT) {
-                cir.setReturnValue(true);
-            }
-        }
+        // Sparsen with Sharp Stone
         if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL)  &&
                 BlockTags.is(block, meta, BlockTag.GRASS)) {
             cir.setReturnValue(true);
         }
-        if (stack.getItem() instanceof ChiselItemWood && this.blockID == BTWBlocks.grassSlab.blockID) {
-            @SuppressWarnings("ConstantConditions")
-            GrassSlabBlock slab = (GrassSlabBlock) (Object) this;
-            boolean sparse = slab.isSparse(world, x, y, z);
-            if (sparse) cir.setReturnValue(true);
+
+        // Loosen with Pointy Stick (not fully-grown grass though)
+        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) {
+            if (BlockTags.is(block, meta, BlockTag.FIRM)) {
+                if (BlockTags.is(block, meta, BlockTag.DIRT)) cir.setReturnValue(true);
+                if (BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE)) cir.setReturnValue(true);
+            }
         }
+
+        // TODO: Firm-up with shovel right-click
+
     }
 
     @Inject(
             method = "convertBlock", at = @At("HEAD"), cancellable = true
     )
     private void abbyread$convertBlock(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir){
-        if (stack == null) {
-            cir.setReturnValue(false);
-            return;
-        }
+        if (stack == null) return;
 
         Block block = (Block)(Object) this;
         int meta = world.getBlockMetadata(x, y, z);
         boolean swapped = false;
 
-        if ((stack.getItem() instanceof ChiselItemWood)
-                && this.blockID == BTWBlocks.dirtSlab.blockID) {
-            @SuppressWarnings("ConstantConditions")
-            DirtSlabBlock slab = (DirtSlabBlock) (Object) this;
-            int subtype = slab.getSubtype(world, x, y, z);
-            if (subtype == DirtSlabBlock.SUBTYPE_DIRT) {
-                world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirtSlab.blockID);
-                if (!world.isRemote) {
-                    world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
+        // Loosen with Pointy Stick (not fully-grown grass though)
+        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) {
+            if (BlockTags.is(block, meta, BlockTag.FIRM)) {
+                if (BlockTags.is(block, meta, BlockTag.DIRT)) {
+                    swapped = Convert.loosen(stack, block, meta, world, x, y, z, fromSide);
                 }
-                cir.setReturnValue(true);
-            }
-        }
-        if (stack.getItem() instanceof ChiselItemWood &&
-                this.blockID == BTWBlocks.grassSlab.blockID) {
-            @SuppressWarnings("ConstantConditions")
-            GrassSlabBlock slab = (GrassSlabBlock) (Object) this;
-            boolean sparse = slab.isSparse(world, x, y, z);
-            if (sparse) {
-                world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirtSlab.blockID);
-                if (!world.isRemote) {
-                    world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
+                if (BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE)) {
+                    swapped = Convert.loosen(stack, block, meta, world, x, y, z, fromSide);
                 }
-                cir.setReturnValue(true);
             }
         }
 
         // If sharp stone is used on a grass block, sparsen in stages
         if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL)  &&
                 BlockTags.is(block, meta, BlockTag.GRASS)) {
-            swapped = Helper.sparsen(stack, block, meta, world, x, y, z, fromSide);
-            if (swapped) cir.setReturnValue(true);
+            swapped = Convert.sparsen(stack, block, meta, world, x, y, z, fromSide);
         }
+
+        if (swapped) cir.setReturnValue(swapped);
+        // otherwise allow rest of method to continue
     }
 
     @Inject(

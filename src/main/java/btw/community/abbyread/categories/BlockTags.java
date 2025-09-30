@@ -6,14 +6,11 @@ import btw.block.BTWBlocks;
 import btw.block.blocks.GrassSlabBlock;
 import net.minecraft.src.BlockGrass;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 // Handles static and metadata-based block tags
+@SuppressWarnings("ALL")
 public class BlockTags {
 
     // ===== Static block sets =====
@@ -119,6 +116,7 @@ public class BlockTags {
         if (isDirt(block, metadata)) tags.add(BlockTag.DIRT);
         if (isGrass(block, metadata)) tags.add(BlockTag.GRASS);
         if (isSparse(block, metadata)) tags.add(BlockTag.SPARSE);
+        if (isFullyGrown(block, metadata)) tags.add(BlockTag.FULLY_GROWN);
         if (isPackedEarth(block, metadata)) tags.add(BlockTag.PACKED_EARTH);
 
         return tags;
@@ -138,10 +136,22 @@ public class BlockTags {
         return false;
     }
 
+    private static boolean isFirm(Block block, int metadata) {
+        return DIRTLIKE_BLOCKS.contains(block) && !LOOSE_BLOCKS.contains(block);
+    }
+
     private static boolean isSparse(Block block, int metadata) {
         if (SPARSE_BLOCKS.contains(block)) return true;
         if (block instanceof BlockGrass) return ((BlockGrass) block).isSparse(metadata);
         if (block instanceof GrassSlabBlock) return ((GrassSlabBlock) block).isSparse(metadata);
+        return false;
+    }
+
+    private static boolean isFullyGrown(Block block, int metadata) {
+        if (GRASS_BLOCKS.contains(block)) {
+            if (block instanceof BlockGrass) return !((BlockGrass) block).isSparse(metadata);
+            if (block instanceof GrassSlabBlock) return !((GrassSlabBlock) block).isSparse(metadata);
+        }
         return false;
     }
 
@@ -164,12 +174,17 @@ public class BlockTags {
         return blockTags.contains(tag);
     }
 
-    public static boolean isNot(Block block, int metadata, BlockTag... tags) {
+    public static boolean isNot(Block block, int metadata, BlockTag tag) {
         Set<BlockTag> blockTags = getTags(block, metadata);
-        for (BlockTag tag : tags) {
-            if (blockTags.contains(tag)) return false;
-        }
-        return true;
+        return !blockTags.contains(tag);
+    }
+
+    public static boolean isNotAll(Block block, int metadata, BlockTag... tags) {
+        return  !isAll(block, metadata, tags);
+    }
+
+    public static boolean isNotAny(Block block, int metadata, BlockTag... tags) {
+        return  !isAny(block, metadata, tags);
     }
 
     public static boolean isAny(Block block, int metadata, BlockTag... tags) {

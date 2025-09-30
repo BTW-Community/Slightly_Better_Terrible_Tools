@@ -6,16 +6,13 @@ import btw.community.abbyread.categories.BlockTag;
 import btw.community.abbyread.categories.BlockTags;
 import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.categories.ItemTags;
-import btw.community.abbyread.sbtt.Helper;
-import btw.item.BTWItems;
+import btw.community.abbyread.sbtt.Convert;
 import btw.item.items.ChiselItemStone;
 import btw.item.items.ChiselItemWood;
 import btw.item.items.ShovelItemStone;
-import btw.item.util.ItemUtils;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -59,9 +56,17 @@ public abstract class BlockGrassMixin {
     )
     private void abbyread$canConvertBlock(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir){
         if (stack == null) return;
-        if (stack.getItem() instanceof ChiselItemWood && this.isSparse(world.getBlockMetadata(x, y, z))) {
-            cir.setReturnValue(true);
-        } else if (stack.getItem() instanceof ChiselItemStone) {
+
+        Block block = (Block)(Object) this;
+        int meta = world.getBlockMetadata(x, y, z);
+
+        // Loosen with Pointy Stick (not fully-grown grass though)
+        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) {
+                if (BlockTags.is(block, meta, BlockTag.SPARSE)) cir.setReturnValue(true);
+        }
+
+        // Sparsen with Sharp Stone
+        if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL)) {
             cir.setReturnValue(true);
         }
     }
@@ -75,7 +80,7 @@ public abstract class BlockGrassMixin {
 
         // If sharp stone is used on a grass block, sparsen in stages
         if (!world.isRemote && ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL)) {
-            swapped = Helper.sparsen(stack, block, meta, world, x, y, z, fromSide);
+            swapped = Convert.sparsen(stack, block, meta, world, x, y, z, fromSide);
         }
         if (swapped) cir.setReturnValue(true);
     }

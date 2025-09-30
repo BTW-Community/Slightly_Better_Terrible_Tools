@@ -19,6 +19,7 @@ public enum BlockTag {
     // Grass tags
     GRASS,
     SPARSE,
+    FULLY_GROWN,
 
     // Wood tags
     LOG,
