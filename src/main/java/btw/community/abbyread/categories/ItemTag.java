@@ -1,11 +1,11 @@
 package btw.community.abbyread.categories;
 
+@SuppressWarnings("unused")
 public enum ItemTag {
     // Misc
     NULL,
     UNHELPFUL,
     BLOCK,
-    PASS_THROUGH,
     STACKABLE,
     STACK,
     DAMAGED,
@@ -18,8 +18,10 @@ public enum ItemTag {
     WOOD,
     STONE,
     IRON,
-    STEEL,
+    DIAMOND,
     GOLD,
+    STEEL,
+    BONE,
 
     // Tool types
     TOOL,
