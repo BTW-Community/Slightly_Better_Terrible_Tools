@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ClubItem.class)
 public class ClubItemMixin {
 
-    @Inject(method = "onBlockDestroyed", at = @At("HEAD"), remap = false, cancellable = true)
+    @Inject(method = "onBlockDestroyed", at = @At("HEAD"), cancellable = true)
     private void abbyread$convertLooseToFirm(ItemStack stack, World world, int iBlockID, int x, int y, int z, EntityLivingBase usingEntity, CallbackInfoReturnable<Boolean> cir) {
         Block block = Block.blocksList[iBlockID];
         int meta = world.getBlockMetadata(x, y, z);
