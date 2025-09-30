@@ -10,6 +10,7 @@ public interface ItemAccessor {
     @Invoker("getMaxDamage")
     int abbyread$getMaxDamage();
 
+    @SuppressWarnings("UnusedReturnValue")
     @Invoker("setMaxDamage")
     Item abbyread$setMaxDamage(int maxDamage);
 }

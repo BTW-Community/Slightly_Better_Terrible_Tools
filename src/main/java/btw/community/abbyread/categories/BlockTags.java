@@ -148,9 +148,9 @@ public class BlockTags {
     }
 
     private static boolean isFullyGrown(Block block, int metadata) {
-        if (GRASS_BLOCKS.contains(block)) {
-            if (block instanceof BlockGrass) return !((BlockGrass) block).isSparse(metadata);
-            if (block instanceof GrassSlabBlock) return !((GrassSlabBlock) block).isSparse(metadata);
+        if (isGrass(block, metadata)) {
+            if (block instanceof BlockGrass) return !isSparse(block, metadata);
+            if (block instanceof GrassSlabBlock) return !isSparse(block, metadata);
         }
         return false;
     }

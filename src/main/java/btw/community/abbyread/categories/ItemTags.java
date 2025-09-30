@@ -3,10 +3,6 @@ package btw.community.abbyread.categories;
 import btw.item.BTWItems;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.lang.reflect.Field;
 import java.util.*;
 
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
@@ -113,25 +109,4 @@ public class ItemTags {
         return is(stack, isTag) && !isAny(stack, notTags);
     }
 
-    // ===== Automatic tagging using reflection =====
-
-    private static final Logger LOGGER = LogManager.getLogger("ItemTags");
-
-    private static final Set<Item> STONE_ITEMS;
-    static {
-        Set<Item> temp = new HashSet<>();
-        Field[] fields = BTWItems.class.getFields(); // all public static fields
-
-        for (Field field : fields) {
-            try {
-                Object value = field.get(null); // static field
-                if (value instanceof Item && field.getName().toLowerCase().contains("stone")) {
-                    temp.add((Item) value);
-                }
-            } catch (IllegalAccessException e) {
-                LOGGER.error("Failed to access BTWItems field: {}", field.getName(), e);
-            }
-        }
-        STONE_ITEMS = Set.copyOf(temp);
-    }
 }

@@ -27,13 +27,11 @@ public class ItemMixin {
         if (stack == null || block == null) return;
 
         // Check if item is a STONE CHISEL
-        Set<ItemTag> itemCats = ItemTags.getTags(stack);
-        if (!itemCats.contains(ItemTag.CHISEL) || !itemCats.contains(ItemTag.STONE)) return;
+        if (ItemTags.isNotAll(stack, ItemTag.STONE, ItemTag.CHISEL)) return;
 
         // Check if block is GRASS
         int meta = world.getBlockMetadata(i, j, k);
-        Set<BlockTag> blockCats = BlockTags.of(block, meta);
-        if (blockCats.contains(BlockTag.GRASS)) {
+        if (BlockTags.is(block, meta, BlockTag.GRASS)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier * 2);
         }
@@ -47,14 +45,12 @@ public class ItemMixin {
     private void abbyread$loosenDirtWithPointyStick(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
         if (stack == null || block == null) return;
 
-        // Check if item is a CHISEL
-        Set<ItemTag> itemCats = ItemTags.getTags(stack);
-        if (!itemCats.contains(ItemTag.CHISEL) || !itemCats.contains(ItemTag.WOOD)) return;
+        // Return early if not pointy stick
+        if (ItemTags.isNotAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) return;
 
-        // Check if block is DIRT-like
-        int meta = world.getBlockMetadata(i, j, k);
-        Set<BlockTag> blockCats = BlockTags.of(block, meta); // meta is ignored here; expand if needed
-        if (blockCats.contains(BlockTag.DIRTLIKE) && !blockCats.contains(BlockTag.LOOSE)) {
+        // Check if block is valid for loosening
+        int meta = world.getBlockMetadata(i, j, k); // meta is ignored here; expand if needed
+        if (BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE, BlockTag.FIRM) || BlockTags.isAll(block, meta, BlockTag.DIRT, BlockTag.FIRM)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier * 2);
         }

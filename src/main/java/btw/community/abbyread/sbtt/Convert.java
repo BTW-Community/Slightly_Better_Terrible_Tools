@@ -51,6 +51,7 @@ public class Convert {
         // Sparsen grass using sharp stone
         if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL) &&
                 BlockTags.is(block, meta, BlockTag.GRASS)) {
+            System.out.println("about to call sparsen.");
             return sparsen(stack, block, meta, world, x, y, z, fromSide);
         }
 
@@ -163,7 +164,7 @@ public class Convert {
      * - Sparse grass → dirt
      */
     public static boolean sparsen(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
-        if (BlockTags.isNotAll(block, meta, BlockTag.GRASS)) return false;
+        if (BlockTags.isNot(block, meta, BlockTag.GRASS)) return false;
 
         boolean swapped = false;
         Block newBlock = null;

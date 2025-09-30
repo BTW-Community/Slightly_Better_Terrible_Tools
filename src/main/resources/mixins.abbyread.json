@@ -8,6 +8,7 @@
     "BlockGrassMixin",
     "BlockMixin",
     "BlockMyceliumMixin",
+    "BlockStone_BlockMixin",
     "ChiselItemWoodMixin",
     "ItemAccessor",
     "ItemMixin",
