@@ -9,6 +9,7 @@
     "BlockMixin",
     "BlockMyceliumMixin",
     "BlockStone_BlockMixin",
+    "ChiselItemStoneMixin",
     "ChiselItemWood_ToolItemMixin",
     "ChiselItemWoodMixin",
     "ItemAccessor",
