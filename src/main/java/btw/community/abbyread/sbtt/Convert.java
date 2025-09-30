@@ -29,11 +29,13 @@ public class Convert {
         }
 
         // Allow firming-up loose dirtlikes using shovel right-click
+        /* // I think canConvert and convert are for left-click block harvesting only
         if (ItemTags.is(stack, ItemTag.SHOVEL)) {
             return BlockTags.is(block, meta, BlockTag.LOOSE) &&
                     (BlockTags.is(block, meta, BlockTag.DIRT) || BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE));
 
         }
+        */
 
         return false;
     }

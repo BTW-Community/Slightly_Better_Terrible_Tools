@@ -20,7 +20,8 @@
     "MyceliumBlockMixin",
     "RoughStoneBlock_BlockMixin",
     "RoughStoneBlockMixin",
-    "ShovelItemStoneMixin"
+    "ShovelItemStoneMixin",
+    "ToolItemAccessor"
   ],
   "client": [
     "GuiMainMenuMixin",
