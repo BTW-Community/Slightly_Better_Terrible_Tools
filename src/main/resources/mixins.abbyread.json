@@ -12,6 +12,7 @@
     "ItemAccessor",
     "ItemMixin",
     "ItemStackMixin",
+    "LooseDirtBlockMixin",
     "LooseSparseGrassBlockMixin",
     "MyceliumBlockMixin",
     "RoughStoneBlock_BlockMixin",

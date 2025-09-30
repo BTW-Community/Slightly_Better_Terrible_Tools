@@ -1,13 +1,9 @@
 package net.fabricmc.abbyread.mixin;
 
-import btw.block.BTWBlocks;
 import btw.client.fx.BTWEffectManager;
-import btw.community.abbyread.categories.BlockTag;
-import btw.community.abbyread.categories.BlockTags;
 import btw.community.abbyread.categories.ItemTags;
 import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.sbtt.Convert;
-import btw.item.items.ChiselItemWood;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -38,31 +34,20 @@ public class BlockDirtMixin {
     }
 
     @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
-    private void abbyread$addCanConvertInclusions(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir){
-        if (stack == null) return;
-
-        Block block = (Block)(Object) this;
+    private void abbyread$canConvertBlock(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+        Block block = (Block)(Object)this;
         int meta = world.getBlockMetadata(x, y, z);
-
-        // Allow loosening with Pointy Stick
-        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) cir.setReturnValue(true);
-        // otherwise allow rest of method to continue
+        boolean canConvert = Convert.canConvert(stack, block, meta);
+        if (canConvert) cir.setReturnValue(true);
     }
 
     @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
-    private void abbyread$convertBlock(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir){
-        if (stack == null) return;
-
-        Block block = (Block)(Object) this;
+    private void abbyread$convertBlock(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir) {
+        Block block = (Block)(Object)this;
         int meta = world.getBlockMetadata(x, y, z);
-        boolean swapped = false;
 
-        // Loosen with Pointy Stick
-        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) {
-            swapped = Convert.loosen(stack, block, meta, world, x, y, z, fromSide);
-        }
-
-        if (swapped) cir.setReturnValue(swapped);
-        // otherwise allow rest of method to continue
+        boolean swapped = Convert.convert(stack, block, meta, world, x, y, z, fromSide);
+        if (swapped) cir.setReturnValue(true);
     }
+
 }
