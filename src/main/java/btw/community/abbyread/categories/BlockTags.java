@@ -20,6 +20,7 @@ public class BlockTags {
             BTWBlocks.looseDirtSlab,
             BTWBlocks.looseSparseGrass,
             BTWBlocks.looseSparseGrassSlab,
+            BTWBlocks.sandAndGravelSlab,
             Block.sand,
             Block.gravel
     );
