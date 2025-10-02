@@ -82,30 +82,34 @@ public class Convert {
         // sparse grass,
         // sparse grass slab
 
-        if (BlockTags.is(block, meta, BlockTag.CUBE)) {
-            if (block == Block.dirt) newBlock = BTWBlocks.looseDirt;
-            else if (BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE)) {
-                newBlock = BTWBlocks.looseSparseGrass;
-                newMeta = 0; // looseSparseGrass already sparse by default
+        if      (BlockTags.isAll(block, meta, BlockTag.DIRT)) {
+
+            if      (BlockTags.isAll(block, meta, BlockTag.CUBE)) {
+                newBlock = BTWBlocks.looseDirt;
+            }
+            else if (BlockTags.isAll(block, meta, BlockTag.SLAB)) {
+                newBlock = BTWBlocks.looseDirtSlab;
             }
         }
-        else if (BlockTags.isAll(block, meta, BlockTag.SLAB)) {
-            if (block == BTWBlocks.dirtSlab) newBlock = BTWBlocks.looseDirtSlab;
-            else if (BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE)) {
-                newBlock = BTWBlocks.looseSparseGrassSlab;
-                newMeta = 0; // looseSparseGrassSlab already sparse by default
+
+        else if (BlockTags.isAll(block, meta, BlockTag.SPARSE, BlockTag.GRASS)) {
+
+            if (BlockTags.isAll(block, meta, BlockTag.CUBE)) {
+                newBlock = BTWBlocks.looseSparseGrass;
+                newMeta = 0;
             }
+            else if (BlockTags.isAll(block, meta, BlockTag.SLAB)) {
+                newBlock = BTWBlocks.looseSparseGrassSlab;
+                newMeta = 0;
+            }
+
         }
 
         if (newBlock == null) return false;
 
-        // Apply block or metadata changes
-        if (newBlock != block) {
-            world.setBlockWithNotify(x, y, z, newBlock.blockID);
-            swapped = true;
-        }
-        if (newMeta != meta) {
-            world.setBlockMetadataWithNotify(x, y, z, newMeta);
+        // Apply block and/or metadata changes
+        if (newBlock != block || newMeta != meta) {
+            world.setBlockAndMetadataWithNotify(x, y, z, newBlock.blockID, newMeta);
             swapped = true;
         }
 
