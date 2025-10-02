@@ -129,7 +129,7 @@ public class BlockTags {
             BTWBlocks.lightBlockOn,
             BTWBlocks.lightBlockOff
     );
-
+    
     private static final Set<Block> LOOSE_STONELIKE_BLOCKS = Set.of(
             BTWBlocks.looseBrick,
             BTWBlocks.looseBrickSlab,

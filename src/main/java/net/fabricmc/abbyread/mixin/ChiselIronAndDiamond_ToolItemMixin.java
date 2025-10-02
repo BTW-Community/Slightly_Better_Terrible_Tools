@@ -1,9 +1,13 @@
 package net.fabricmc.abbyread.mixin;
 
-import btw.community.abbyread.categories.BlockTag;
 import btw.community.abbyread.categories.BlockTags;
+import btw.community.abbyread.categories.BlockTag;
+import btw.community.abbyread.categories.ItemTags;
+import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.sbtt.Efficiency;
-import btw.item.items.ChiselItemStone;
+import btw.item.items.ChiselItemDiamond;
+import btw.item.items.ChiselItemIron;
+import btw.item.items.ToolItem;
 import net.minecraft.src.Block;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
@@ -12,20 +16,55 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ChiselItemStone.class)
-public class ChiselItemStoneMixin {
+@Mixin(ToolItem.class)
+public class ChiselIronAndDiamond_ToolItemMixin {
+    @Inject(
+            method = "getStrVsBlock",
+            at = @At("RETURN"),
+            cancellable = true
+    )
+    private void abbyread$getStrVsBlock_IronAndDiamondChisels(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
+        // Note: ChiselItemStone overrides this method, but also calls the super's implementation.
+        //          So, we need to avoid doing anything with stone chisels here.
 
-    @Inject(method = "getStrVsBlock", at = @At("RETURN"), cancellable = true)
-    private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
-        if (block == null) return;
+        if (stack == null || block == null) return;
+
+        // Check if item is an iron or diamond chisel
+        if (ItemTags.isAny(stack, ItemTag.WOOD, ItemTag.STONE)) return;
 
         int meta = world.getBlockMetadata(i, j, k);
 
-        float mod = 1.5F;
+        float mod = 1;
+        if (stack.getItem() instanceof ChiselItemIron) mod = 4;
+        if (stack.getItem() instanceof ChiselItemDiamond) mod = 6;
 
-        // Already doubled in the source code.
-        if (BlockTags.is(block, meta, BlockTag.WEB)) {
-            mod = 0.75F; // make just a bit less than Efficiency.modifier
+        // Efficiency.modifier: 1.5 or 1.25
+        //  (and how the "mod" value would affect it):
+
+        // mod = 2:
+        // 1.5  - 1 = 0.5       0.5 * 2 = 1          1 + 1 = 2
+        // 1.25 - 1 = 0.25     0.25 * 2 = 0.5      0.5 + 1 = 1.5
+
+        // mod = 3:
+        // 1.5  - 1 = 0.5       0.5 * 3 = 1.5      1.5 + 1 = 2.5
+        // 1.25 - 1 = 0.25     0.25 * 3 = 0.75    0.75 + 1 = 1.75
+
+        // mod = 4:
+        // 1.5  - 1 = 0.5       0.5 * 4 = 2          2 + 1 = 3
+        // 1.25 - 1 = 0.25     0.25 * 4 = 1          1 + 1 = 2
+
+        // mod = 5:
+        // 1.5  - 1 = 0.5       0.5 * 5 = 2.5      2.5 + 1 = 3.5
+        // 1.25 - 1 = 0.25     0.25 * 5 = 1.25    1.25 + 1 = 2.25
+
+        // mod = 6:
+        // 1.5  - 1 = 0.5       0.5 * 6 = 3          3 + 1 = 4
+        // 1.25 - 1 = 0.25     0.25 * 6 = 1.5      1.5 + 1 = 2.5
+
+
+        // diamond chisel base multiplier toward web blocks is already high (8).
+        if (BlockTags.is(block, meta, BlockTag.WEB)
+            && stack.getItem() instanceof ChiselItemIron) {
             float base = cir.getReturnValue();
             float modifier = (Efficiency.modifier - 1) * mod + 1;
             System.out.println("mod: " + mod);
@@ -68,5 +107,8 @@ public class ChiselItemStoneMixin {
             System.out.println("base * modifier: " + base * modifier);
             cir.setReturnValue(base * modifier);
         }
+
     }
+
+
 }

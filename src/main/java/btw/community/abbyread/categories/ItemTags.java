@@ -38,7 +38,8 @@ public class ItemTags {
             Item.pickaxeIron,
             Item.axeIron,
             Item.hoeIron,
-            Item.shears
+            Item.shears,
+            BTWItems.ironChisel
     );
 
     private static final Set<Item> DIAMOND_ITEMS = Set.of(
@@ -46,7 +47,8 @@ public class ItemTags {
             Item.shovelDiamond,
             Item.pickaxeDiamond,
             Item.axeDiamond,
-            Item.hoeDiamond
+            Item.hoeDiamond,
+            BTWItems.diamondChisel
     );
 
     private static final Set<Item> GOLD_ITEMS = Set.of(
