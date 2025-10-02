@@ -67,33 +67,20 @@ public class ChiselIronAndDiamond_ToolItemMixin {
             && stack.getItem() instanceof ChiselItemIron) {
             float base = cir.getReturnValue();
             float modifier = (Efficiency.modifier - 1) * mod + 1;
-            System.out.println("mod: " + mod);
-            System.out.println("modifier: " + modifier);
-            System.out.println("base: " + base);
-            System.out.println("base * modifier: " + base * modifier);
-            cir.setReturnValue(base * modifier);
-        }
-
-        // Mortared masonry blocks easier to pick up with chisels
-        if (BlockTags.is(block, meta, BlockTag.EASY_SOLID_STONELIKE)) {
-            float base = cir.getReturnValue();
-            float modifier = Efficiency.modifier * mod;
-            System.out.println("EASY_SOLID_STONELIKE");
-            System.out.println("mod: " + mod);
-            System.out.println("modifier: " + modifier);
-            System.out.println("base: " + base);
-            System.out.println("base * modifier: " + base * modifier);
             cir.setReturnValue(base * modifier);
         }
 
         // Loose masonry blocks easier to pick up with chisels
         if (BlockTags.is(block, meta, BlockTag.LOOSE_STONELIKE)) {
             float base = cir.getReturnValue();
+            float modifier = Efficiency.modifier * mod;
+            cir.setReturnValue(base * modifier);
+        }
+
+        // Solid, single-harvest stonelike blocks easier to pick up with chisels
+        if (BlockTags.is(block, meta, BlockTag.EASY_SOLID_STONELIKE)) {
+            float base = cir.getReturnValue();
             float modifier = (Efficiency.modifier - 1) * mod + 1;
-            System.out.println("mod: " + mod);
-            System.out.println("modifier: " + modifier);
-            System.out.println("base: " + base);
-            System.out.println("base * modifier: " + base * modifier);
             cir.setReturnValue(base * modifier);
         }
 
@@ -101,10 +88,6 @@ public class ChiselIronAndDiamond_ToolItemMixin {
         if (BlockTags.is(block, meta, BlockTag.SHATTERABLE)) {
             float base = cir.getReturnValue();
             float modifier = (Efficiency.modifier - 1) * mod + 1;
-            System.out.println("mod: " + mod);
-            System.out.println("modifier: " + modifier);
-            System.out.println("base: " + base);
-            System.out.println("base * modifier: " + base * modifier);
             cir.setReturnValue(base * modifier);
         }
 
