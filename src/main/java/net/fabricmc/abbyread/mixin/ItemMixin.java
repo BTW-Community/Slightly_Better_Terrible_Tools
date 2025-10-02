@@ -14,8 +14,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Set;
-
 @Mixin(Item.class)
 public class ItemMixin {
     @Inject(
@@ -33,7 +31,7 @@ public class ItemMixin {
         int meta = world.getBlockMetadata(i, j, k);
         if (BlockTags.is(block, meta, BlockTag.GRASS)) {
             float base = cir.getReturnValue();
-            cir.setReturnValue(base * Efficiency.modifier * 2);
+            cir.setReturnValue(base * Efficiency.modifier * 1.5F);
         }
     }
 
@@ -50,9 +48,10 @@ public class ItemMixin {
 
         // Check if block is valid for loosening
         int meta = world.getBlockMetadata(i, j, k); // meta is ignored here; expand if needed
-        if (BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE, BlockTag.FIRM) || BlockTags.isAll(block, meta, BlockTag.DIRT, BlockTag.FIRM)) {
+        if (BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE, BlockTag.FIRM)
+                || BlockTags.isAll(block, meta, BlockTag.DIRT, BlockTag.FIRM)) {
             float base = cir.getReturnValue();
-            cir.setReturnValue(base * Efficiency.modifier * 2);
+            cir.setReturnValue(base * Efficiency.modifier * 1.5F);
         }
     }
 }

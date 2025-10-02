@@ -47,7 +47,7 @@ public class BlockMixin {
         Set<BlockTag> cats = BlockTags.of(self, meta);
         if (cats.contains(BlockTag.LOOSE)) {
             float base = cir.getReturnValue();
-            cir.setReturnValue(base * Efficiency.modifier * 1.75F);
+            cir.setReturnValue(base * Efficiency.modifier * 1.5F);
         }
 
         if (cats.contains(BlockTag.LOG)) {
