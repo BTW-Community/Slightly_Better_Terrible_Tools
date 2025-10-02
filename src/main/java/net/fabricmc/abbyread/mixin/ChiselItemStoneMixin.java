@@ -23,9 +23,19 @@ public class ChiselItemStoneMixin {
 
         float mod = 1.5F;
 
-        // Already doubled in the source code.
+        // *** Specific-to-sharp-stone use boost (cutting grass) ***
+        if (BlockTags.is(block, meta, BlockTag.GRASS)) {
+            float base = cir.getReturnValue();
+            float modifier = Efficiency.modifier * mod;
+            cir.setReturnValue(base * modifier);
+        }
+
+        // ** Boost categories common to chisels stone and above **
+
+        // Web harvesting is already doubled in the source code.
+        //   Boosting just a little more.
         if (BlockTags.is(block, meta, BlockTag.WEB)) {
-            mod = 0.75F; // make just a bit less than Efficiency.modifier
+            mod = 0.75F; // Reduce Efficiency.modifier just a bit
             float base = cir.getReturnValue();
             float modifier = (Efficiency.modifier - 1) * mod + 1;
             cir.setReturnValue(base * modifier);
