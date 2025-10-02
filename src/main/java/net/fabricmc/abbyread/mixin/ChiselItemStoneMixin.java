@@ -14,16 +14,43 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ChiselItemStone.class)
 public class ChiselItemStoneMixin {
+
     @Inject(method = "getStrVsBlock", at = @At("RETURN"), cancellable = true)
-    private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block, int x, int y, int z, CallbackInfoReturnable<Float> cir) {
-        int meta = world.getBlockMetadata(x, y, z);
+    private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
+        if (block == null) return;
+
+        // Boost to sparsen grass
+        int meta = world.getBlockMetadata(i, j, k);
         if (BlockTags.is(block, meta, BlockTag.GRASS)) {
-            float strength = cir.getReturnValue();
-            cir.setReturnValue(strength * Efficiency.modifier);
+            float base = cir.getReturnValue();
+            cir.setReturnValue(base * Efficiency.modifier);
         }
+
+        // Boost to web harvest (over the BTW vanilla boost)
         if (BlockTags.is(block, meta, BlockTag.WEB)) {
-            float strength = cir.getReturnValue();
-            cir.setReturnValue(strength * Efficiency.modifier);
+            float base = cir.getReturnValue();
+            cir.setReturnValue(base * Efficiency.modifier);
+        }
+
+        // Shatterables shattered or picked up faster by chisels
+        if (BlockTags.is(block, meta, BlockTag.SHATTERABLE)) {
+            float base = cir.getReturnValue();
+            float modifier = (Efficiency.modifier - 1) * 2 + 1; // (percent boost * 2)
+            cir.setReturnValue(base * modifier);
+        }
+
+        // Loose masonry blocks easier to pick up with chisels
+        if (BlockTags.is(block, meta, BlockTag.LOOSE_STONELIKE)) {
+            float base = cir.getReturnValue();
+            float modifier = (Efficiency.modifier - 1) * 2 + 1; // (percent boost * 2)
+            cir.setReturnValue(base * modifier);
+        }
+
+        // Mortared masonry blocks easier to pick up with chisels
+        if (BlockTags.is(block, meta, BlockTag.LOOSE_STONELIKE)) {
+            float base = cir.getReturnValue();
+            float modifier = Efficiency.modifier;
+            cir.setReturnValue(base * modifier);
         }
     }
 }

@@ -58,7 +58,7 @@ public class ItemStackMixin {
         // Damage override for converting to firm using club (because it's slower than punching)
         } else if (!world.isRemote && ItemTags.is(self, ItemTag.CLUB)) {
             int meta = world.getBlockMetadata(x, y, z);
-            if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE)) {
+            if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
                 player.addStat(StatList.objectUseStats[self.itemID], 1);
                 int itemDamage = 2;
                 self.damageItem(itemDamage, player);

@@ -13,7 +13,7 @@ public enum BlockTag {
     DIRT,
     SAND,
     GRAVEL,
-    LOOSE,
+    LOOSE_DIRTLIKE,
     FIRM,
     PACKED_EARTH,
 
@@ -37,6 +37,8 @@ public enum BlockTag {
     STRATA_1,
     STRATA_2,
     STRATA_3,
+    EASY_SOLID_STONELIKE,
+    LOOSE_STONELIKE,
 
     // Whole vs. combined
     PURE,

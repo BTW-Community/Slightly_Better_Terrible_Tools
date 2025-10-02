@@ -15,7 +15,7 @@ public class BlockTags {
 
     // ===== Static block sets =====
 
-    private static final Set<Block> LOOSE_BLOCKS = Set.of(
+    private static final Set<Block> LOOSE_DIRTLIKE_BLOCKS = Set.of(
             BTWBlocks.looseDirt,
             BTWBlocks.looseDirtSlab,
             BTWBlocks.looseSparseGrass,
@@ -119,18 +119,99 @@ public class BlockTags {
             Block.wood
     );
 
+    private static final Set<Block> SHATTERABLE_BLOCKS = Set.of(
+            Block.glass,
+            Block.thinGlass,
+            Block.glowStone,
+            Block.ice,
+            Block.redstoneLampActive,
+            Block.redstoneLampIdle,
+            BTWBlocks.lightBlockOn,
+            BTWBlocks.lightBlockOff
+    );
+
+    private static final Set<Block> LOOSE_STONELIKE_BLOCKS = Set.of(
+            BTWBlocks.looseBrick,
+            BTWBlocks.looseBrickSlab,
+            BTWBlocks.looseBrickStairs,
+            BTWBlocks.looseCobblestone,
+            BTWBlocks.looseCobblestoneSlab,
+            BTWBlocks.looseCobblestoneStairs,
+            BTWBlocks.looseStoneBrick,
+            BTWBlocks.looseStoneBrickSlab,
+            BTWBlocks.looseStoneBrickStairs,
+            BTWBlocks.looseNetherBrick,
+            BTWBlocks.looseNetherBrickSlab,
+            BTWBlocks.looseNetherBrickStairs,
+            BTWBlocks.looseCobbledDeepslateStairs,
+            BTWBlocks.looseCobbledBlackstoneStairs,
+            BTWBlocks.looseDeepslateBrickStairs,
+            BTWBlocks.looseBlackstoneBrickStairs
+    );
+
+    private static final Set<Block> EASY_SOLID_STONELIKE_BLOCKS = Set.of(
+            Block.stone,
+            Block.cobblestone,
+            Block.bedrock,
+            Block.sandStone,
+            Block.brick,
+            Block.cobblestoneMossy,
+            Block.obsidian,
+            Block.stoneBrick,
+            Block.whiteStone,
+            Block.netherBrick,
+            Block.stairsStoneBrick,
+            Block.stairsCobblestone,
+            Block.stairsBrick,
+            Block.stairsSandStone,
+            Block.stairsNetherBrick,
+            Block.stairsNetherQuartz,
+            Block.blockLapis,
+            Block.blockGold,
+            Block.blockNetherQuartz,
+            Block.stoneDoubleSlab,
+            Block.stoneSingleSlab,
+            Block.netherFence,
+            Block.cobblestoneWall,
+            BTWBlocks.quartzSidingAndCorner,
+            BTWBlocks.quartzMouldingAndDecorative,
+            BTWBlocks.sandstoneSidingAndCorner,
+            BTWBlocks.sandstoneMouldingAndDecorative,
+            BTWBlocks.stoneSidingAndCorner,
+            BTWBlocks.brickSidingAndCorner,
+            BTWBlocks.brickMouldingAndDecorative,
+            BTWBlocks.netherBrickSidingAndCorner,
+            BTWBlocks.netherBrickMouldingAndDecorative,
+            BTWBlocks.whiteStoneStairs,
+            BTWBlocks.whiteStoneSidingAndCorner,
+            BTWBlocks.whiteStoneMouldingAndDecroative,
+            BTWBlocks.stoneBrickSidingAndCorner,
+            BTWBlocks.stoneBrickMouldingAndDecorative,
+            BTWBlocks.stoneMouldingAndDecorative,
+            BTWBlocks.infestedStone,
+            BTWBlocks.infestedCobblestone,
+            BTWBlocks.infestedStoneBrick,
+            BTWBlocks.infestedMossyStoneBrick,
+            BTWBlocks.infestedCrackedStoneBrick,
+            BTWBlocks.infestedChiseledStoneBrick
+            );
+
     // ===== Public method =====
 
     public static Set<BlockTag> of(Block block, int metadata) {
         Set<BlockTag> tags = new HashSet<>();
 
         // --- Static tags ---
-        if (DIRTLIKE_BLOCKS.contains(block)) tags.add(BlockTag.DIRTLIKE);
-        if (LOOSE_BLOCKS.contains(block)) tags.add(BlockTag.LOOSE);
-        if (DIRT_BLOCKS.contains(block)) tags.add(BlockTag.DIRT);
         if (CUBE_BLOCKS.contains(block)) tags.add(BlockTag.CUBE);
         if (SLAB_BLOCKS.contains(block)) tags.add(BlockTag.SLAB);
         if (LOG_BLOCKS.contains(block)) tags.add(BlockTag.LOG);
+        if (DIRT_BLOCKS.contains(block)) tags.add(BlockTag.DIRT);
+        if (DIRTLIKE_BLOCKS.contains(block)) tags.add(BlockTag.DIRTLIKE);
+        if (LOOSE_DIRTLIKE_BLOCKS.contains(block)) tags.add(BlockTag.LOOSE_DIRTLIKE);
+        if (LOOSE_STONELIKE_BLOCKS.contains(block)) tags.add(BlockTag.LOOSE_STONELIKE);
+        if (EASY_SOLID_STONELIKE_BLOCKS.contains(block)) tags.add(BlockTag.EASY_SOLID_STONELIKE);
+        if (SHATTERABLE_BLOCKS.contains(block)) tags.add(BlockTag.SHATTERABLE);
+
         if (isFirm(block, metadata)) tags.add(BlockTag.FIRM);
         if (block == Block.web || block == BTWBlocks.web) tags.add(BlockTag.WEB);
 
@@ -159,7 +240,7 @@ public class BlockTags {
     }
 
     private static boolean isFirm(Block block, int metadata) {
-        return DIRTLIKE_BLOCKS.contains(block) && !LOOSE_BLOCKS.contains(block);
+        return DIRTLIKE_BLOCKS.contains(block) && !LOOSE_DIRTLIKE_BLOCKS.contains(block);
     }
 
     private static boolean isSparse(Block block, int metadata) {

@@ -21,17 +21,35 @@ public class ItemMixin {
             at = @At("RETURN"),
             cancellable = true
     )
-    private void abbyread$cutGrassWithSharpStone(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
+    private void abbyread$getStrVsBlock_BetterThanWoodChisels(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
+        // Note: ChiselItemStone overrides this method, so duplicates of these are in that ChiselItemStoneMixin.
+
         if (stack == null || block == null) return;
 
-        // Check if item is a STONE CHISEL
-        if (ItemTags.isNotAll(stack, ItemTag.STONE, ItemTag.CHISEL)) return;
+        // Check if item is a STONE CHISEL or better
+        if (ItemTags.isButNot(stack, ItemTag.CHISEL, ItemTag.WOOD)) return;
 
-        // Check if block is GRASS
         int meta = world.getBlockMetadata(i, j, k);
-        if (BlockTags.is(block, meta, BlockTag.GRASS)) {
+
+        // Shatterables shattered or picked up faster by chisels
+        if (BlockTags.is(block, meta, BlockTag.SHATTERABLE)) {
             float base = cir.getReturnValue();
-            cir.setReturnValue(base * Efficiency.modifier * 1.5F);
+            float modifier = (Efficiency.modifier - 1) * 2 + 1; // (percent boost * 2)
+            cir.setReturnValue(base * modifier);
+        }
+
+        // Loose masonry blocks easier to pick up with chisels
+        if (BlockTags.is(block, meta, BlockTag.LOOSE_STONELIKE)) {
+            float base = cir.getReturnValue();
+            float modifier = (Efficiency.modifier - 1) * 2 + 1; // (percent boost * 2)
+            cir.setReturnValue(base * modifier);
+        }
+
+        // Mortared masonry blocks easier to pick up with chisels
+        if (BlockTags.is(block, meta, BlockTag.LOOSE_STONELIKE)) {
+            float base = cir.getReturnValue();
+            float modifier = Efficiency.modifier;
+            cir.setReturnValue(base * modifier);
         }
     }
 

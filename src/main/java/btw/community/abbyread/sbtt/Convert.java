@@ -29,7 +29,7 @@ public class Convert {
         }
 
         if (ItemTags.is(stack, ItemTag.CLUB)) {
-            return BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE);
+            return BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE);
         }
 
         return false;
@@ -53,14 +53,14 @@ public class Convert {
 
         // Firm-up loose dirtlikes slowly using club
         if (ItemTags.is(stack, ItemTag.CLUB)) {
-            if (BlockTags.isAll(block, meta, BlockTag.LOOSE, BlockTag.DIRTLIKE)) {
+            if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.DIRTLIKE)) {
                 return firm(stack, block, meta, world, x, y, z, fromSide);
             }
         }
 
         // Firm-up loose dirtlikes instantly using shovel right-click
         if (ItemTags.is(stack, ItemTag.SHOVEL)) {
-            if (BlockTags.isAll(block, meta, BlockTag.LOOSE, BlockTag.DIRTLIKE)) {
+            if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.DIRTLIKE)) {
                 return firm(stack, block, meta, world, x, y, z, fromSide);
             }
         }
@@ -122,7 +122,7 @@ public class Convert {
 
     public static boolean firm(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
         // Must be a loose dirtlike block. Otherwise, return early, indicating it was not made firm.
-        if (BlockTags.isNotAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE)) return false;
+        if (BlockTags.isNotAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) return false;
 
         boolean swapped = false;
         Block newBlock = null;
@@ -189,7 +189,7 @@ public class Convert {
                 newMeta = 0; // dirt has no sparse variant
             }
             // loose sparse grass → loose dirt
-            else if (BlockTags.isAll(block, meta, BlockTag.LOOSE, BlockTag.SPARSE)) {
+            else if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.SPARSE)) {
                 newBlock = BTWBlocks.looseDirt;
             }
             // LOOSE and FULLY_GROWN is not possible
@@ -206,7 +206,7 @@ public class Convert {
                 newMeta = 0; // no longer needs sparseness metadata value
             }
             // loose sparse slab → loose dirt slab
-            else if (BlockTags.isAll(block, meta, BlockTag.LOOSE, BlockTag.SPARSE)) {
+            else if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.SPARSE)) {
                 newBlock = BTWBlocks.looseDirtSlab;
             }
             // LOOSE while FULLY_GROWN is not possible
