@@ -3,7 +3,6 @@ package net.fabricmc.abbyread.mixin;
 import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.categories.ItemTags;
 import btw.community.abbyread.sbtt.Convert;
-import btw.community.abbyread.sbtt.Efficiency;
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
@@ -23,7 +22,7 @@ public class ClubItem_ItemMixin {
         int meta = world.getBlockMetadata(x, y, z);
         if (Convert.canConvert(stack, block, meta)) {
             float normal = cir.getReturnValue();
-            cir.setReturnValue(normal * 0.75F);
+            cir.setReturnValue(normal * 0.5F);
         }
     }
 }

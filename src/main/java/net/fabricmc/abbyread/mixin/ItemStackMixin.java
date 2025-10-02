@@ -60,9 +60,7 @@ public class ItemStackMixin {
             int meta = world.getBlockMetadata(x, y, z);
             if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE)) {
                 player.addStat(StatList.objectUseStats[self.itemID], 1);
-                int itemDamage = 0;
-                if (ItemTags.is(self, ItemTag.WOOD)) itemDamage = 2;
-                if (ItemTags.is(self, ItemTag.BONE)) itemDamage = 1;
+                int itemDamage = 2;
                 self.damageItem(itemDamage, player);
             }
         }
