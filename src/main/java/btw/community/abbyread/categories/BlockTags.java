@@ -100,6 +100,24 @@ public class BlockTags {
             BTWBlocks.looseSparseGrassSlab
     );
 
+    private static final Set<Block> LOG_BLOCKS = Set.of(
+            BTWBlocks.oakChewedLog,
+            BTWBlocks.oakLogSpike,
+
+            BTWBlocks.birchChewedLog,
+            BTWBlocks.birchLogSpike,
+
+            BTWBlocks.spruceChewedLog,
+            BTWBlocks.spruceLogSpike,
+
+            BTWBlocks.jungleChewedLog,
+            BTWBlocks.jungleLogSpike,
+
+            BTWBlocks.bloodWoodLog,
+            BTWBlocks.smolderingLog,
+            Block.wood
+    );
+
     // ===== Public method =====
 
     public static Set<BlockTag> of(Block block, int metadata) {
@@ -111,6 +129,7 @@ public class BlockTags {
         if (DIRT_BLOCKS.contains(block)) tags.add(BlockTag.DIRT);
         if (CUBE_BLOCKS.contains(block)) tags.add(BlockTag.CUBE);
         if (SLAB_BLOCKS.contains(block)) tags.add(BlockTag.SLAB);
+        if (LOG_BLOCKS.contains(block)) tags.add(BlockTag.LOG);
         if (isFirm(block, metadata)) tags.add(BlockTag.FIRM);
         if (block == Block.web || block == BTWBlocks.web) tags.add(BlockTag.WEB);
 
