@@ -41,13 +41,6 @@ public class ChiselItemStoneMixin {
             cir.setReturnValue(base * modifier);
         }
 
-        // Loose masonry blocks easier to pick up with chisels
-        if (BlockTags.is(block, meta, BlockTag.LOOSE_STONELIKE)) {
-            float base = cir.getReturnValue();
-            float modifier = Efficiency.modifier * mod;
-            cir.setReturnValue(base * modifier);
-        }
-
         // Solid, single-harvest stonelike blocks easier to pick up with chisels
         if (BlockTags.is(block, meta, BlockTag.EASY_SOLID_STONELIKE)) {
             float base = cir.getReturnValue();

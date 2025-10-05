@@ -32,4 +32,30 @@ public class ChiselItemWood_ItemMixin {
             cir.setReturnValue(base * Efficiency.modifier * 1.5F);
         }
     }
+
+    @Inject(
+            method = "getStrVsBlock",
+            at = @At("RETURN"),
+            cancellable = true
+    )
+    private void abbyread$pryLooseMasonry(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
+        if (stack == null || block == null) return;
+
+        // Return early if not pointy stick
+        if (ItemTags.isNotAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) return;
+
+
+        int meta = world.getBlockMetadata(i, j, k);
+
+        float mod = 3F;
+
+        // Loose masonry blocks easier to pry up with Pointy Stick
+        if (BlockTags.is(block, meta, BlockTag.LOOSE_STONELIKE)) {
+            float base = cir.getReturnValue();
+            float modifier = Efficiency.modifier * mod;
+            cir.setReturnValue(base * modifier);
+        }
+    }
+
+
 }
