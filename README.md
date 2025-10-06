@@ -18,13 +18,13 @@ feature to prevent tedious item swapping, secondarily to telegraph purpose(s) of
 **Bare Hands and Non-Tools**:
 - Slight speed boost on log harvesting
 
-**Wooden Chisel (Pointy Stick)**
+**Pointy Stick (a.k.a Wood Chisel)**
 - Slight speed boost on log and stone harvesting
 - Speed boost on prying up loose cobblestone/brick blocks
 - Able to loosen a single block of dirt or sparse grass
 - 2 extra uses to add value and incentivize experimentation
 
-**Stone Chisel (Sharp Stone)**
+**Sharp Stone (a.k.a. Stone Chisel)**
 - Slight speed boost on log and stone harvesting
 - Shatters ice, glass, and other breakables faster
 - Cuts grass in stages with a VERY low chance for hemp seeds
@@ -43,7 +43,7 @@ feature to prevent tedious item swapping, secondarily to telegraph purpose(s) of
 - 50% more durability (encourages digging beyond just clay)
 - 50% faster on appropriate materials (improved to incentivize use in context)
 
-**Clubs (Wooden & Bone)**
+**Clubs (Wood & Bone)**
 - Can firm up loose dirt-like blocks SLOWLY (costs 2 durability)
 
 **Planned Changes/Features**
