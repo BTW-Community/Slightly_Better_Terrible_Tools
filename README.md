@@ -80,6 +80,7 @@ sparse loose grass remains so on drop, which is unique, as other grass types bec
 
 - **Required**: Better Than Wolves CE 3.0.0
 - **Mod Loader**: Fabric/Mixin based (Packaged with the BTW Instance)
+- Doesn't appear to work with [Sock's Eating Animations](https://github.com/BTW-Community/SocksEatingAnimations), and I'm not sure why yet.
 - Uses primarily Mixin injections for compatibility/maintainability.
 - This currently won't make changes to any blocks or tools added by other addons, with the exception that it will probably prevent wasted durability.  Most of the changes I've made target specific, existing blocks and items from the base game, without overriding (but scope-limited).
 
