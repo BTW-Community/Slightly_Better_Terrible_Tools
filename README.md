@@ -4,7 +4,7 @@ A Better Than Wolves Community Edition addon that makes early-game tools more vi
 
 ## Overview
 
-Slightly Better Terrible Tools (SBTT) enhances the usability of BTW's early-game tools—particularly the wooden chisel (pointy stick), stone chisel (sharp stone), stone shovel, and clubs—by improving their efficiency and adding new block conversion mechanics. The addon makes the progression from primitive to advanced tools feel smoother while maintaining BTW's hardcore philosophy.
+Slightly Better Terrible Tools (SBTT) enhances the usability of BTW's early-game tools—particularly the pointy stick, sharp stone, stone shovel, and clubs—by improving their efficiency and adding new block conversion mechanics. The addon makes the progression from primitive to advanced tools feel smoother while maintaining BTW's hardcore philosophy.
 
 ## Features
 
