@@ -47,7 +47,7 @@ public class ChiselItemWood_ItemMixin {
 
         int meta = world.getBlockMetadata(i, j, k);
 
-        float mod = 3F;
+        float mod = 4F;
 
         // Loose masonry blocks easier to pry up with Pointy Stick
         if (BlockTags.is(block, meta, BlockTag.LOOSE_STONELIKE)) {
