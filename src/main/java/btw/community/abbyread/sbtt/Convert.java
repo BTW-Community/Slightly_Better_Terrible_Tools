@@ -14,7 +14,7 @@ import net.minecraft.src.World;
 
 public class Convert {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
 
     // ---------- Public Methods ----------
