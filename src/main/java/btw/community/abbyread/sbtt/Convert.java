@@ -14,22 +14,37 @@ import net.minecraft.src.World;
 
 public class Convert {
 
+    private static final boolean DEBUG = true;
+    private static final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
+
+    // ---------- Public Methods ----------
+
     public static boolean canConvert(ItemStack stack, Block block, int meta) {
         if (stack == null || block == null) return false;
 
-        // Allow loosening dirt and sparse grass using pointy stick
         if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) {
-            return BlockTags.is(block, meta, BlockTag.FIRM) &&
+            boolean result = BlockTags.is(block, meta, BlockTag.FIRM) &&
                     (BlockTags.is(block, meta, BlockTag.DIRT) || BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE));
+            debug("Checking WOOD+CHISEL: " + result);
+            return result;
         }
 
-        // Allow sparsening grass using sharp stone
         if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL)) {
-            return BlockTags.is(block, meta, BlockTag.GRASS);
+            boolean result = BlockTags.is(block, meta, BlockTag.GRASS);
+            debug("Checking STONE+CHISEL: " + result);
+            return result;
         }
 
         if (ItemTags.is(stack, ItemTag.CLUB)) {
-            return BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE);
+            boolean result = BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE);
+            debug("Checking CLUB: " + result);
+            return result;
+        }
+
+        if (ItemTags.is(stack, ItemTag.SHOVEL)) {
+            boolean result = BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE);
+            debug("Checking SHOVEL: " + result);
+            return result;
         }
 
         return false;
@@ -38,79 +53,127 @@ public class Convert {
     public static boolean convert(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
         if (stack == null || block == null) return false;
 
-        // Loosen dirt and sparse grass using pointy stick
-        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL) &&
-                BlockTags.is(block, meta, BlockTag.FIRM) &&
-                (BlockTags.is(block, meta, BlockTag.DIRT) || BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE))) {
+        debug("convert called with stack=" + stack + ", block=" + block + ", meta=" + meta + ", coords=(" + x + "," + y + "," + z + ")");
+
+        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL) && canConvert(stack, block, meta)) {
+            debug("Using loosen conversion");
             return loosen(stack, block, meta, world, x, y, z, fromSide);
         }
 
-        // Sparsen grass using sharp stone
-        if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL) &&
-                BlockTags.is(block, meta, BlockTag.GRASS)) {
+        if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL) && BlockTags.is(block, meta, BlockTag.GRASS)) {
+            debug("Using sparsen conversion");
             return sparsen(stack, block, meta, world, x, y, z, fromSide);
         }
 
-        // Firm-up loose dirtlikes slowly using club
-        if (ItemTags.is(stack, ItemTag.CLUB)) {
-            if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.DIRTLIKE)) {
-                return firm(stack, block, meta, world, x, y, z, fromSide);
-            }
-        }
-
-        // Firm-up loose dirtlikes instantly using shovel right-click
-        if (ItemTags.is(stack, ItemTag.SHOVEL)) {
-            if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.DIRTLIKE)) {
-                return firm(stack, block, meta, world, x, y, z, fromSide);
-            }
+        if ((ItemTags.is(stack, ItemTag.CLUB) || ItemTags.is(stack, ItemTag.SHOVEL))
+                && BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
+            debug("Using firm conversion");
+            return firm(stack, block, meta, world, x, y, z, fromSide);
         }
 
         return false;
     }
 
+    // ---------- Conversion Methods ----------
+
     public static boolean loosen(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
-        // Must be a firm dirtlike block. Otherwise, return early, indicating it was not loosened.
+        debug("loosen called for block=" + block + ", meta=" + meta + " at (" + x + "," + y + "," + z + ")");
         if (BlockTags.isNotAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM)) return false;
 
-        boolean swapped = false;
         Block newBlock = null;
         int newMeta = meta;
 
-        // Able to loosen:
-        // dirt,
-        // dirt slab,
-        // sparse grass,
-        // sparse grass slab
+        if (BlockTags.is(block, meta, BlockTag.DIRT)) {
+            if (BlockTags.is(block, meta, BlockTag.CUBE)) newBlock = BTWBlocks.looseDirt;
+            else if (BlockTags.is(block, meta, BlockTag.SLAB)) newBlock = BTWBlocks.looseDirtSlab;
+        } else if (BlockTags.isAll(block, meta, BlockTag.SPARSE, BlockTag.GRASS)) {
+            if (BlockTags.is(block, meta, BlockTag.CUBE)) {
+                newBlock = BTWBlocks.looseSparseGrass;
+                newMeta = 0;
+            } else if (BlockTags.is(block, meta, BlockTag.SLAB)) {
+                newBlock = BTWBlocks.looseSparseGrassSlab;
+                newMeta = 0;
+            }
+        }
 
-        if      (BlockTags.isAll(block, meta, BlockTag.DIRT)) {
+        return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
+    }
 
-            if      (BlockTags.isAll(block, meta, BlockTag.CUBE)) {
+    public static boolean firm(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
+        debug("firm called for block=" + block + ", meta=" + meta + " at (" + x + "," + y + "," + z + ")");
+        if (BlockTags.isNotAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) return false;
+
+        Block newBlock = null;
+        int newMeta = meta;
+
+        if (block == BTWBlocks.looseDirt) newBlock = Block.dirt;
+        else if (block == BTWBlocks.looseDirtSlab) newBlock = BTWBlocks.dirtSlab;
+        else if (block == BTWBlocks.looseSparseGrass) {
+            newBlock = Block.grass;
+            newMeta = 1;
+        } else if (block == BTWBlocks.looseSparseGrassSlab) {
+            newBlock = BTWBlocks.grassSlab;
+            newMeta = 2;
+        }
+
+        return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
+    }
+
+    public static boolean sparsen(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
+        debug("sparsen called for block=" + block + ", meta=" + meta + " at (" + x + "," + y + "," + z + ")");
+        if (!BlockTags.is(block, meta, BlockTag.GRASS)) return false;
+
+        Block newBlock = null;
+        int newMeta = meta;
+
+        if (BlockTags.is(block, meta, BlockTag.CUBE)) {
+            if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.FULLY_GROWN)) {
+                newBlock = block;
+                newMeta = 1;
+            } else if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.SPARSE)) {
+                newBlock = Block.dirt;
+                newMeta = 0;
+            } else if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.SPARSE)) {
                 newBlock = BTWBlocks.looseDirt;
             }
-            else if (BlockTags.isAll(block, meta, BlockTag.SLAB)) {
+        } else if (BlockTags.is(block, meta, BlockTag.SLAB)) {
+            if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.FULLY_GROWN)) {
+                newBlock = block;
+                newMeta = 2;
+            } else if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.SPARSE)) {
+                newBlock = BTWBlocks.dirtSlab;
+                newMeta = 0;
+            } else if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.SPARSE)) {
                 newBlock = BTWBlocks.looseDirtSlab;
             }
         }
 
-        else if (BlockTags.isAll(block, meta, BlockTag.SPARSE, BlockTag.GRASS)) {
-
-            if (BlockTags.isAll(block, meta, BlockTag.CUBE)) {
-                newBlock = BTWBlocks.looseSparseGrass;
-                newMeta = 0;
-            }
-            else if (BlockTags.isAll(block, meta, BlockTag.SLAB)) {
-                newBlock = BTWBlocks.looseSparseGrassSlab;
-                newMeta = 0;
-            }
-
+        // Eject hemp seeds randomly
+        if (!world.isRemote && world.rand.nextInt(VERY_LOW_HEMP_SEED_CHANCE) == 0) {
+            debug("Ejecting hemp seeds at (" + x + "," + y + "," + z + ")");
+            ItemUtils.ejectStackFromBlockTowardsFacing(world, x, y, z, new ItemStack(BTWItems.hempSeeds), fromSide);
         }
 
+        return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
+    }
+
+    // ---------- Helper Methods ----------
+
+    private static boolean swapBlock(World world, int x, int y, int z, Block oldBlock, int oldMeta, Block newBlock, int newMeta) {
         if (newBlock == null) return false;
 
-        // Apply block and/or metadata changes
-        if (newBlock != block || newMeta != meta) {
-            world.setBlockAndMetadataWithNotify(x, y, z, newBlock.blockID, newMeta);
+        boolean swapped = false;
+
+        if (newBlock != oldBlock) {
+            world.setBlockWithNotify(x, y, z, newBlock.blockID);
             swapped = true;
+            debug("Block swapped at (" + x + "," + y + "," + z + ")");
+        }
+
+        if (newMeta != oldMeta) {
+            world.setBlockMetadataWithNotify(x, y, z, newMeta);
+            swapped = true;
+            debug("Metadata updated at (" + x + "," + y + "," + z + ")");
         }
 
         if (!world.isRemote && swapped) {
@@ -120,121 +183,7 @@ public class Convert {
         return swapped;
     }
 
-    public static boolean firm(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
-        // Must be a loose dirtlike block. Otherwise, return early, indicating it was not made firm.
-        if (BlockTags.isNotAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) return false;
-
-        boolean swapped = false;
-        Block newBlock = null;
-        int newMeta = meta;
-
-        // Able to firm up:
-        // loose dirt,
-        // loose dirt slab,
-        // loose sparse grass,
-        // loose sparse grass slab
-
-        if (block == BTWBlocks.looseDirt) newBlock = Block.dirt;
-        if (block == BTWBlocks.looseDirtSlab) newBlock = BTWBlocks.dirtSlab;
-        if (block == BTWBlocks.looseSparseGrass) {
-            newBlock = Block.grass;
-            newMeta = 1; // 1: Sparse
-        }
-        if (block == BTWBlocks.looseSparseGrassSlab) {
-            newBlock = BTWBlocks.grassSlab;
-            newMeta = 2; // 2: Sparse
-        }
-
-        if (newBlock != null) {
-
-            // Apply block or metadata changes
-            if (newBlock != block) {
-                world.setBlockWithNotify(x, y, z, newBlock.blockID);
-                swapped = true;
-            }
-            if (newMeta != meta) {
-                world.setBlockMetadataWithNotify(x, y, z, newMeta);
-                swapped = true;
-            }
-
-            if (!world.isRemote && swapped) {
-                world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
-            }
-        }
-
-        return swapped;
-    }
-
-    /**
-     * Sparse conversion:
-     * - Grass → sparse grass
-     * - Sparse grass → dirt
-     */
-    public static boolean sparsen(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
-        if (BlockTags.isNot(block, meta, BlockTag.GRASS)) return false;
-
-        boolean swapped = false;
-        Block newBlock = null;
-        int newMeta = meta;
-
-        if (BlockTags.is(block, meta, BlockTag.CUBE)) {
-            // firm fully-grown grass block → firm sparse grass block
-            if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.FULLY_GROWN)) {
-                newBlock = block;
-                newMeta = 1; // 1: Sparse
-            }
-            // firm sparse → firm dirt
-            else if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.SPARSE)) {
-                newBlock = Block.dirt;
-                newMeta = 0; // dirt has no sparse variant
-            }
-            // loose sparse grass → loose dirt
-            else if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.SPARSE)) {
-                newBlock = BTWBlocks.looseDirt;
-            }
-            // LOOSE and FULLY_GROWN is not possible
-
-        } else if (BlockTags.is(block, meta, BlockTag.SLAB)) {
-            // firm fully-grown grass slab → firm sparse grass slab
-            if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.FULLY_GROWN)) {
-                newBlock = block;
-                newMeta = 2; // 2: Sparse
-            }
-            // firm sparse slab → firm dirt slab
-            else if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.SPARSE)) {
-                newBlock = BTWBlocks.dirtSlab;
-                newMeta = 0; // no longer needs sparseness metadata value
-            }
-            // loose sparse slab → loose dirt slab
-            else if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.SPARSE)) {
-                newBlock = BTWBlocks.looseDirtSlab;
-            }
-            // LOOSE while FULLY_GROWN is not possible
-
-        }
-
-        if (newBlock != null) {
-            final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
-            if (!world.isRemote && world.rand.nextInt(VERY_LOW_HEMP_SEED_CHANCE) == 0) {
-                ItemUtils.ejectStackFromBlockTowardsFacing(world, x, y, z,
-                        new ItemStack(BTWItems.hempSeeds), fromSide);
-            }
-
-            // Apply block or metadata changes
-            if (newBlock != block) {
-                world.setBlockWithNotify(x, y, z, newBlock.blockID);
-                swapped = true;
-            }
-            if (newMeta != meta) {
-                world.setBlockMetadataWithNotify(x, y, z, newMeta);
-                swapped = true;
-            }
-
-            if (!world.isRemote && swapped) {
-                world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
-            }
-        }
-
-        return swapped;
+    private static void debug(String message) {
+        if (DEBUG) System.out.println(message);
     }
 }
