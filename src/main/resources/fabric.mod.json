@@ -3,13 +3,13 @@
   "id": "sbtt",
   "version": "${version}",
   "name": "Slightly Better Terrible Tools",
-  "description": "This addon increases the usability of the worst tools, slightly.",
+  "description": " SBTT is an addon for Better Than Wolves CE 3.0.0 that makes early-game tools more comfortable, viable, intuitive, and interesting to use (without making them good).",
   "authors": [
     "Abigail Read"
   ],
   "contact": {
-    "homepage": "https://github.com/abbyread",
-    "sources": "https://github.com/abbyread/BTW-SlightlyBetterTerribleTools"
+    "homepage": "https://github.com/BTW-Community/Slightly_Better_Terrible_Tools",
+    "sources": "https://github.com/BTW-Community/Slightly_Better_Terrible_Tools"
   },
   "license": "0BSD",
   "icon": "assets/abbyread/sbtt/icon.png",
