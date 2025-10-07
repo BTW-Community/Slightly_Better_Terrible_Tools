@@ -45,12 +45,22 @@ public class BlockMixin {
         int meta = world.getBlockMetadata(x, y, z);
 
         Set<BlockTag> tags = BlockTags.of(self, meta);
+        if (tags.contains(BlockTag.LOG)) {
+            float base = cir.getReturnValue();
+            cir.setReturnValue(base * Efficiency.modifier);
+        }
+
         if (tags.contains(BlockTag.LOOSE_DIRTLIKE)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier * 1.5F);
         }
 
-        if (tags.contains(BlockTag.LOG)) {
+        if (tags.contains(BlockTag.SAND)) {
+            float base = cir.getReturnValue();
+            cir.setReturnValue(base * Efficiency.modifier * 1.25F);
+        }
+
+        if (tags.contains(BlockTag.GRAVEL)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier);
         }

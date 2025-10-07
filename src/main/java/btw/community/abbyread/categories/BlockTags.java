@@ -19,10 +19,7 @@ public class BlockTags {
             BTWBlocks.looseDirt,
             BTWBlocks.looseDirtSlab,
             BTWBlocks.looseSparseGrass,
-            BTWBlocks.looseSparseGrassSlab,
-            BTWBlocks.sandAndGravelSlab,
-            Block.sand,
-            Block.gravel
+            BTWBlocks.looseSparseGrassSlab
     );
 
     private static final Set<Block> DIRT_BLOCKS = Set.of(
@@ -214,6 +211,12 @@ public class BlockTags {
 
         if (isFirm(block, metadata)) tags.add(BlockTag.FIRM);
         if (block == Block.web || block == BTWBlocks.web) tags.add(BlockTag.WEB);
+        if (block == Block.sand ||
+                (block == BTWBlocks.sandAndGravelSlab && (((SandAndGravelSlabBlock)block).getSubtypeFromMetadata(metadata)
+                        == SandAndGravelSlabBlock.SUBTYPE_SAND))) tags.add(BlockTag.SAND);
+        if (block == Block.gravel ||
+                (block == BTWBlocks.sandAndGravelSlab && (((SandAndGravelSlabBlock)block).getSubtypeFromMetadata(metadata)
+                        == SandAndGravelSlabBlock.SUBTYPE_GRAVEL))) tags.add(BlockTag.GRAVEL);
 
         // --- Metadata-dependent tags ---
         if (isDirt(block, metadata)) tags.add(BlockTag.DIRT);
