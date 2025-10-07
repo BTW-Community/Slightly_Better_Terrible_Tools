@@ -24,7 +24,7 @@ public class ChiselItemStoneMixin {
         float mod = 1.5F;
 
         // *** Specific-to-sharp-stone use boost (cutting grass) ***
-        if (BlockTags.is(block, meta, BlockTag.GRASS)) {
+        if (BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.FIRM)) {
             float base = cir.getReturnValue();
             float modifier = Efficiency.modifier * mod;
             cir.setReturnValue(base * modifier);
