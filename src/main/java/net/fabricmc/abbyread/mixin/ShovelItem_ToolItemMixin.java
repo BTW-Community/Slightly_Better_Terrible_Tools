@@ -26,7 +26,7 @@ public class ShovelItem_ToolItemMixin {
         int clickedBlockMeta = world.getBlockMetadata(x, y, z);
 
         if (BlockTags.isAll(clickedBlock, clickedBlockMeta, BlockTag.LOOSE_DIRTLIKE, BlockTag.DIRTLIKE)) {
-            if (Convert.convert(stack, clickedBlock, clickedBlockMeta, world, x, y, z, iFacing)) {
+            if (Convert.firm(stack, clickedBlock, clickedBlockMeta, world, x, y, z, iFacing)) {
                 if (!world.isRemote) {
                     stack.damageItem(1, player);
                 }

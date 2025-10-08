@@ -46,12 +46,8 @@ public class Convert {
             return result;
         }
 
-        if (ItemTags.is(stack, ItemTag.SHOVEL)) {
-            boolean result = BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE);
-            debug("Checking SHOVEL: " + result);
-            return result;
-        }
-
+        // canConvert avoiding shovel in favor of manually assigning from their respective onItemUse method injects.
+        //  - it was causing accidental conversions when digging when I had it here.
         return false;
     }
 
@@ -70,7 +66,7 @@ public class Convert {
             return sparsen(stack, block, meta, world, x, y, z, fromSide);
         }
 
-        if ((ItemTags.is(stack, ItemTag.CLUB) || ItemTags.is(stack, ItemTag.SHOVEL))
+        if ((ItemTags.is(stack, ItemTag.CLUB))
                 && BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
             debug("Using firm conversion");
             return firm(stack, block, meta, world, x, y, z, fromSide);
