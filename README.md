@@ -30,13 +30,6 @@ feature to prevent tedious item swapping, secondarily to telegraph purpose(s) of
 - Cuts grass in stages with a VERY low chance for hemp seeds
 - Chips through the final stages of rough stone at half speed (as opposed to zero boost)
 
-**Changes to Iron & Diamond Chisel (Contextually-Necessary)**
-- Scaled efficiency improvements on:
-    - Loose masonry blocks
-    - Solid stone-like blocks
-    - Shatterable blocks
-    - Web blocks
-
 **Stone Shovel**
 - No longer disturbs neighboring dirt/grass blocks when digging.
 - Can firm up loose dirt-like blocks instantly by right-clicking (costs 1 durability).
@@ -46,9 +39,18 @@ feature to prevent tedious item swapping, secondarily to telegraph purpose(s) of
 **Clubs (Wood & Bone)**
 - Can firm up loose dirt-like blocks SLOWLY (costs 2 durability)
 
+**Changes to Higher Level Tools (Contextually-Necessary)**
+- Iron and better shovels can also firm-up loose dirt
+- Iron chisel and diamond chisel efficiency boosts toward:
+    - Loose masonry blocks
+    - Solid stone-like blocks
+    - Shatterable blocks
+    - Web blocks
+
 **Planned Changes/Features**
 - Add a tiered damage system to shovels and axes to make you not as hesitant to use them on soft, easy materials.
-- Add an option for the end user to configure things such as the efficiency boosts to their liking.
+- Allow higher tier shovels to pack dirt (2:1 ratio for firm dirt and packed earth) instantly via right-click
+- Allow bone club to SLOWLY pack dirt by holding left click (costs 2 durability)
 
 ### Block Changes
 
