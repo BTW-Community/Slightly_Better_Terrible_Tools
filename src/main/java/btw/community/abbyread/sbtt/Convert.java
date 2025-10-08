@@ -11,11 +11,15 @@ import btw.item.util.ItemUtils;
 import net.minecraft.src.Block;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
+import org.lwjgl.Sys;
 
 public class Convert {
 
     private static final boolean DEBUG = false;
     private static final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
+
+    public static boolean justConverted = false;
+    public static int itemDamageAmount = 1;
 
     // ---------- Public Methods ----------
 
@@ -23,6 +27,7 @@ public class Convert {
         if (stack == null || block == null) return false;
 
         if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) {
+            System.out.println("via canConvert... Block tags: " + BlockTags.getTags(block, meta));
             boolean result = BlockTags.is(block, meta, BlockTag.FIRM) &&
                     (BlockTags.is(block, meta, BlockTag.DIRT) || BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE));
             debug("Checking WOOD+CHISEL: " + result);
@@ -105,16 +110,27 @@ public class Convert {
 
         Block newBlock = null;
         int newMeta = meta;
+        boolean toSwap = false;
 
-        if (block == BTWBlocks.looseDirt) newBlock = Block.dirt;
-        else if (block == BTWBlocks.looseDirtSlab) newBlock = BTWBlocks.dirtSlab;
+        if (block == BTWBlocks.looseDirt) {
+            newBlock = Block.dirt;
+            toSwap = true;
+        }
+        else if (block == BTWBlocks.looseDirtSlab) {
+            newBlock = BTWBlocks.dirtSlab;
+            toSwap = true;
+        }
         else if (block == BTWBlocks.looseSparseGrass) {
             newBlock = Block.grass;
             newMeta = 1;
+            toSwap = true;
         } else if (block == BTWBlocks.looseSparseGrassSlab) {
             newBlock = BTWBlocks.grassSlab;
             newMeta = 2;
+            toSwap = true;
         }
+
+        if (toSwap && ItemTags.is(stack, ItemTag.CLUB)) itemDamageAmount = 2;
 
         return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
     }
@@ -177,6 +193,7 @@ public class Convert {
         }
 
         if (!world.isRemote && swapped) {
+            justConverted = true;
             world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
         }
 
