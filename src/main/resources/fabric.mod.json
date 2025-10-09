@@ -26,7 +26,7 @@
     "btw:addon_prefix": "EX"
   },
   "mixins": [
-    "mixins.abbyread.json"
+    "mixins.abbyread.sbtt.json"
   ],
   "depends": {
     "fabricloader": ">=0.14.19",
