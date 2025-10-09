@@ -25,6 +25,12 @@ public class ItemUseRegistry {
                 Set.of(ItemTag.HOE),
                 Set.of(BlockTag.GRASS)
         ));
+
+        // Special case: HOE on DIRT-tagged blocks
+        ITEM_USE_COMBOS.add(new ItemUseCombo(
+                Set.of(ItemTag.HOE),
+                Set.of(BlockTag.DIRT)
+        ));
     }
 
     /**
