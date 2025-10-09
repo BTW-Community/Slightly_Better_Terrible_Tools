@@ -1,5 +1,6 @@
 package net.fabricmc.abbyread.mixin;
 
+import btw.community.abbyread.categories.ItemUseRegistry;
 import btw.community.abbyread.sbtt.Convert;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,18 +30,24 @@ public class ItemStackMixin {
         player.inventory.mainInventory[player.inventory.currentItem] = null;
         float bareHandSpeed = block.getPlayerRelativeBlockHardness(player, world, x, y, z);
         player.inventory.mainInventory[player.inventory.currentItem] = held;
-
         float multiplier = (bareHandSpeed > 0.0f) ? (toolSpeed / bareHandSpeed) : toolSpeed;
 
-        boolean convertedBlock = Convert.justConverted;
+        // Transfer state from Convert globals to this locals
+        boolean conversionByTool = Convert.justConverted;
+        Convert.justConverted = false;
+        int itemDamageAmount = Convert.itemDamageAmount;
+        Convert.itemDamageAmount = 1; // default amount
+
+        // Account for special instances of tools helping without being faster
+        boolean specialCase = ItemUseRegistry.uniquelyUsefulCombo(self, block, world.getBlockMetadata(x, y, z));
+
+        boolean betterThanNothing = multiplier > 1.0f || conversionByTool || specialCase;
+
         // --- Only damage the tool if it was faster than bare hands ---
-        if (multiplier > 1.0f || convertedBlock) {
-            Convert.justConverted = false;
+        if (betterThanNothing) {
             boolean didAffectTool = Item.itemsList[self.itemID].onBlockDestroyed(self, world, blockId, x, y, z, player);
-            int itemDamage = Convert.itemDamageAmount; // in case it has been set to more damage temporarily
-            Convert.itemDamageAmount = 1; // reset to the default after assigning to local.
             if (didAffectTool) {
-                player.addStat(StatList.objectUseStats[self.itemID], itemDamage);
+                player.addStat(StatList.objectUseStats[self.itemID], itemDamageAmount);
             }
 
             if (DEBUG) {

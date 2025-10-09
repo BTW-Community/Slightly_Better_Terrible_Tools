@@ -126,7 +126,8 @@ public class ItemTags {
     );
 
     private static final Set<Item> SHEARS = Set.of(
-            Item.shears
+            Item.shears,
+            BTWItems.diamondShears
     );
 
     private static final Set<Item> BATTLEAXES = Set.of(

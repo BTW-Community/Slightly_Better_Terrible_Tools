@@ -217,6 +217,7 @@ public class BlockTags {
         if (block == Block.gravel ||
                 (block == BTWBlocks.sandAndGravelSlab && (((SandAndGravelSlabBlock)block).getSubtypeFromMetadata(metadata)
                         == SandAndGravelSlabBlock.SUBTYPE_GRAVEL))) tags.add(BlockTag.GRAVEL);
+        if (block == Block.tallGrass) tags.add(BlockTag.TALL_GRASS);
 
         // --- Metadata-dependent tags ---
         if (isDirt(block, metadata)) tags.add(BlockTag.DIRT);

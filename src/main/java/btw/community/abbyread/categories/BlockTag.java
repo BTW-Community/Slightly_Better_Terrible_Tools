@@ -61,5 +61,6 @@ public enum BlockTag {
     LUMINOUS,
 
     // Decoration
-    WEB
+    WEB,
+    TALL_GRASS
 }
