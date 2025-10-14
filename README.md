@@ -73,7 +73,7 @@ sparse loose grass remains so on drop, which is unique, as other grass types bec
 
 ## Installation
 
-1. Install Better Than Wolves: Community Edition 3.0.0 + Legacy Fabric by following along with the instructions on the [wiki](https://wiki.btwce.com/view/Main_Page).
+1. Install Better Than Wolves: Community Edition 3.0.0 + Legacy Fabric by following along with the instructions on the [wiki](https://wiki.btwce.com/view/3.0.0_Beta).
 2. Download this addon's JAR file from the Releases page.
 3. Place the addon JAR file in your `.minecraft/mods` folder
 4. Launch Minecraft, and it should display to chat on world load.
