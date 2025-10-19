@@ -4,6 +4,7 @@ import btw.AddonHandler;
 import btw.BTWAddon;
 import btw.block.BTWBlocks;
 import btw.crafting.recipe.RecipeManager;
+import btw.item.BTWItems;
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
@@ -25,6 +26,17 @@ public class SlightlyBetterTerribleTools extends BTWAddon {
                         new ItemStack(Item.slimeBall)
                 }
         );
+        RecipeManager.addShapelessRecipe(new ItemStack(Block.dirt ), new Object[] {
+                new ItemStack( BTWItems.dirtPile),
+                new ItemStack( BTWItems.dirtPile),
+                new ItemStack( BTWItems.dirtPile),
+                new ItemStack( BTWItems.dirtPile),
+                new ItemStack( BTWItems.dirtPile),
+                new ItemStack( BTWItems.dirtPile),
+                new ItemStack( BTWItems.dirtPile),
+                new ItemStack( BTWItems.dirtPile),
+                new ItemStack( Item.slimeBall)
+        });
     }
 
     @Override
