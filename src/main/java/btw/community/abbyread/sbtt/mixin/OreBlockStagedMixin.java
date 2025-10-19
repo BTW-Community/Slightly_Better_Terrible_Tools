@@ -20,7 +20,7 @@ public abstract class OreBlockStagedMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void btw$ironChiselsDropWholeOreButDiamondForHighOres(
+    private void sbtt$ironChiselsDropWholeOre(
             ItemStack stack, World world, int i, int j, int k,
             int iOldMetadata, int iFromSide,
             CallbackInfo ci
@@ -31,16 +31,11 @@ public abstract class OreBlockStagedMixin {
         int toolLevel = ((ToolItem) stack.getItem()).toolMaterial.getHarvestLevel();
         int oreRequiredLevel = self.getRequiredToolLevelForOre(world, i, j, k);
 
-        // --- Enforce harvest restriction ---
-        // If ore requires higher than diamond (edge case) or chisel too weak, skip drop.
         if (toolLevel < oreRequiredLevel) {
-            // Optional: could play a "fail" sound or particle effect
-            // but default BTW will just replace with rough stone anyway
             ci.cancel();
             return;
         }
 
-        // --- Determine if piles or full ore should drop ---
         boolean dropPiles;
 
         if (toolLevel >= 2) {
