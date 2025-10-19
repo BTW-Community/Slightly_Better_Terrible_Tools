@@ -26,7 +26,17 @@ public class SlightlyBetterTerribleTools extends BTWAddon {
                         new ItemStack(Item.slimeBall)
                 }
         );
-        RecipeManager.addShapelessRecipe(new ItemStack(Block.dirt ), new Object[] {
+        RecipeManager.addShapelessRecipe(
+                new ItemStack(Block.dirt, 1),
+                new Object[]{
+                        new ItemStack(BTWBlocks.looseDirtSlab),
+                        new ItemStack(BTWBlocks.looseDirtSlab),
+                        new ItemStack(Item.slimeBall)
+                }
+        );
+        RecipeManager.addShapelessRecipe(
+                new ItemStack(Block.dirt ),
+                new Object[] {
                 new ItemStack( BTWItems.dirtPile),
                 new ItemStack( BTWItems.dirtPile),
                 new ItemStack( BTWItems.dirtPile),
