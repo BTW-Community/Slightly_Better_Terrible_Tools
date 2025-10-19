@@ -1,4 +1,4 @@
-package net.fabricmc.abbyread.mixin;
+package btw.community.abbyread.sbtt.mixin;
 
 import btw.block.blocks.LooseSparseGrassBlock;
 import btw.community.abbyread.sbtt.Convert;

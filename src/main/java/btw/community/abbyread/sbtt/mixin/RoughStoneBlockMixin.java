@@ -1,4 +1,4 @@
-package net.fabricmc.abbyread.mixin;
+package btw.community.abbyread.sbtt.mixin;
 
 import btw.block.blocks.RoughStoneBlock;
 import net.minecraft.src.World;

@@ -1,4 +1,4 @@
-package net.fabricmc.abbyread.mixin;
+package btw.community.abbyread.sbtt.mixin;
 
 import btw.item.items.ToolItem;
 import org.spongepowered.asm.mixin.Mixin;

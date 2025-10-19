@@ -1,17 +1,30 @@
-package net.fabricmc.abbyread.mixin;
+package btw.community.abbyread.sbtt.mixin;
 
+import btw.block.BTWBlocks;
 import btw.client.fx.BTWEffectManager;
 import btw.community.abbyread.sbtt.Convert;
-import net.minecraft.src.*;
 import btw.item.items.ShovelItemStone;
+import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(BlockMycelium.class)
-public class BlockMyceliumMixin {
+@Mixin(BlockGrass.class)
+public abstract class BlockGrassMixin {
+
+    @Inject(
+        method = "onNeighborDirtDugWithImproperTool",
+        at = @At("HEAD"),
+        cancellable = true
+    )
+    private void abby$reimplementHardcoreGrassDrop(World world, int x, int y, int z, int toFacing, CallbackInfo ci) {
+        if (toFacing == 0) {
+            world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
+        }
+        ci.cancel();
+    }
 
     @Inject(method = "onBlockDestroyedWithImproperTool", at = @At("HEAD"), cancellable = true)
     private void abby$overrideDisturbanceFromStoneShovel(World world, EntityPlayer player, int x, int y, int z, int metadata, CallbackInfo ci) {
@@ -45,7 +58,9 @@ public class BlockMyceliumMixin {
         Block block = (Block)(Object)this;
         int meta = world.getBlockMetadata(x, y, z);
         if (Convert.convert(stack, block, meta, world, x, y, z, fromSide)) {
+            System.out.println("Convert.convert returned true.");
             cir.setReturnValue(true);
         }
     }
+
 }

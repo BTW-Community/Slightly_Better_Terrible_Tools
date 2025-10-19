@@ -1,4 +1,4 @@
-package net.fabricmc.abbyread.mixin;
+package btw.community.abbyread.sbtt.mixin;
 
 import btw.community.abbyread.categories.BlockTags;
 import net.minecraft.src.Block;

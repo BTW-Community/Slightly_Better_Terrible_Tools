@@ -1,18 +1,15 @@
-package net.fabricmc.abbyread.mixin;
+package btw.community.abbyread.sbtt.mixin;
 
 import btw.block.blocks.RoughStoneBlock;
 import net.minecraft.src.Block;
 import net.minecraft.src.World;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Block.class)
 public class RoughStoneBlock_BlockMixin {
-    @Shadow @Final public int blockID;
 
     // Changes hardness of last bits of rough stone block harvest since chisels
     //  were made effective on that part too.  Still gotta be slower to disincentivize mining mostly.

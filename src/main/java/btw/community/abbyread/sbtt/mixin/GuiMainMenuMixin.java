@@ -1,4 +1,4 @@
-package net.fabricmc.abbyread.mixin;
+package btw.community.abbyread.sbtt.mixin;
 
 import net.minecraft.src.GuiMainMenu;
 import net.minecraft.src.ResourceLocation;
