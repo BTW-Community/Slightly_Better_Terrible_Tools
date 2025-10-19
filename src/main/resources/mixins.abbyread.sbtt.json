@@ -16,7 +16,6 @@
     "ChiselItemWoodMixin",
     "ClubItem_ItemMixin",
     "ClubItemMixin",
-    "LooseSparseGrassBlock_BlockMixin",
     "ItemAccessor",
     "ItemInWorldManagerMixin",
     "ItemStackMixin",
