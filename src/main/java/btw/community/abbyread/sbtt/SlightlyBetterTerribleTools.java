@@ -2,6 +2,11 @@ package btw.community.abbyread.sbtt;
 
 import btw.AddonHandler;
 import btw.BTWAddon;
+import btw.block.BTWBlocks;
+import btw.crafting.recipe.RecipeManager;
+import net.minecraft.src.Block;
+import net.minecraft.src.Item;
+import net.minecraft.src.ItemStack;
 
 public class SlightlyBetterTerribleTools extends BTWAddon {
     private final float effMod = Efficiency.modifier;
@@ -13,6 +18,13 @@ public class SlightlyBetterTerribleTools extends BTWAddon {
     @Override
     public void initialize() {
         AddonHandler.logMessage(this.getName() + " Version " + this.getVersionString() + " with " + percentage + " Boost Initializing...");
+        RecipeManager.addShapelessRecipe(
+                new ItemStack(Block.dirt, 1),
+                new Object[]{
+                        new ItemStack(BTWBlocks.looseDirt),
+                        new ItemStack(Item.slimeBall)
+                }
+        );
     }
 
     @Override
