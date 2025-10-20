@@ -46,6 +46,9 @@ feature to prevent tedious item swapping, secondarily to telegraph purpose(s) of
     - Solid stone-like blocks
     - Shatterable blocks
     - Web blocks
+- Iron and diamond chisels now harvest whole ores
+  - This was done to match their use as viable diamond-harvesters already.
+  - It gives you a reason to use them up and hints at their existing gem-harvesting use.
 
 **Planned Changes/Features**
 - Add a tiered damage system to shovels and axes to make you not as hesitant to use them on soft, easy materials.
@@ -55,6 +58,7 @@ feature to prevent tedious item swapping, secondarily to telegraph purpose(s) of
 ### Block Changes
 
 **Loose Ground Digs Easier**: Loose dirt, loose grass, sand, and gravel are faster to dig up in general.
+- Relative speeds now (large to small boost: loose-dirt/grass > sand > gravel > firm-dirt/grass.
 
 **Restored Grass Block Disturbance**
 - If a dirt block below grass is destroyed by an improper tool (e.g., bare hands), the grass turns to loose dirt and falls.
@@ -62,10 +66,11 @@ feature to prevent tedious item swapping, secondarily to telegraph purpose(s) of
 - It is an interesting feature, and now it's not as annoying!
 - Remember, you can loosen the dirt below with a pointy stick, and stone shovels no longer disturb.
 
-**Planned Changes**
-- Make grass grow slower on firm dirt compared to loose dirt.
-- Unify grass type block drop mechanics.  Will probably make everything just turn into loose dirt.  As it is now,
-sparse loose grass remains so on drop, which is unique, as other grass types become loose dirt on falling.
+**New Recipes**
+- You can now make regular dirt out of loose dirt and a slime ball.  Specifically:
+  - 8 Dirt Piles + 1 Slime Ball = 1 Dirt Block (from 3x3 grid)
+  - 1 Loose Dirt Block + 1 Slime Ball = 1 Dirt Block
+  - 2 Loose Dirt Slabs + 1 Slime Ball = 1 Dirt Block
 
 ### Unrelated Fixes
 
