@@ -28,7 +28,8 @@ public class ShovelItem_ToolItemMixin {
         if (BlockTags.isAll(clickedBlock, clickedBlockMeta, BlockTag.LOOSE_DIRTLIKE, BlockTag.DIRTLIKE)) {
             if (Convert.firm(stack, clickedBlock, clickedBlockMeta, world, x, y, z, iFacing)) {
                 if (!world.isRemote) {
-                    stack.damageItem(10, player);
+                    stack.damageItem(1, player);
+                    System.out.println("Damaged.");
                 }
                 cir.setReturnValue(true);
             }

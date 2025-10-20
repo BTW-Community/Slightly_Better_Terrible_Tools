@@ -22,12 +22,9 @@ public class ClubItemMixin {
         int meta = world.getBlockMetadata(x, y, z);
 
         if (world.isRemote) return;
-        System.out.println("ClubItem.onBlockDestroyed() called.");
 
         if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
-            System.out.println("Block is dirtlike loose.");
             if (Convert.convert(stack, block, meta, world, x, y, z, 0)) {
-                System.out.println("Convert.convert() returned true.");
                 stack.damageItem(2, usingEntity);
             }
         }
