@@ -17,9 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ToolItem.class)
 public class ShovelItem_ToolItemMixin {
 
-    /**
-     * Handles the "firms loose dirtlike" feature.
-     */
     @Inject(method = "onItemUse", at = @At("RETURN"), cancellable = true)
     private void firmDirtlikes(ItemStack stack, EntityPlayer player, World world,
                                int x, int y, int z, int iFacing,
@@ -41,11 +38,6 @@ public class ShovelItem_ToolItemMixin {
         }
     }
 
-    /**
-     * Handles the dirt block push into another dirt block.
-     * Converts the target dirt block to grass-like aestheticEarth (variant 6).
-     * Plays dirt step sound if push cannot occur.
-     */
     @Inject(method = "onItemUse", at = @At("RETURN"), cancellable = true, remap = false)
     private void pushDirtBlock(ItemStack stack, EntityPlayer player, World world,
                                int x, int y, int z, int side,
