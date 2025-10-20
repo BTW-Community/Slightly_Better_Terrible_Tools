@@ -67,10 +67,13 @@ feature to prevent tedious item swapping, secondarily to telegraph purpose(s) of
 - Remember, you can loosen the dirt below with a pointy stick, and stone shovels no longer disturb.
 
 **New Recipes**
-- You can now make regular dirt out of loose dirt and a slime ball.  Specifically:
-  - 8 Dirt Piles + 1 Slime Ball = 1 Dirt Block (from 3x3 grid)
-  - 1 Loose Dirt Block + 1 Slime Ball = 1 Dirt Block
-  - 2 Loose Dirt Slabs + 1 Slime Ball = 1 Dirt Block
+- You can now make regular dirt out of loose dirt and a slime ball.
+  - This is primarily to use Slime Balls for something else beyond sticky pistons, and
+    because we needed a way to patch up holes in ceilings still.
+  - Specifically Recipes:
+      - 1 Loose Dirt Block + 1 Slime Ball --> 1 Dirt Block
+      - 2 Loose Dirt Slabs + 1 Slime Ball --> 1 Dirt Block
+      - 8 Dirt Piles + 1 Slime Ball --> 1 Dirt Block
 
 ### Unrelated Fixes
 
