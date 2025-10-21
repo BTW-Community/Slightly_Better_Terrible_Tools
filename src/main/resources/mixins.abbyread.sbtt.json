@@ -23,6 +23,7 @@
     "LooseSparseGrassBlockMixin",
     "MyceliumBlockMixin",
     "OreBlockStagedMixin",
+    "PlayerControllerMPMixin",
     "RoughStoneBlock_BlockMixin",
     "RoughStoneBlockMixin",
     "ShovelItem_ToolItemMixin",
