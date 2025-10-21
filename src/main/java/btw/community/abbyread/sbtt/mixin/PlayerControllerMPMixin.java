@@ -1,8 +1,5 @@
 package btw.community.abbyread.sbtt.mixin;
 
-import btw.community.abbyread.categories.ItemUseRegistry;
-import btw.community.abbyread.sbtt.Convert;
-import btw.community.abbyread.sbtt.ItemDamage;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -24,35 +21,12 @@ public class PlayerControllerMPMixin {
                                          int x, int y, int z, int side, Vec3 hitVec,
                                          CallbackInfoReturnable<Boolean> cir) {
         if (stack == null) return;
-        if (DEBUG) System.out.println(stack.getDisplayName() + " durability " + (stack.getMaxDamage() - stack.getItemDamage()));
-
-        if (checking || world == null || player == null) {
-            return;
-        }
-
-        checking = true;
-        try {
+        if (DEBUG) {
             Block block = Block.blocksList[world.getBlockId(x, y, z)];
             if (block == null) return;
-
-            // Transfer state from Convert globals
-            boolean conversionByTool = Convert.justConverted;
-            Convert.justConverted = false;
-            int itemDamageAmount = ItemDamage.amount;
-            ItemDamage.amount = 1;
-
-            // Checks if this item + block combo counts as "useful"
-            boolean specialCase = ItemUseRegistry.usefulRightClickCombo(stack, block, world.getBlockMetadata(x, y, z));
-
-            // Only damage if conversion or special case triggered
-            boolean shouldDamage = conversionByTool || specialCase;
-
-            if (shouldDamage) {
-                player.addStat(StatList.objectUseStats[stack.itemID], itemDamageAmount);
-            }
-
-        } finally {
-            checking = false;
+            int meta = world.getBlockMetadata(x, y, z);
+            System.out.println(block.getClass() + " with meta: " + meta);
+            System.out.println(stack.getDisplayName() + " durability " + (stack.getMaxDamage() - stack.getItemDamage()));
         }
     }
 }
