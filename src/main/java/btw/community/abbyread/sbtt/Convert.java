@@ -17,7 +17,7 @@ import net.minecraft.src.World;
 @SuppressWarnings("UnnecessaryLocalVariable")
 public class Convert {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
 
     public static boolean justConverted = false;
@@ -71,8 +71,10 @@ public class Convert {
     // Right-click-usage conversions
     public static boolean trySecondaryConvert(ItemStack stack, EntityPlayer player, Block block, int meta, World world, int x, int y, int z, int side) {
         if (secondaryCanConvert(stack, block, meta, world, x, y, z, side)) {
+            if (!world.isRemote) System.out.println("secondaryCanConvert returned true.");
             return secondaryConvert(stack, player, block, meta, world, x, y, z, side);
         }
+        if (!world.isRemote) System.out.println("secondaryCanConvert returned false.");
         return false;
     }
 
@@ -80,13 +82,16 @@ public class Convert {
         if (stack == null || block == null) return false;
 
         // firming
-        if (ItemTags.is(stack, ItemTag.SHOVEL)) {
-            return BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE);
+        if (ItemTags.is(stack, ItemTag.SHOVEL) &&
+                BlockTags.is(block, meta, BlockTag.LOOSE_DIRTLIKE)) {
+            return true;
         }
 
         // packing
-        if (ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE)) {
-            return BlockTags.isAll(block, meta, BlockTag.DIRT, BlockTag.FIRM, BlockTag.CUBE);
+        if (ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE) &&
+                BlockTags.isAll(block, meta,
+                        BlockTag.DIRT, BlockTag.FIRM, BlockTag.CUBE)) {
+            return true;
         }
 
         return false;
@@ -109,7 +114,10 @@ public class Convert {
         if ((ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE))
                 && BlockTags.isAll(block, meta, BlockTag.DIRT, BlockTag.CUBE)) {
             debug("Converting dirt block to packed-earth slab");
-            return pack(stack, block, meta, world, x, y, z, side);
+            if (pack(stack, block, meta, world, x, y, z, side)) {
+                ItemDamage.damageByAmount(stack, player, 1);
+            }
+            return true;
         }
 
         return false;
@@ -124,15 +132,11 @@ public class Convert {
 
         Block newBlock = null;
         int newMeta = meta;
-        boolean toSwap = false;
 
         if (block == Block.dirt) {
             newBlock = BTWBlocks.dirtSlab;
             newMeta = DirtSlabBlock.SUBTYPE_PACKED_EARTH;
-            toSwap = true;
         }
-
-        // if (toSwap && ItemTags.is(stack, ItemTag.CLUB)) itemDamageAmount = 2;
 
         return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
     }
