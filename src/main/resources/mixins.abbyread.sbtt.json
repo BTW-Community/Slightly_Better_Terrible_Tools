@@ -28,8 +28,7 @@
     "RoughStoneBlockMixin",
     "ShovelItem_ToolItemMixin",
     "ShovelItemStoneMixin",
-    "ToolItemAccessor",
-    "ToolItemMixin"
+    "ToolItemAccessor"
   ],
   "client": [
     "GuiMainMenuMixin",

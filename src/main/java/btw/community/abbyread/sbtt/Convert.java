@@ -13,6 +13,7 @@ import net.minecraft.src.Block;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
 
+@SuppressWarnings("UnnecessaryLocalVariable")
 public class Convert {
 
     private static final boolean DEBUG = false;
@@ -27,22 +28,18 @@ public class Convert {
         if (stack == null || block == null) return false;
 
         if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) {
-            System.out.println("via canConvert... Block tags: " + BlockTags.getTags(block, meta));
             boolean result = BlockTags.is(block, meta, BlockTag.FIRM) &&
                     (BlockTags.is(block, meta, BlockTag.DIRT) || BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE));
-            debug("Checking WOOD+CHISEL: " + result);
             return result;
         }
 
         if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL)) {
             boolean result = BlockTags.is(block, meta, BlockTag.GRASS);
-            debug("Checking STONE+CHISEL: " + result);
             return result;
         }
 
         if (ItemTags.is(stack, ItemTag.CLUB)) {
             boolean result = BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE);
-            debug("Checking CLUB: " + result);
             return result;
         }
         return false;
@@ -50,8 +47,6 @@ public class Convert {
 
     public static boolean convert(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
         if (stack == null || block == null) return false;
-
-        debug("convert called with stack=" + stack + ", block=" + block + ", meta=" + meta + ", coords=(" + x + "," + y + "," + z + ")");
 
         if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL) && canConvert(stack, block, meta)) {
             debug("Using loosen conversion");

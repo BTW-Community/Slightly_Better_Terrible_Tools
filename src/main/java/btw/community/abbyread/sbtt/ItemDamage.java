@@ -1,26 +1,46 @@
 package btw.community.abbyread.sbtt;
 
-import net.minecraft.src.Block;
-import net.minecraft.src.EntityLivingBase;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.World;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import btw.community.abbyread.categories.ItemUseRegistry;
+import net.minecraft.src.*;
 
 public class ItemDamage {
+    public static int amount = 1; // default amount if damaging item
 
-    public static int amount = 1;
-    public boolean tryDamage(ItemStack stack, World world, int iBlockID, int x, int y, int z, EntityLivingBase usingEntity, CallbackInfoReturnable<Boolean> cir) {
-        if (Block.blocksList[iBlockID].getBlockHardness(world, x, y, z) > 0.0f) {
+    // Check if valid to damage, apply amount if so, and return applied amount
+    @SuppressWarnings("UnusedReturnValue")
+    public static int tryDamage(ItemStack stack, World world, int blockID, int x, int y, int z, EntityPlayer player) {
 
+        Block block = Block.blocksList[blockID];
+        if (block == null) return 0; // no valid block found from blockID
 
+        // Get efficiency end-point with held item, with nothing, and compare the two
+        float toolSpeed = block.getPlayerRelativeBlockHardness(player, world, x, y, z);
+        ItemStack held = player.inventory.mainInventory[player.inventory.currentItem];
+        player.inventory.mainInventory[player.inventory.currentItem] = null;
+        float bareHandSpeed = block.getPlayerRelativeBlockHardness(player, world, x, y, z);
+        player.inventory.mainInventory[player.inventory.currentItem] = held;
+        float multiplier = (bareHandSpeed > 0.0f) ? (toolSpeed / bareHandSpeed) : toolSpeed;
 
-            // default damage amount
-            doDamage(stack, usingEntity, 1);
+        if (multiplier > 1.0f) return damageByAmount(stack, player, amount);
+
+        // Transfer state from Convert globals
+        boolean conversionByTool = Convert.justConverted;
+        Convert.justConverted = false;
+
+        boolean specialCase = ItemUseRegistry.usefulLeftClickCombo(stack, block, world.getBlockMetadata(x, y, z));
+        boolean betterThanNothing = conversionByTool || specialCase;
+
+        if (betterThanNothing) {
+            return damageByAmount(stack, player, amount);
         }
-        return true;
+
+        // no damage is the default
+        return 0;
     }
 
-    private void doDamage(ItemStack stack, EntityLivingBase usingEntity, int amount) {
-        stack.damageItem(amount, usingEntity);
+    private static int damageByAmount(ItemStack stack, EntityPlayer player, int amount) {
+        player.addStat(StatList.objectUseStats[stack.itemID], 1);
+        stack.damageItem(amount, player);
+        return amount;
     }
 }
