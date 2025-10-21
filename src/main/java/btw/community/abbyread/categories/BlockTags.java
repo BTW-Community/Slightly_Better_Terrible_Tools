@@ -52,6 +52,7 @@ public class BlockTags {
             Block.mycelium,
             Block.sand,
             Block.stone,
+            BTWBlocks.aestheticEarth,
             BTWBlocks.creeperOysterBlock,
             BTWBlocks.looseBrick,
             BTWBlocks.looseCobblestone,
@@ -265,8 +266,9 @@ public class BlockTags {
     private static boolean isPackedEarth(Block block, int metadata) {
         if (block instanceof AestheticOpaqueEarthBlock)
             return metadata == AestheticOpaqueEarthBlock.SUBTYPE_PACKED_EARTH;
+        // DirtSlabBlock.SUBTYPE_PACKED_EARTH gives 3, which is actually wrong.
         if (block instanceof DirtSlabBlock)
-            return metadata == DirtSlabBlock.SUBTYPE_PACKED_EARTH;
+            return metadata == 6;
         return false;
     }
 
