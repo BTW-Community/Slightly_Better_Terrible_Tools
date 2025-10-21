@@ -2,6 +2,7 @@ package btw.community.abbyread.sbtt.mixin;
 
 import btw.community.abbyread.categories.ItemUseRegistry;
 import btw.community.abbyread.sbtt.Convert;
+import btw.community.abbyread.sbtt.ItemDamage;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -41,8 +42,8 @@ public class ItemStackMixin {
             // Transfer state from Convert globals
             boolean conversionByTool = Convert.justConverted;
             Convert.justConverted = false;
-            int itemDamageAmount = Convert.itemDamageAmount;
-            Convert.itemDamageAmount = 1; // default
+            int itemDamageAmount = ItemDamage.amount;
+            ItemDamage.amount = 1; // default
 
             boolean specialCase = ItemUseRegistry.usefulLeftClickCombo(self, block, world.getBlockMetadata(x, y, z));
             boolean betterThanNothing = multiplier > 1.0f || conversionByTool || specialCase;
@@ -50,7 +51,7 @@ public class ItemStackMixin {
             if (betterThanNothing) {
                 boolean didAffectTool = Item.itemsList[self.itemID].onBlockDestroyed(self, world, blockId, x, y, z, player);
                 if (didAffectTool) {
-                    player.addStat(StatList.objectUseStats[self.itemID], itemDamageAmount);
+                    player.addStat(StatList.objectUseStats[self.itemID], 1);
                 }
 
                 if (DEBUG) {

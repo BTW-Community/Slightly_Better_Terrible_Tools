@@ -2,6 +2,7 @@ package btw.community.abbyread.sbtt.mixin;
 
 import btw.community.abbyread.categories.ItemUseRegistry;
 import btw.community.abbyread.sbtt.Convert;
+import btw.community.abbyread.sbtt.ItemDamage;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -9,18 +10,23 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@SuppressWarnings("FieldCanBeLocal")
 @Mixin(PlayerControllerMP.class)
 public class PlayerControllerMPMixin {
 
-    @Unique
-    private boolean checking = false;
+    @Unique private boolean DEBUG = true;
+
+    @Unique private boolean checking = false;
 
     @Inject(method = "onPlayerRightClick",
             at = @At("RETURN"))
-    public void onPlayerRightClickDamage(EntityPlayer player, World world, ItemStack stack,
+    public void sbtt$onPlayerRightClick(EntityPlayer player, World world, ItemStack stack,
                                          int x, int y, int z, int side, Vec3 hitVec,
                                          CallbackInfoReturnable<Boolean> cir) {
-        if (checking || world == null || player == null || stack == null) {
+        if (stack == null) return;
+        if (DEBUG) System.out.println(stack.getDisplayName() + " durability " + (stack.getMaxDamage() - stack.getItemDamage()));
+
+        if (checking || world == null || player == null) {
             return;
         }
 
@@ -32,8 +38,8 @@ public class PlayerControllerMPMixin {
             // Transfer state from Convert globals
             boolean conversionByTool = Convert.justConverted;
             Convert.justConverted = false;
-            int itemDamageAmount = Convert.itemDamageAmount;
-            Convert.itemDamageAmount = 1;
+            int itemDamageAmount = ItemDamage.amount;
+            ItemDamage.amount = 1;
 
             // Checks if this item + block combo counts as "useful"
             boolean specialCase = ItemUseRegistry.usefulRightClickCombo(stack, block, world.getBlockMetadata(x, y, z));
@@ -42,10 +48,7 @@ public class PlayerControllerMPMixin {
             boolean shouldDamage = conversionByTool || specialCase;
 
             if (shouldDamage) {
-                boolean didAffectTool = stack.getItem().onBlockDestroyed(stack, world, block.blockID, x, y, z, player);
-                if (didAffectTool) {
-                    player.addStat(StatList.objectUseStats[stack.itemID], itemDamageAmount);
-                }
+                player.addStat(StatList.objectUseStats[stack.itemID], itemDamageAmount);
             }
 
         } finally {

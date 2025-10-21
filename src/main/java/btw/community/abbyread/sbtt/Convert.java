@@ -1,6 +1,7 @@
 package btw.community.abbyread.sbtt;
 
 import btw.block.BTWBlocks;
+import btw.block.blocks.DirtSlabBlock;
 import btw.client.fx.BTWEffectManager;
 import btw.community.abbyread.categories.BlockTags;
 import btw.community.abbyread.categories.BlockTag;
@@ -11,7 +12,6 @@ import btw.item.util.ItemUtils;
 import net.minecraft.src.Block;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
-import org.lwjgl.Sys;
 
 public class Convert {
 
@@ -19,10 +19,10 @@ public class Convert {
     private static final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
 
     public static boolean justConverted = false;
-    public static int itemDamageAmount = 1;
 
     // ---------- Public Methods ----------
 
+    // Left-click-held conversions
     public static boolean canConvert(ItemStack stack, Block block, int meta) {
         if (stack == null || block == null) return false;
 
@@ -45,9 +45,6 @@ public class Convert {
             debug("Checking CLUB: " + result);
             return result;
         }
-
-        // canConvert avoiding shovel in favor of manually assigning from their respective onItemUse method injects.
-        //  - it was causing accidental conversions when digging when I had it here.
         return false;
     }
 
@@ -75,7 +72,71 @@ public class Convert {
         return false;
     }
 
+    // Right-click-usage conversions
+    public static boolean trySecondaryConvert(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int side) {
+        if (secondaryCanConvert(stack, block, meta, world, x, y, z, side)) {
+            return secondaryConvert(stack, block, meta, world, x, y, z, side);
+        }
+        return false;
+    }
+
+    public static boolean secondaryCanConvert(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int side) {
+        if (stack == null || block == null) return false;
+
+        // firming
+        if (ItemTags.is(stack, ItemTag.SHOVEL)) {
+            return BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE);
+        }
+
+        // packing
+        if (ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE)) {
+            return BlockTags.isAll(block, meta, BlockTag.DIRT, BlockTag.FIRM, BlockTag.CUBE);
+        }
+
+        return false;
+    }
+
+    public static boolean secondaryConvert(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int side) {
+        if (stack == null || block == null) return false;
+
+        debug("secondaryConvert called with stack=" + stack + ", block=" + block + ", meta=" + meta + ", coords=(" + x + "," + y + "," + z + ")");
+
+        if ((ItemTags.is(stack, ItemTag.SHOVEL))
+                && BlockTags.is(block, meta, BlockTag.LOOSE_DIRTLIKE)) {
+            debug("Using firm conversion");
+            return firm(stack, block, meta, world, x, y, z, side);
+        }
+
+        if ((ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE))
+                && BlockTags.isAll(block, meta, BlockTag.DIRT, BlockTag.CUBE)) {
+            debug("Converting dirt block to packed-earth slab");
+            return pack(stack, block, meta, world, x, y, z, side);
+        }
+
+        return false;
+    }
+
     // ---------- Conversion Methods ----------
+
+
+    public static boolean pack(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
+        debug("pack called for block=" + block + ", meta=" + meta + " at (" + x + "," + y + "," + z + ")");
+        if (BlockTags.isNotAll(block, meta, BlockTag.DIRT, BlockTag.CUBE)) return false;
+
+        Block newBlock = null;
+        int newMeta = meta;
+        boolean toSwap = false;
+
+        if (block == Block.dirt) {
+            newBlock = BTWBlocks.dirtSlab;
+            newMeta = DirtSlabBlock.SUBTYPE_PACKED_EARTH;
+            toSwap = true;
+        }
+
+        // if (toSwap && ItemTags.is(stack, ItemTag.CLUB)) itemDamageAmount = 2;
+
+        return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
+    }
 
     public static boolean loosen(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
         debug("loosen called for block=" + block + ", meta=" + meta + " at (" + x + "," + y + "," + z + ")");
@@ -126,7 +187,7 @@ public class Convert {
             toSwap = true;
         }
 
-        if (toSwap && ItemTags.is(stack, ItemTag.CLUB)) itemDamageAmount = 2;
+        if (toSwap && ItemTags.is(stack, ItemTag.CLUB)) ItemDamage.amount = 2;
 
         return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
     }

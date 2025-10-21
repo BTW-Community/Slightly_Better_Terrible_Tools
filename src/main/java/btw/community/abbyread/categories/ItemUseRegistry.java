@@ -1,6 +1,8 @@
 package btw.community.abbyread.categories;
 
+import btw.item.BTWItems;
 import net.minecraft.src.Block;
+import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 
 import java.util.HashSet;
@@ -42,12 +44,19 @@ public class ItemUseRegistry {
                 Set.of(BlockTag.LOOSE_DIRTLIKE)
         ));
 
-        // Special case: Shovel secondary use on regular dirt blocks and slabs (to make packed earth)
+        // Special case: >= iron shovel secondary use on regular dirt blocks (to make packed earth slab)
         RIGHTCLICK_COMBOS.add(new ItemUseCombo(
-                Set.of(ItemTag.SHOVEL),
-                Set.of(BlockTag.DIRT, BlockTag.FIRM)
+                Item.shovelIron,
+                Block.dirt
         ));
-
+        RIGHTCLICK_COMBOS.add(new ItemUseCombo(
+                Item.shovelDiamond,
+                Block.dirt
+        ));
+        RIGHTCLICK_COMBOS.add(new ItemUseCombo(
+                BTWItems.steelShovel,
+                Block.dirt
+        ));
     }
 
     /**
