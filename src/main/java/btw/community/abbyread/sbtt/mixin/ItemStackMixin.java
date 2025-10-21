@@ -38,8 +38,8 @@ public class ItemStackMixin {
         int itemDamageAmount = Convert.itemDamageAmount;
         Convert.itemDamageAmount = 1; // default amount
 
-        // Account for special instances of tools helping without being faster
-        boolean specialCase = ItemUseRegistry.uniquelyUsefulCombo(self, block, world.getBlockMetadata(x, y, z));
+        // Checks if the selected item and the block count as being useful, regardless of efficiency.
+        boolean specialCase = ItemUseRegistry.usefulLeftClickCombo(self, block, world.getBlockMetadata(x, y, z));
 
         boolean betterThanNothing = multiplier > 1.0f || conversionByTool || specialCase;
 
@@ -61,7 +61,7 @@ public class ItemStackMixin {
             }
         }
 
-        // Cancel original to prevent double-calling
+        // Cancel original to prevent default behavior of damaging regardless
         ci.cancel();
     }
 }

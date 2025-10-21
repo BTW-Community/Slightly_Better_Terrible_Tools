@@ -11,33 +11,60 @@ import java.util.Set;
  */
 public class ItemUseRegistry {
 
-    private static final Set<ItemUseCombo> ITEM_USE_COMBOS = new HashSet<>();
+    private static final Set<ItemUseCombo> LEFTCLICK_COMBOS = new HashSet<>();
 
     static {
         // Special case: SHEARS on tall grass
-        ITEM_USE_COMBOS.add(new ItemUseCombo(
+        LEFTCLICK_COMBOS.add(new ItemUseCombo(
                 Set.of(ItemTag.SHEARS),
                 Set.of(BlockTag.TALL_GRASS)
         ));
 
         // Special case: HOE on GRASS-tagged blocks
-        ITEM_USE_COMBOS.add(new ItemUseCombo(
+        LEFTCLICK_COMBOS.add(new ItemUseCombo(
                 Set.of(ItemTag.HOE),
                 Set.of(BlockTag.GRASS)
         ));
 
         // Special case: HOE on DIRT-tagged blocks
-        ITEM_USE_COMBOS.add(new ItemUseCombo(
+        LEFTCLICK_COMBOS.add(new ItemUseCombo(
                 Set.of(ItemTag.HOE),
                 Set.of(BlockTag.DIRT)
         ));
     }
 
+    private static final Set<ItemUseCombo> RIGHTCLICK_COMBOS = new HashSet<>();
+
+    static {
+        // Special case: Shovel secondary use on loose dirt/grass (for firming)
+        RIGHTCLICK_COMBOS.add(new ItemUseCombo(
+                Set.of(ItemTag.SHOVEL),
+                Set.of(BlockTag.LOOSE_DIRTLIKE)
+        ));
+
+        // Special case: Shovel secondary use on regular dirt blocks and slabs (to make packed earth)
+        RIGHTCLICK_COMBOS.add(new ItemUseCombo(
+                Set.of(ItemTag.SHOVEL),
+                Set.of(BlockTag.DIRT, BlockTag.FIRM)
+        ));
+
+    }
+
     /**
-     * Checks if the given item stack can be used on the given block for a special case.
+     * Checks for special item-on-block combo, left-click, held-to-destruction
      */
-    public static boolean uniquelyUsefulCombo(ItemStack stack, Block block, int metadata) {
-        for (ItemUseCombo combo : ITEM_USE_COMBOS) {
+    public static boolean usefulLeftClickCombo(ItemStack stack, Block block, int metadata) {
+        for (ItemUseCombo combo : LEFTCLICK_COMBOS) {
+            if (combo.matches(stack, block, metadata)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks for special item-on-block combo, right-click
+     */
+    public static boolean usefulRightClickCombo(ItemStack stack, Block block, int metadata) {
+        for (ItemUseCombo combo : RIGHTCLICK_COMBOS) {
             if (combo.matches(stack, block, metadata)) return true;
         }
         return false;
