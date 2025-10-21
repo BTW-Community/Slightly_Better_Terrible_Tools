@@ -10,6 +10,7 @@ import btw.community.abbyread.categories.ItemTags;
 import btw.item.BTWItems;
 import btw.item.util.ItemUtils;
 import net.minecraft.src.Block;
+import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
 
@@ -68,9 +69,9 @@ public class Convert {
     }
 
     // Right-click-usage conversions
-    public static boolean trySecondaryConvert(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int side) {
+    public static boolean trySecondaryConvert(ItemStack stack, EntityPlayer player, Block block, int meta, World world, int x, int y, int z, int side) {
         if (secondaryCanConvert(stack, block, meta, world, x, y, z, side)) {
-            return secondaryConvert(stack, block, meta, world, x, y, z, side);
+            return secondaryConvert(stack, player, block, meta, world, x, y, z, side);
         }
         return false;
     }
@@ -91,7 +92,7 @@ public class Convert {
         return false;
     }
 
-    public static boolean secondaryConvert(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int side) {
+    public static boolean secondaryConvert(ItemStack stack, EntityPlayer player, Block block, int meta, World world, int x, int y, int z, int side) {
         if (stack == null || block == null) return false;
 
         debug("secondaryConvert called with stack=" + stack + ", block=" + block + ", meta=" + meta + ", coords=(" + x + "," + y + "," + z + ")");
@@ -99,7 +100,10 @@ public class Convert {
         if ((ItemTags.is(stack, ItemTag.SHOVEL))
                 && BlockTags.is(block, meta, BlockTag.LOOSE_DIRTLIKE)) {
             debug("Using firm conversion");
-            return firm(stack, block, meta, world, x, y, z, side);
+            if (firm(stack, block, meta, world, x, y, z, side)) {
+                ItemDamage.damageByAmount(stack, player, 1);
+            }
+            return true;
         }
 
         if ((ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE))

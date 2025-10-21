@@ -38,7 +38,7 @@ public class ItemDamage {
         return 0;
     }
 
-    private static int damageByAmount(ItemStack stack, EntityPlayer player, int amount) {
+    public static int damageByAmount(ItemStack stack, EntityPlayer player, int amount) {
         player.addStat(StatList.objectUseStats[stack.itemID], 1);
         stack.damageItem(amount, player);
         return amount;

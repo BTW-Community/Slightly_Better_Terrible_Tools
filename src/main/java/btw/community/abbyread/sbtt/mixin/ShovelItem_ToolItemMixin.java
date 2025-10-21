@@ -27,6 +27,6 @@ public class ShovelItem_ToolItemMixin {
         Block clickedBlock = Block.blocksList[blockID];
         int clickedBlockMeta = world.getBlockMetadata(x, y, z);
 
-        cir.setReturnValue(Convert.trySecondaryConvert(stack, clickedBlock, clickedBlockMeta, world, x, y, z, iFacing));
+        cir.setReturnValue(Convert.trySecondaryConvert(stack, player, clickedBlock, clickedBlockMeta, world, x, y, z, iFacing));
     }
 }
