@@ -69,4 +69,14 @@ public class ItemUseRegistry {
         }
         return false;
     }
+
+    /**
+     * Checks for special item-on-block combo, right-click, with side info
+     */
+    public static boolean usefulRightClickCombo(ItemStack stack, Block block, int metadata, BlockSide side) {
+        for (ItemUseCombo combo : RIGHTCLICK_COMBOS) {
+            if (combo.matches(stack, block, metadata, side)) return true;
+        }
+        return false;
+    }
 }
