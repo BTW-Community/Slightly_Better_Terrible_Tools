@@ -1,7 +1,6 @@
 package btw.community.abbyread.sbtt;
 
 import btw.block.BTWBlocks;
-import btw.block.blocks.DirtSlabBlock;
 import btw.client.fx.BTWEffectManager;
 import btw.community.abbyread.categories.BlockTags;
 import btw.community.abbyread.categories.BlockTag;
@@ -17,7 +16,7 @@ import net.minecraft.src.World;
 @SuppressWarnings("UnnecessaryLocalVariable")
 public class Convert {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
 
     public static boolean justConverted = false;
@@ -135,10 +134,12 @@ public class Convert {
 
         if (block == Block.dirt) {
             newBlock = BTWBlocks.dirtSlab;
-            newMeta = DirtSlabBlock.SUBTYPE_PACKED_EARTH;
+            // DirtSlabBlock.SUBTYPE_PACKED_EARTH gives 3, which is actually wrong.
+            newMeta = 6; // matches full-block metadata value of AestheticOpaqueEarthBlock for packed earth
         }
+        swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
 
-        return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
+        return true;
     }
 
     public static boolean loosen(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
@@ -240,16 +241,10 @@ public class Convert {
 
         boolean swapped = false;
 
-        if (newBlock != oldBlock) {
-            world.setBlockWithNotify(x, y, z, newBlock.blockID);
+        if (newBlock != oldBlock || newMeta != oldMeta) {
+            world.setBlockAndMetadataWithNotify(x, y, z, newBlock.blockID, newMeta);
             swapped = true;
             debug("Block swapped at (" + x + "," + y + "," + z + ")");
-        }
-
-        if (newMeta != oldMeta) {
-            world.setBlockMetadataWithNotify(x, y, z, newMeta);
-            swapped = true;
-            debug("Metadata updated at (" + x + "," + y + "," + z + ")");
         }
 
         if (!world.isRemote && swapped) {
