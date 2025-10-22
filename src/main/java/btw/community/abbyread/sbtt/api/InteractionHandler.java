@@ -94,7 +94,8 @@ public class InteractionHandler {
                     Set.of(ItemTag.CLUB),
                     Set.of(BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE),
                     null,
-                    InteractionHandler::firm
+                    InteractionHandler::firm,
+                    2 // clubs take double damage when firming loose dirt
             ),
             new InteractionDefinition(
                     InteractionType.SECONDARY_RIGHT_CLICK,
@@ -139,14 +140,22 @@ public class InteractionHandler {
         final Set<BlockTag> blockTags;
         final Set<BlockSide> validSides;
         final ConversionAction action;
+        final int damageAmount;
 
         InteractionDefinition(InteractionType type, Set<ItemTag> itemTags, Set<BlockTag> blockTags,
-                              Set<BlockSide> validSides, ConversionAction action) {
+                              Set<BlockSide> validSides, ConversionAction action, int damageAmount) {
             this.type = type;
             this.itemTags = itemTags;
             this.blockTags = blockTags;
             this.validSides = validSides;
             this.action = action;
+            this.damageAmount = damageAmount;
+        }
+
+        // Optional default-damage constructor (keeps old definitions valid)
+        InteractionDefinition(InteractionType type, Set<ItemTag> itemTags, Set<BlockTag> blockTags,
+                              Set<BlockSide> validSides, ConversionAction action) {
+            this(type, itemTags, blockTags, validSides, action, 1);
         }
 
         boolean matches(ItemStack stack, Block block, int meta, BlockSide side) {
@@ -155,6 +164,7 @@ public class InteractionHandler {
             return validSides == null || side == null || validSides.contains(side);
         }
     }
+
 
     // ===== Public API =====
 
@@ -166,11 +176,17 @@ public class InteractionHandler {
                                    World world, int x, int y, int z, BlockSide side, InteractionType type) {
         if (stack == null || block == null) return false;
 
-        Optional<InteractionDefinition> def = findInteraction(stack, block, meta, side, type);
-        //noinspection OptionalIsPresent
-        if (def.isEmpty()) return false;
+        Optional<InteractionDefinition> defOpt = findInteraction(stack, block, meta, side, type);
+        if (defOpt.isEmpty()) return false;
 
-        return def.get().action.apply(stack, player, block, meta, world, x, y, z, side);
+        InteractionDefinition def = defOpt.get();
+        boolean success = def.action.apply(stack, player, block, meta, world, x, y, z, side);
+
+        if (success && player != null) {
+            ((SBTTPlayerExtension) player).sbtt_setItemUsedFlag(true, def.damageAmount);
+        }
+
+        return success;
     }
 
     @SuppressWarnings("unused")
@@ -223,7 +239,6 @@ public class InteractionHandler {
 
     private static boolean loosen(ItemStack stack, EntityPlayer player, Block block,
                                   int meta, World world, int x, int y, int z, BlockSide side) {
-        int damageAmount = 1;
         if (!BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM)
                 || BlockTags.is(block, meta, BlockTag.LOOSE_DIRTLIKE)) return false;
 
@@ -239,20 +254,12 @@ public class InteractionHandler {
             newMeta = 0;
         }
 
-        boolean swapped = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
-
-        if (swapped && player != null) {
-            ((SBTTPlayerExtension) player).sbtt_setItemUsedFlag(true, damageAmount);
-
-        }
-
-        return swapped;
+        return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
     }
 
     private static boolean firm(ItemStack stack, EntityPlayer player, Block block,
                                 int meta, World world, int x, int y, int z, BlockSide side) {
         if (!BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) return false;
-        int damageAmount = 1;
         Block newBlock = null;
         int newMeta = meta;
 
@@ -266,19 +273,11 @@ public class InteractionHandler {
             newMeta = 2;
         }
 
-        boolean swapped = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
-
-        if (swapped && player != null) {
-            ((SBTTPlayerExtension) player).sbtt_setItemUsedFlag(true, damageAmount);
-
-        }
-
-        return swapped;
+        return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
     }
 
     private static boolean sparsen(ItemStack stack, EntityPlayer player, Block block,
                                    int meta, World world, int x, int y, int z, BlockSide side) {
-        int damageAmount = 1;
         if (!BlockTags.is(block, meta, BlockTag.GRASS)) return false;
 
         Block newBlock = null;
@@ -312,20 +311,12 @@ public class InteractionHandler {
                     new ItemStack(BTWItems.hempSeeds), side.getId());
         }
 
-        boolean swapped = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
-
-        if (swapped && player != null) {
-            ((SBTTPlayerExtension) player).sbtt_setItemUsedFlag(true, damageAmount);
-
-        }
-
-        return swapped;
+        return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
     }
 
     private static boolean pack(ItemStack stack, EntityPlayer player, Block block,
                                 int meta, World world, int x, int y, int z, BlockSide side) {
         if (block == null) return false;
-        int damageAmount = 1;
 
         Block newBlock;
         int newMeta;
@@ -340,10 +331,6 @@ public class InteractionHandler {
                 swapped = swapBlock(world, x, y - 1, z, block, meta, BTWBlocks.aestheticEarth, 6);
                 world.setBlockToAir(x, y, z);
             }
-        }
-
-        if (swapped && player != null) {
-            ((SBTTPlayerExtension) player).sbtt_setItemUsedFlag(true, damageAmount);
         }
 
         return swapped;
