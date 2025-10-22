@@ -1,12 +1,8 @@
 package btw.community.abbyread.sbtt;
 
 import btw.block.BTWBlocks;
-import btw.block.blocks.AestheticOpaqueEarthBlock;
 import btw.client.fx.BTWEffectManager;
-import btw.community.abbyread.categories.BlockTags;
-import btw.community.abbyread.categories.BlockTag;
-import btw.community.abbyread.categories.ItemTag;
-import btw.community.abbyread.categories.ItemTags;
+import btw.community.abbyread.categories.*;
 import btw.item.BTWItems;
 import btw.item.util.ItemUtils;
 import net.minecraft.src.Block;
@@ -17,7 +13,7 @@ import net.minecraft.src.World;
 @SuppressWarnings("UnnecessaryLocalVariable")
 public class Convert {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
 
     public static boolean justConverted = false;
@@ -25,6 +21,15 @@ public class Convert {
     // ---------- Public Methods ----------
 
     // Left-click-held conversions
+    public static boolean tryConvert(ItemStack stack, EntityPlayer player, Block block, int meta, World world, int x, int y, int z, int side) {
+        if (canConvert(stack, block, meta)) {
+            if (!world.isRemote) debug("canConvert returned true.");
+            return convert(stack, player, block, meta, world, x, y, z, side);
+        }
+        if (!world.isRemote) debug("canConvert returned false.");
+        return false;
+    }
+
     public static boolean canConvert(ItemStack stack, Block block, int meta) {
         if (stack == null || block == null) return false;
 
@@ -46,26 +51,51 @@ public class Convert {
         return false;
     }
 
-    public static boolean convert(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
+    // Block-invoked convert does not have access to usingEntity
+    public static boolean convert(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int side) {
         if (stack == null || block == null) return false;
 
         if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL) && canConvert(stack, block, meta)) {
             debug("Using loosen conversion");
-            return loosen(stack, block, meta, world, x, y, z, fromSide);
+            justConverted = loosen(stack, block, meta, world, x, y, z, side);
         }
 
         if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL) && BlockTags.is(block, meta, BlockTag.GRASS)) {
             debug("Using sparsen conversion");
-            return sparsen(stack, block, meta, world, x, y, z, fromSide);
+            justConverted = sparsen(stack, block, meta, world, x, y, z, side);
         }
 
         if ((ItemTags.is(stack, ItemTag.CLUB))
                 && BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
             debug("Using firm conversion");
-            return firm(stack, block, meta, world, x, y, z, fromSide);
+            justConverted = firm(stack, block, meta, world, x, y, z, side);
         }
 
-        return false;
+        return justConverted;
+    }
+
+
+    // Item-invoked convert has access to usingEntity
+    public static boolean convert(ItemStack stack, EntityPlayer player, Block block, int meta, World world, int x, int y, int z, int side) {
+        if (stack == null || block == null) return false;
+
+        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL) && canConvert(stack, block, meta)) {
+            debug("Using loosen conversion");
+            justConverted = loosen(stack, block, meta, world, x, y, z, side);
+        }
+
+        if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL) && BlockTags.is(block, meta, BlockTag.GRASS)) {
+            debug("Using sparsen conversion");
+            justConverted = sparsen(stack, block, meta, world, x, y, z, side);
+        }
+
+        if ((ItemTags.is(stack, ItemTag.CLUB))
+                && BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
+            debug("Using firm conversion");
+            justConverted = firm(stack, block, meta, world, x, y, z, side);
+        }
+
+        return justConverted;
     }
 
     // Right-click-usage conversions
@@ -90,7 +120,7 @@ public class Convert {
         // packing
         if (ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE) &&
                 BlockTags.isAll(block, meta,
-                        BlockTag.DIRT, BlockTag.FIRM, BlockTag.CUBE)) {
+                        BlockTag.DIRTLIKE, BlockTag.FIRM, BlockTag.CUBE)) {
             return true;
         }
         if (!world.isRemote) debug(BlockTags.getTags(block, meta).toString());
@@ -116,7 +146,7 @@ public class Convert {
         }
 
         if ((ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE))
-                && BlockTags.isAll(block, meta, BlockTag.DIRT, BlockTag.CUBE)) {
+                && BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM) && side == 1) {
             debug("Converting dirt block to packed-earth slab");
             if (pack(stack, block, meta, world, x, y, z, side)) {
                 ItemDamage.damageByAmount(stack, player, 1);
@@ -125,7 +155,7 @@ public class Convert {
         }
 
         if ((ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE))
-                && BlockTags.isAll(block, meta, BlockTag.PACKED_EARTH, BlockTag.SLAB)) {
+                && BlockTags.isAll(block, meta, BlockTag.PACKED_EARTH, BlockTag.SLAB) && side == 1) {
             debug("Attempting pack downward.");
             if (pack(stack, block, meta, world, x, y, z, side)) {
                 ItemDamage.damageByAmount(stack, player, 1);
@@ -139,7 +169,7 @@ public class Convert {
     // ---------- Conversion Methods ----------
 
 
-    public static boolean pack(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
+    public static boolean pack(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int side) {
         if (block == null) return false;
 
         debug(block.getUnlocalizedName() + " with meta " + meta);
@@ -147,7 +177,7 @@ public class Convert {
         int newMeta = meta;
 
         // packing step 1
-        if (block == Block.dirt) {
+        if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM) && side == 1) {
             newBlock = BTWBlocks.dirtSlab;
             // DirtSlabBlock.SUBTYPE_PACKED_EARTH gives 3, which is actually wrong.
             newMeta = 6; // matches full-block metadata value of AestheticOpaqueEarthBlock for packed earth
@@ -156,7 +186,7 @@ public class Convert {
         }
 
         // packing step 2
-        if (block == BTWBlocks.dirtSlab && meta == 6) {
+        if (block == BTWBlocks.dirtSlab && meta == 6 && side == 1) {
             // check neighboring block below for potential two-block conversion
             debug(String.format("%d\n", world.getBlockId(x, y - 1, z)));
             if (world.getBlockId(x, y - 1, z) == Block.dirt.blockID) {
@@ -169,7 +199,7 @@ public class Convert {
         }
 
 
-        return true;
+        return false;
     }
 
     public static boolean loosen(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
@@ -276,7 +306,6 @@ public class Convert {
         }
 
         if (!world.isRemote && swapped) {
-            justConverted = true;
             world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
         }
 

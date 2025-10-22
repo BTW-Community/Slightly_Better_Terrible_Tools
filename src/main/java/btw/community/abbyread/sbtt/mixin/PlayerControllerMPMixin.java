@@ -1,5 +1,6 @@
 package btw.community.abbyread.sbtt.mixin;
 
+import btw.community.abbyread.categories.BlockTags;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -11,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerControllerMP.class)
 public class PlayerControllerMPMixin {
 
-    @Unique private boolean DEBUG = false;
+    @Unique private boolean DEBUG = true;
 
     @Inject(method = "onPlayerRightClick",
             at = @At("RETURN"))
@@ -23,7 +24,8 @@ public class PlayerControllerMPMixin {
             Block block = Block.blocksList[world.getBlockId(x, y, z)];
             if (block == null) return;
             int meta = world.getBlockMetadata(x, y, z);
-            System.out.println(block.getClass() + " with meta: " + meta);
+            // System.out.println(block.getUnlocalizedName() + " with meta: " + meta);
+            System.out.println(BlockTags.getTags(block, meta));
             System.out.println(stack.getDisplayName() + " durability " + (stack.getMaxDamage() - stack.getItemDamage()));
         }
     }

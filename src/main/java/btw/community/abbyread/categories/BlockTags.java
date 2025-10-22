@@ -225,7 +225,10 @@ public class BlockTags {
         if (isGrass(block, metadata)) tags.add(BlockTag.GRASS);
         if (isSparse(block, metadata)) tags.add(BlockTag.SPARSE);
         if (isFullyGrown(block, metadata)) tags.add(BlockTag.FULLY_GROWN);
-        if (isPackedEarth(block, metadata)) tags.add(BlockTag.PACKED_EARTH);
+        if (isPackedEarth(block, metadata)) {
+            tags.add(BlockTag.PACKED_EARTH);
+            tags.remove(BlockTag.FIRM);
+        }
 
         return tags;
     }
