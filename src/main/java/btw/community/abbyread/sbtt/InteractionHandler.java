@@ -18,8 +18,8 @@ import java.util.*;
  */
 public class InteractionHandler {
 
-    // Cache key: (itemId, blockId, metadata, side, clickType) -> InteractionResult
-    private static final Map<InteractionCacheKey, Optional<InteractionResult>> INTERACTION_CACHE =
+    // Cache key: (itemId, blockId, metadata, side, clickType) -> InteractionDefinition (or null)
+    private static final Map<InteractionCacheKey, Optional<InteractionDefinition>> INTERACTION_CACHE =
             new LinkedHashMap<>() {
                 protected boolean removeEldestEntry(Map.Entry eldest) {
                     return size() > 512; // LRU cache, max 512 entries
@@ -68,22 +68,6 @@ public class InteractionHandler {
         SECONDARY_RIGHT_CLICK
     }
 
-    // ===== Interaction Result =====
-
-    private static class InteractionResult {
-        final InteractionType type;
-        final Block resultBlock;
-        final int resultMeta;
-        final ConversionAction action;
-
-        InteractionResult(InteractionType type, Block resultBlock, int resultMeta, ConversionAction action) {
-            this.type = type;
-            this.resultBlock = resultBlock;
-            this.resultMeta = resultMeta;
-            this.action = action;
-        }
-    }
-
     @FunctionalInterface
     private interface ConversionAction {
         boolean apply(ItemStack stack, EntityPlayer player, Block oldBlock, int oldMeta,
@@ -93,7 +77,6 @@ public class InteractionHandler {
     // ===== Unified Definition of All Interactions =====
 
     private static final List<InteractionDefinition> INTERACTIONS = List.of(
-            // PRIMARY: Wood chisel + firm dirtlike/grass -> loosen
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.WOOD, ItemTag.CHISEL),
@@ -101,7 +84,6 @@ public class InteractionHandler {
                     null,
                     InteractionHandler::loosen
             ),
-            // PRIMARY: Stone chisel + grass -> sparsen
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.STONE, ItemTag.CHISEL),
@@ -109,7 +91,6 @@ public class InteractionHandler {
                     null,
                     InteractionHandler::sparsen
             ),
-            // PRIMARY: Club + dirtlike -> firm
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.CLUB),
@@ -117,7 +98,6 @@ public class InteractionHandler {
                     null,
                     InteractionHandler::firm
             ),
-            // SECONDARY: Shovel + loose dirtlike -> firm
             new InteractionDefinition(
                     InteractionType.SECONDARY_RIGHT_CLICK,
                     Set.of(ItemTag.SHOVEL),
@@ -125,7 +105,6 @@ public class InteractionHandler {
                     null,
                     InteractionHandler::firm
             ),
-            // SECONDARY: Iron+ shovel + dirt, top side only -> pack
             new InteractionDefinition(
                     InteractionType.SECONDARY_RIGHT_CLICK,
                     Set.of(ItemTag.SHOVEL),
@@ -133,29 +112,26 @@ public class InteractionHandler {
                     Set.of(BlockSide.UP),
                     InteractionHandler::pack
             ),
-            // SECONDARY: Shears + tall grass -> harvest
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.SHEARS),
                     Set.of(BlockTag.TALL_GRASS),
                     null,
-                    (stack, player, block, meta, world, x, y, z, side) -> true // no-op, game handles it
+                    (stack, player, block, meta, world, x, y, z, side) -> true
             ),
-            // SECONDARY: Hoe + grass -> till
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.HOE),
                     Set.of(BlockTag.GRASS),
                     null,
-                    (stack, player, block, meta, world, x, y, z, side) -> true // no-op, game handles it
+                    (stack, player, block, meta, world, x, y, z, side) -> true
             ),
-            // SECONDARY: Hoe + dirt -> till
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.HOE),
                     Set.of(BlockTag.DIRT),
                     null,
-                    (stack, player, block, meta, world, x, y, z, side) -> true // no-op, game handles it
+                    (stack, player, block, meta, world, x, y, z, side) -> true
             )
     );
 
@@ -177,70 +153,60 @@ public class InteractionHandler {
         }
 
         boolean matches(ItemStack stack, Block block, int meta, BlockSide side) {
-            // Item must match
-            if (stack == null || !itemTags.stream().anyMatch(tag -> ItemTags.is(stack, tag))) {
-                return false;
-            }
-            // Block must match
-            if (block == null || !blockTags.stream().anyMatch(tag -> BlockTags.is(block, meta, tag))) {
-                return false;
-            }
-            // Side must match (if specified)
+            if (stack == null || !itemTags.stream().anyMatch(tag -> ItemTags.is(stack, tag))) return false;
+            if (block == null || !blockTags.stream().anyMatch(tag -> BlockTags.is(block, meta, tag))) return false;
             return validSides == null || side == null || validSides.contains(side);
         }
     }
 
     // ===== Public API =====
 
-    /**
-     * Check if an interaction can occur without executing it.
-     */
     public static boolean canInteract(ItemStack stack, Block block, int meta, InteractionType type) {
-        return findInteraction(stack, block, meta, null, type) != null;
+        return findInteraction(stack, block, meta, null, type).isPresent();
     }
 
-    /**
-     * Execute an interaction (primary use, left-click, etc.)
-     */
     public static boolean interact(ItemStack stack, EntityPlayer player, Block block, int meta,
                                    World world, int x, int y, int z, BlockSide side, InteractionType type) {
         if (stack == null || block == null) return false;
 
         justConverted = false;
-        InteractionDefinition def = findInteraction(stack, block, meta, side, type);
-        if (def == null) return false;
-
-        return def.action.apply(stack, player, block, meta, world, x, y, z, side);
+        return findInteraction(stack, block, meta, side, type)
+                .map(def -> def.action.apply(stack, player, block, meta, world, x, y, z, side))
+                .orElse(false);
     }
 
     public static boolean hasJustConverted() {
         return justConverted;
     }
 
-    @SuppressWarnings("unused")
     public static void clearCache() {
         INTERACTION_CACHE.clear();
     }
 
     // ===== Internal Helpers =====
 
-    /**
-     * Find matching interaction definition with caching.
-     */
-    private static InteractionDefinition findInteraction(ItemStack stack, Block block, int meta,
-                                                         BlockSide side, InteractionType type) {
-        // Try to find matching definition (bypass cache for now, could add later)
+    private static Optional<InteractionDefinition> findInteraction(ItemStack stack, Block block, int meta,
+                                                                   BlockSide side, InteractionType type) {
+        InteractionCacheKey key = new InteractionCacheKey(stack, block, meta, side, type);
+
+        // Check cache first (works with both present and empty optionals)
+        if (INTERACTION_CACHE.containsKey(key)) {
+            return INTERACTION_CACHE.get(key);
+        }
+
+        // Compute result if not cached
         for (InteractionDefinition def : INTERACTIONS) {
             if (def.type == type && def.matches(stack, block, meta, side)) {
-                return def;
+                INTERACTION_CACHE.put(key, Optional.of(def));
+                return Optional.of(def);
             }
         }
-        return null;
+
+        // Cache negative result
+        INTERACTION_CACHE.put(key, Optional.empty());
+        return Optional.empty();
     }
 
-    /**
-     * Common block transformation and notification.
-     */
     private static boolean swapBlock(World world, int x, int y, int z,
                                      Block oldBlock, int oldMeta, Block newBlock, int newMeta) {
         if (newBlock == null) return false;
@@ -269,15 +235,12 @@ public class InteractionHandler {
         int newMeta = meta;
 
         if (BlockTags.is(block, meta, BlockTag.DIRT)) {
-            newBlock = BlockTags.is(block, meta, BlockTag.CUBE) ? BTWBlocks.looseDirt : BTWBlocks.looseDirtSlab;
+            if (BlockTags.is(block, meta, BlockTag.CUBE)) newBlock = BTWBlocks.looseDirt;
+            else if (BlockTags.is(block, meta, BlockTag.SLAB)) newBlock = BTWBlocks.looseDirtSlab;
         } else if (BlockTags.isAll(block, meta, BlockTag.SPARSE, BlockTag.GRASS)) {
-            if (BlockTags.is(block, meta, BlockTag.CUBE)) {
-                newBlock = BTWBlocks.looseSparseGrass;
-                newMeta = 0;
-            } else if (BlockTags.is(block, meta, BlockTag.SLAB)) {
-                newBlock = BTWBlocks.looseSparseGrassSlab;
-                newMeta = 0;
-            }
+            if (BlockTags.is(block, meta, BlockTag.CUBE)) newBlock = BTWBlocks.looseSparseGrass;
+            else if (BlockTags.is(block, meta, BlockTag.SLAB)) newBlock = BTWBlocks.looseSparseGrassSlab;
+            newMeta = 0;
         }
 
         justConverted = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
@@ -290,26 +253,15 @@ public class InteractionHandler {
 
         Block newBlock = null;
         int newMeta = meta;
-        boolean toSwap = false;
 
-        if (block == BTWBlocks.looseDirt) {
-            newBlock = Block.dirt;
-            toSwap = true;
-        } else if (block == BTWBlocks.looseDirtSlab) {
-            newBlock = BTWBlocks.dirtSlab;
-            toSwap = true;
-        } else if (block == BTWBlocks.looseSparseGrass) {
+        if (block == BTWBlocks.looseDirt) newBlock = Block.dirt;
+        else if (block == BTWBlocks.looseDirtSlab) newBlock = BTWBlocks.dirtSlab;
+        else if (block == BTWBlocks.looseSparseGrass) {
             newBlock = Block.grass;
             newMeta = 1;
-            toSwap = true;
         } else if (block == BTWBlocks.looseSparseGrassSlab) {
             newBlock = BTWBlocks.grassSlab;
             newMeta = 2;
-            toSwap = true;
-        }
-
-        if (toSwap && ItemTags.is(stack, ItemTag.CLUB)) {
-            ItemDamage.amount = 2; // TODO: Verify this reference works
         }
 
         justConverted = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
@@ -355,7 +307,6 @@ public class InteractionHandler {
         return justConverted;
     }
 
-    @SuppressWarnings("UnusedAssignment")
     private static boolean pack(ItemStack stack, EntityPlayer player, Block block,
                                 int meta, World world, int x, int y, int z, BlockSide side) {
         if (block == null) return false;
