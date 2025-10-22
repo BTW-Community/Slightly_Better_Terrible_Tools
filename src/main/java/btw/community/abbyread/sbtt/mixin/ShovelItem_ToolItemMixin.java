@@ -1,8 +1,10 @@
 package btw.community.abbyread.sbtt.mixin;
 
+import btw.community.abbyread.categories.BlockSide;
 import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.categories.ItemTags;
-import btw.community.abbyread.sbtt.Convert;
+import btw.community.abbyread.sbtt.InteractionHandler;
+import btw.community.abbyread.sbtt.InteractionHandler.InteractionType;
 import btw.item.items.ToolItem;
 import net.minecraft.src.Block;
 import net.minecraft.src.EntityPlayer;
@@ -30,9 +32,11 @@ public class ShovelItem_ToolItemMixin {
         if (clickedBlock == null) return;
 
         int meta = world.getBlockMetadata(x, y, z);
+        BlockSide side = BlockSide.fromId(iFacing);
 
-        // Call your new conversion system
-        boolean didConvert = Convert.secondaryConvert(stack, player, clickedBlock, meta, world, x, y, z, iFacing);
+        // Call your new conversion system (SECONDARY right-click)
+        boolean didConvert = InteractionHandler.interact(stack, player, clickedBlock, meta, world,
+                x, y, z, side, InteractionType.SECONDARY_RIGHT_CLICK);
 
         // If conversion happened, override return
         if (didConvert) {

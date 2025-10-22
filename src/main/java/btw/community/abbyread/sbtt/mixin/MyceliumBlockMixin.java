@@ -2,7 +2,8 @@ package btw.community.abbyread.sbtt.mixin;
 
 import btw.block.blocks.MyceliumBlock;
 import btw.client.fx.BTWEffectManager;
-import btw.community.abbyread.sbtt.Convert;
+import btw.community.abbyread.categories.BlockSide;
+import btw.community.abbyread.sbtt.InteractionHandler;
 import btw.item.items.ShovelItemStone;
 import net.minecraft.src.Block;
 import net.minecraft.src.EntityPlayer;
@@ -36,7 +37,7 @@ public class MyceliumBlockMixin {
         Block block = (Block) (Object) this;
         int meta = world.getBlockMetadata(x, y, z);
 
-        if (Convert.canConvert(stack, block, meta)) {
+        if (InteractionHandler.canInteract(stack, block, meta, InteractionHandler.InteractionType.PRIMARY_LEFT_CLICK)) {
             cir.setReturnValue(true);
         }
     }
@@ -46,9 +47,12 @@ public class MyceliumBlockMixin {
         if (stack == null) return;
         Block block = (Block) (Object) this;
         int meta = world.getBlockMetadata(x, y, z);
+        EntityPlayer player = null; // fromSide doesn't give us the player; passing null is safe for conversions
 
-        if (Convert.convert(stack, null, block, meta, world, x, y, z, fromSide)) {
+        BlockSide side = BlockSide.fromId(fromSide);
+        if (InteractionHandler.interact(stack, player, block, meta, world, x, y, z, side, InteractionHandler.InteractionType.PRIMARY_LEFT_CLICK)) {
             cir.setReturnValue(true);
         }
     }
+
 }

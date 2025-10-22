@@ -2,7 +2,9 @@ package btw.community.abbyread.sbtt.mixin;
 
 import btw.community.abbyread.categories.BlockTag;
 import btw.community.abbyread.categories.BlockTags;
-import btw.community.abbyread.sbtt.Convert;
+import btw.community.abbyread.categories.BlockSide;
+import btw.community.abbyread.sbtt.InteractionHandler;
+import btw.community.abbyread.sbtt.InteractionHandler.InteractionType;
 import btw.item.items.ClubItem;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +26,8 @@ public class ClubItemMixin {
 
         // Only react for club → dirtlike conversions
         if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
-            boolean didConvert = Convert.convert(stack, player, block, meta, world, x, y, z, 0);
+            boolean didConvert = InteractionHandler.interact(stack, player, block, meta, world, x, y, z,
+                    BlockSide.DOWN, InteractionType.PRIMARY_LEFT_CLICK);
             if (didConvert) {
                 stack.damageItem(2, player);
                 cir.setReturnValue(true);

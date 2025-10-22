@@ -2,7 +2,8 @@ package btw.community.abbyread.sbtt.mixin;
 
 import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.categories.ItemTags;
-import btw.community.abbyread.sbtt.Convert;
+import btw.community.abbyread.sbtt.InteractionHandler;
+import btw.community.abbyread.sbtt.InteractionHandler.InteractionType;
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
@@ -20,7 +21,7 @@ public class ClubItem_ItemMixin {
         if (ItemTags.isNot(stack, ItemTag.CLUB)) return;
 
         int meta = world.getBlockMetadata(x, y, z);
-        if (Convert.canConvert(stack, block, meta)) {
+        if (InteractionHandler.canInteract(stack, block, meta, InteractionType.PRIMARY_LEFT_CLICK)) {
             float normal = cir.getReturnValue();
             cir.setReturnValue(normal * 0.5F);
         }

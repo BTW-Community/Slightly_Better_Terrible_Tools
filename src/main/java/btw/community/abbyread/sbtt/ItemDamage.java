@@ -1,13 +1,12 @@
 package btw.community.abbyread.sbtt;
 
-import btw.community.abbyread.categories.ItemUseRegistry;
 import net.minecraft.src.*;
 
 public class ItemDamage {
     public static int amount = 1; // default amount if damaging item
 
     /**
-     * Checks if it’s valid to damage the item, applies amount if so,
+     * Checks if it's valid to damage the item, applies amount if so,
      * and returns how much damage was actually applied.
      */
     @SuppressWarnings("UnusedReturnValue")
@@ -30,18 +29,15 @@ public class ItemDamage {
             return damageByAmount(stack, player, amount);
         }
 
-        // Pull conversion info from Convert (read-only)
-        boolean conversionByTool = Convert.hasJustConverted();
+        // Check if interaction handler just performed a conversion
+        boolean conversionByTool = InteractionHandler.hasJustConverted();
 
-        // Reset the Convert flag after consuming it
-        // (this mirrors the original "justConverted = false" logic)
-        if (conversionByTool) {
-            // We can safely "consume" the conversion state via a simple reset helper
-            resetConversionState();
-        }
+        // Check if there's a special interaction defined for this combo
+        int blockMeta = world.getBlockMetadata(x, y, z);
+        boolean hasSpecialInteraction = InteractionHandler.canInteract(stack, block, blockMeta,
+                InteractionHandler.InteractionType.PRIMARY_LEFT_CLICK);
 
-        boolean specialCase = ItemUseRegistry.usefulLeftClickCombo(stack, block, world.getBlockMetadata(x, y, z));
-        boolean betterThanNothing = conversionByTool || specialCase;
+        boolean betterThanNothing = conversionByTool || hasSpecialInteraction;
 
         if (betterThanNothing) {
             int damage = damageByAmount(stack, player, amount);
@@ -56,15 +52,5 @@ public class ItemDamage {
         player.addStat(StatList.objectUseStats[stack.itemID], 1);
         stack.damageItem(amountOfDamage, player);
         return amountOfDamage;
-    }
-
-    /**
-     * Utility to clear conversion state in Convert.
-     * This method exists to avoid exposing Convert.justConverted directly.
-     */
-    private static void resetConversionState() {
-        // Internally just re-triggers a "neutral" check
-        Convert.hasJustConverted(); // called once for side effects if you later track states
-        // If you prefer, you can add a dedicated Convert.resetJustConverted() method instead.
     }
 }
