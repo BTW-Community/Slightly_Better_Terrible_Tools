@@ -223,6 +223,7 @@ public class InteractionHandler {
 
     private static boolean loosen(ItemStack stack, EntityPlayer player, Block block,
                                   int meta, World world, int x, int y, int z, BlockSide side) {
+        int damageAmount = 1;
         if (!BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM)
                 || BlockTags.is(block, meta, BlockTag.LOOSE_DIRTLIKE)) return false;
 
@@ -241,7 +242,7 @@ public class InteractionHandler {
         boolean swapped = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
 
         if (swapped && player != null) {
-            ((SBTTPlayerExtension) player).sbtt_setJustConvertedFlag(true);
+            ((SBTTPlayerExtension) player).sbtt_setItemUsedFlag(true, damageAmount);
 
         }
 
@@ -251,7 +252,7 @@ public class InteractionHandler {
     private static boolean firm(ItemStack stack, EntityPlayer player, Block block,
                                 int meta, World world, int x, int y, int z, BlockSide side) {
         if (!BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) return false;
-
+        int damageAmount = 1;
         Block newBlock = null;
         int newMeta = meta;
 
@@ -268,7 +269,7 @@ public class InteractionHandler {
         boolean swapped = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
 
         if (swapped && player != null) {
-            ((SBTTPlayerExtension) player).sbtt_setJustConvertedFlag(true);
+            ((SBTTPlayerExtension) player).sbtt_setItemUsedFlag(true, damageAmount);
 
         }
 
@@ -277,6 +278,7 @@ public class InteractionHandler {
 
     private static boolean sparsen(ItemStack stack, EntityPlayer player, Block block,
                                    int meta, World world, int x, int y, int z, BlockSide side) {
+        int damageAmount = 1;
         if (!BlockTags.is(block, meta, BlockTag.GRASS)) return false;
 
         Block newBlock = null;
@@ -313,7 +315,7 @@ public class InteractionHandler {
         boolean swapped = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
 
         if (swapped && player != null) {
-            ((SBTTPlayerExtension) player).sbtt_setJustConvertedFlag(true);
+            ((SBTTPlayerExtension) player).sbtt_setItemUsedFlag(true, damageAmount);
 
         }
 
@@ -323,6 +325,7 @@ public class InteractionHandler {
     private static boolean pack(ItemStack stack, EntityPlayer player, Block block,
                                 int meta, World world, int x, int y, int z, BlockSide side) {
         if (block == null) return false;
+        int damageAmount = 1;
 
         Block newBlock;
         int newMeta;
@@ -340,7 +343,7 @@ public class InteractionHandler {
         }
 
         if (swapped && player != null) {
-            ((SBTTPlayerExtension) player).sbtt_setJustConvertedFlag(true);
+            ((SBTTPlayerExtension) player).sbtt_setItemUsedFlag(true, damageAmount);
         }
 
         return swapped;

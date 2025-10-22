@@ -1,6 +1,7 @@
 package btw.community.abbyread.sbtt.api;
 
 public interface SBTTPlayerExtension {
-    void sbtt_setJustConvertedFlag(boolean value);
-    boolean sbtt_consumeJustConvertedFlag();
+    void sbtt_setItemUsedFlag(boolean value, int damageAmount);
+    boolean sbtt_consumeItemUsedFlag();
+    int sbtt_getPendingItemDamage();
 }

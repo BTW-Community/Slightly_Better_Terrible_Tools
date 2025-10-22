@@ -30,7 +30,7 @@ public class ItemDamage {
         }
 
         // Check if interaction handler just performed a conversion
-        boolean conversionByTool = ((SBTTPlayerExtension) player).sbtt_consumeJustConvertedFlag();
+        boolean conversionByTool = ((SBTTPlayerExtension) player).sbtt_consumeItemUsedFlag();
 
         // Check if there's a special interaction defined for this combo
         int blockMeta = world.getBlockMetadata(x, y, z);

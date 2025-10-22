@@ -9,17 +9,27 @@ import org.spongepowered.asm.mixin.Unique;
 public abstract class EntityPlayerMixin implements SBTTPlayerExtension {
 
     @Unique
-    private boolean sbtt_justConverted = false;
+    private boolean sbtt_itemUsed = false;
+
+    @Unique
+    private int sbtt_pendingItemDamage = 0;
 
     @Override
-    public void sbtt_setJustConvertedFlag(boolean value) {
-        this.sbtt_justConverted = value;
+    public void sbtt_setItemUsedFlag(boolean value, int damageAmount) {
+        this.sbtt_itemUsed = value;
+        this.sbtt_pendingItemDamage = value ? damageAmount : 0;
     }
 
     @Override
-    public boolean sbtt_consumeJustConvertedFlag() {
-        boolean value = this.sbtt_justConverted;
-        this.sbtt_justConverted = false;
+    public boolean sbtt_consumeItemUsedFlag() {
+        boolean value = this.sbtt_itemUsed;
+        this.sbtt_itemUsed = false; // reset the flag
+        this.sbtt_pendingItemDamage = 0; // clear damage after consumption
         return value;
+    }
+
+    @Override
+    public int sbtt_getPendingItemDamage() {
+        return this.sbtt_pendingItemDamage;
     }
 }
