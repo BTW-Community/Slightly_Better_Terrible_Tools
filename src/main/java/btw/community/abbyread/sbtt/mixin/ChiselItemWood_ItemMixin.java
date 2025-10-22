@@ -4,7 +4,7 @@ import btw.community.abbyread.categories.BlockTag;
 import btw.community.abbyread.categories.BlockTags;
 import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.categories.ItemTags;
-import btw.community.abbyread.sbtt.Efficiency;
+import btw.community.abbyread.sbtt.api.Efficiency;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

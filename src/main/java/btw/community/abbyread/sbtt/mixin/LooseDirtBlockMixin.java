@@ -2,7 +2,7 @@ package btw.community.abbyread.sbtt.mixin;
 
 import btw.block.blocks.LooseDirtBlock;
 import btw.community.abbyread.categories.BlockSide;
-import btw.community.abbyread.sbtt.InteractionHandler;
+import btw.community.abbyread.sbtt.api.InteractionHandler;
 import net.minecraft.src.Block;
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;

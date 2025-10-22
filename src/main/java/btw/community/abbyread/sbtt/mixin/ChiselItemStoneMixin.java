@@ -2,7 +2,7 @@ package btw.community.abbyread.sbtt.mixin;
 
 import btw.community.abbyread.categories.BlockTag;
 import btw.community.abbyread.categories.BlockTags;
-import btw.community.abbyread.sbtt.Efficiency;
+import btw.community.abbyread.sbtt.api.Efficiency;
 import btw.item.items.ChiselItemStone;
 import net.minecraft.src.Block;
 import net.minecraft.src.ItemStack;

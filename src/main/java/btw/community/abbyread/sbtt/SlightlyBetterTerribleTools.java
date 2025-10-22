@@ -3,6 +3,7 @@ package btw.community.abbyread.sbtt;
 import btw.AddonHandler;
 import btw.BTWAddon;
 import btw.block.BTWBlocks;
+import btw.community.abbyread.sbtt.api.Efficiency;
 import btw.crafting.recipe.RecipeManager;
 import btw.item.BTWItems;
 import net.minecraft.src.Block;

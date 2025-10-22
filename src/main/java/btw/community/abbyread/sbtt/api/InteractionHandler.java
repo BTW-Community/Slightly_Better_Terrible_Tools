@@ -1,9 +1,8 @@
-package btw.community.abbyread.sbtt;
+package btw.community.abbyread.sbtt.api;
 
 import btw.block.BTWBlocks;
 import btw.client.fx.BTWEffectManager;
 import btw.community.abbyread.categories.*;
-import btw.community.abbyread.sbtt.api.SBTTPlayerExtension;
 import btw.item.BTWItems;
 import btw.item.util.ItemUtils;
 import net.minecraft.src.Block;

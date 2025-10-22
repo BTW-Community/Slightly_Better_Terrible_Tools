@@ -1,6 +1,6 @@
 package btw.community.abbyread.sbtt.mixin;
 
-import btw.community.abbyread.sbtt.Efficiency;
+import btw.community.abbyread.sbtt.api.Efficiency;
 import btw.item.items.ChiselItemWood;
 import btw.item.items.ToolItem;
 import net.minecraft.src.Block;

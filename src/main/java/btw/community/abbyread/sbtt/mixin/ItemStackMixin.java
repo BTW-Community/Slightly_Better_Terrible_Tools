@@ -1,6 +1,6 @@
 package btw.community.abbyread.sbtt.mixin;
 
-import btw.community.abbyread.sbtt.ItemDamage;
+import btw.community.abbyread.sbtt.api.ItemDamage;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

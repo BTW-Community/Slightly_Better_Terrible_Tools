@@ -1,6 +1,6 @@
 package btw.community.abbyread.sbtt.mixin;
 
-import btw.community.abbyread.sbtt.Efficiency;
+import btw.community.abbyread.sbtt.api.Efficiency;
 import btw.item.items.ShovelItemStone;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

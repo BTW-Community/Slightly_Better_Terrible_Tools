@@ -2,8 +2,8 @@ package btw.community.abbyread.sbtt.mixin;
 
 import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.categories.ItemTags;
-import btw.community.abbyread.sbtt.InteractionHandler;
-import btw.community.abbyread.sbtt.InteractionHandler.InteractionType;
+import btw.community.abbyread.sbtt.api.InteractionHandler;
+import btw.community.abbyread.sbtt.api.InteractionHandler.InteractionType;
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
