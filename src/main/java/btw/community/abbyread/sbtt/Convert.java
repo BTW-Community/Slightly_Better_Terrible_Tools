@@ -33,20 +33,19 @@ public class Convert {
     public static boolean canConvert(ItemStack stack, Block block, int meta) {
         if (stack == null || block == null) return false;
 
-        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) {
-            boolean result = BlockTags.is(block, meta, BlockTag.FIRM) &&
-                    (BlockTags.is(block, meta, BlockTag.DIRT) || BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE));
-            return result;
+        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL) &&
+                BlockTags.is(block, meta, BlockTag.FIRM) &&
+                (BlockTags.is(block, meta, BlockTag.DIRT) ||
+                        BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE))) {
+            return true;
         }
 
-        if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL)) {
-            boolean result = BlockTags.is(block, meta, BlockTag.GRASS);
-            return result;
+        if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL) && BlockTags.is(block, meta, BlockTag.GRASS)) {
+            return true;
         }
 
-        if (ItemTags.is(stack, ItemTag.CLUB)) {
-            boolean result = BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE);
-            return result;
+        if (ItemTags.is(stack, ItemTag.CLUB) && BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
+            return true;
         }
         return false;
     }
