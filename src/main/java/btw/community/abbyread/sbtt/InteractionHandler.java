@@ -30,7 +30,6 @@ public class InteractionHandler {
 
     // ===== Cache Key =====
 
-    @SuppressWarnings("PatternVariableCanBeUsed")
     private static class InteractionCacheKey {
         final int itemId;
         final int blockId;
@@ -46,6 +45,7 @@ public class InteractionHandler {
             this.type = type;
         }
 
+        @SuppressWarnings("PatternVariableCanBeUsed")
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -135,7 +135,6 @@ public class InteractionHandler {
             )
     );
 
-    @SuppressWarnings("SimplifyStreamApiCallChains")
     private static class InteractionDefinition {
         final InteractionType type;
         final Set<ItemTag> itemTags;
@@ -153,8 +152,8 @@ public class InteractionHandler {
         }
 
         boolean matches(ItemStack stack, Block block, int meta, BlockSide side) {
-            if (stack == null || !itemTags.stream().anyMatch(tag -> ItemTags.is(stack, tag))) return false;
-            if (block == null || !blockTags.stream().anyMatch(tag -> BlockTags.is(block, meta, tag))) return false;
+            if (stack == null || itemTags.stream().noneMatch(tag -> ItemTags.is(stack, tag))) return false;
+            if (block == null || blockTags.stream().noneMatch(tag -> BlockTags.is(block, meta, tag))) return false;
             return validSides == null || side == null || validSides.contains(side);
         }
     }
@@ -170,13 +169,25 @@ public class InteractionHandler {
         if (stack == null || block == null) return false;
 
         justConverted = false;
-        return findInteraction(stack, block, meta, side, type)
-                .map(def -> def.action.apply(stack, player, block, meta, world, x, y, z, side))
-                .orElse(false);
+        Optional<InteractionDefinition> def = findInteraction(stack, block, meta, side, type);
+        //noinspection OptionalIsPresent
+        if (def.isEmpty()) return false;
+
+        return def.get().action.apply(stack, player, block, meta, world, x, y, z, side);
     }
 
     public static boolean hasJustConverted() {
         return justConverted;
+    }
+
+    /**
+     * Checks if a conversion just happened and immediately resets the flag
+     * to ensure the "just converted" state is only "consumed" once.
+     */
+    public static boolean consumeJustConvertedFlag() {
+        boolean flagValue = justConverted;
+        justConverted = false;
+        return flagValue;
     }
 
     public static void clearCache() {

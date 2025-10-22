@@ -30,7 +30,7 @@ public class ItemDamage {
         }
 
         // Check if interaction handler just performed a conversion
-        boolean conversionByTool = InteractionHandler.hasJustConverted();
+        boolean conversionByTool = InteractionHandler.consumeJustConvertedFlag(); // NEW
 
         // Check if there's a special interaction defined for this combo
         int blockMeta = world.getBlockMetadata(x, y, z);
