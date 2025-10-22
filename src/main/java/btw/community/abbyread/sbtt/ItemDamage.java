@@ -31,16 +31,18 @@ public class ItemDamage {
         boolean betterThanNothing = conversionByTool || specialCase;
 
         if (betterThanNothing) {
-            return damageByAmount(stack, player, amount);
+            int damage = damageByAmount(stack, player, amount);
+            amount = 1; // reset default damage amount to 1
+            return damage; // return amount of damage applied to item
         }
 
         // no damage is the default
         return 0;
     }
 
-    public static int damageByAmount(ItemStack stack, EntityPlayer player, int amount) {
+    public static int damageByAmount(ItemStack stack, EntityPlayer player, int amountOfDamage) {
         player.addStat(StatList.objectUseStats[stack.itemID], 1);
-        stack.damageItem(amount, player);
-        return amount;
+        stack.damageItem(amountOfDamage, player);
+        return amountOfDamage;
     }
 }
