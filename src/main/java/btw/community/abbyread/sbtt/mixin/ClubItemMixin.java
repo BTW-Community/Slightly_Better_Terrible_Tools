@@ -14,18 +14,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ClubItemMixin {
 
     @Inject(method = "onBlockDestroyed", at = @At("HEAD"), cancellable = true)
-    private void abbyread$convertLooseToFirm(ItemStack stack, World world, int iBlockID, int x, int y, int z, EntityLivingBase usingEntity, CallbackInfoReturnable<Boolean> cir) {
-        Block block = Block.blocksList[iBlockID];
+    private void abbyread$convertLooseToFirm(ItemStack stack, World world, int blockID, int x, int y, int z, EntityLivingBase usingEntity, CallbackInfoReturnable<Boolean> cir) {
+        if (world.isRemote || !(usingEntity instanceof EntityPlayer player)) return;
+
+        Block block = Block.blocksList[blockID];
+        if (block == null) return;
+
         int meta = world.getBlockMetadata(x, y, z);
 
-        if (world.isRemote) return;
-
+        // Only react for club → dirtlike conversions
         if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
-            if (Convert.tryConvert(stack, (EntityPlayer)usingEntity, block, meta, world, x, y, z, 0)) {
-                stack.damageItem(2, usingEntity);
+            boolean didConvert = Convert.convert(stack, player, block, meta, world, x, y, z, 0);
+            if (didConvert) {
+                stack.damageItem(2, player);
+                cir.setReturnValue(true);
             }
         }
-        // Prevent normal onBlockDestroyed routine from wasting use on other blocks
+
+        // Prevent default block-destroy behavior (so we don't waste durability)
         cir.setReturnValue(true);
     }
 }

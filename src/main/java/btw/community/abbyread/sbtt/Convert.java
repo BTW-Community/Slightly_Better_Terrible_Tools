@@ -10,206 +10,126 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
 
-@SuppressWarnings("UnnecessaryLocalVariable")
+import java.util.List;
+import java.util.Set;
+
 public class Convert {
 
     private static final boolean DEBUG = false;
     private static final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
+    private static boolean justConverted = false;
 
-    public static boolean justConverted = false;
+    private static class ConversionRule {
+        private final ItemUseCombo combo;
+        private final ConversionAction action;
 
-    // ---------- Public Methods ----------
-
-    // Left-click-held conversions
-    public static boolean tryConvert(ItemStack stack, EntityPlayer player, Block block, int meta, World world, int x, int y, int z, int side) {
-        if (canConvert(stack, block, meta)) {
-            if (!world.isRemote) debug("canConvert returned true.");
-            return convert(stack, player, block, meta, world, x, y, z, side);
+        ConversionRule(ItemUseCombo combo, ConversionAction action) {
+            this.combo = combo;
+            this.action = action;
         }
-        if (!world.isRemote) debug("canConvert returned false.");
-        return false;
+
+        boolean matches(ItemStack stack, Block block, int meta, BlockSide side) {
+            return combo.matches(stack, block, meta, side);
+        }
+
+        boolean execute(ItemStack stack, EntityPlayer player, Block block, int meta,
+                        World world, int x, int y, int z, int side) {
+            return action.apply(stack, player, block, meta, world, x, y, z, side);
+        }
     }
+
+    @FunctionalInterface
+    private interface ConversionAction {
+        boolean apply(ItemStack stack, EntityPlayer player, Block block, int meta,
+                      World world, int x, int y, int z, int side);
+    }
+
+    private static final List<ConversionRule> PRIMARY_RULES = List.of(
+            new ConversionRule(
+                    new ItemUseCombo(Set.of(ItemTag.WOOD, ItemTag.CHISEL),
+                            Set.of(BlockTag.FIRM, BlockTag.DIRTLIKE, BlockTag.GRASS)),
+                    Convert::loosen
+            ),
+            new ConversionRule(
+                    new ItemUseCombo(Set.of(ItemTag.STONE, ItemTag.CHISEL),
+                            Set.of(BlockTag.GRASS)),
+                    Convert::sparsen
+            ),
+            new ConversionRule(
+                    new ItemUseCombo(Set.of(ItemTag.CLUB),
+                            Set.of(BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)),
+                    Convert::firm
+            )
+    );
+
+    private static final List<ConversionRule> SECONDARY_RULES = List.of(
+            new ConversionRule(
+                    new ItemUseCombo(Set.of(ItemTag.SHOVEL),
+                            Set.of(BlockTag.LOOSE_DIRTLIKE)),
+                    Convert::firm
+            ),
+            new ConversionRule(
+                    new ItemUseCombo(Set.of(ItemTag.SHOVEL),
+                            Set.of(BlockTag.DIRTLIKE, BlockTag.FIRM, BlockTag.CUBE),
+                            Set.of(BlockSide.UP)),
+                    Convert::pack
+            )
+    );
 
     public static boolean canConvert(ItemStack stack, Block block, int meta) {
+        return stack != null && block != null &&
+                PRIMARY_RULES.stream().anyMatch(rule -> rule.matches(stack, block, meta, null));
+    }
+
+    public static boolean convert(ItemStack stack, EntityPlayer player,
+                                  Block block, int meta, World world,
+                                  int x, int y, int z, int side) {
         if (stack == null || block == null) return false;
-
-        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL) &&
-                BlockTags.is(block, meta, BlockTag.FIRM) &&
-                (BlockTags.is(block, meta, BlockTag.DIRT) ||
-                        BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE))) {
-            return true;
-        }
-
-        if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL) && BlockTags.is(block, meta, BlockTag.GRASS)) {
-            return true;
-        }
-
-        if (ItemTags.is(stack, ItemTag.CLUB) && BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
-            return true;
+        justConverted = false;
+        for (ConversionRule rule : PRIMARY_RULES) {
+            if (rule.matches(stack, block, meta, BlockSide.fromId(side))) {
+                justConverted = rule.execute(stack, player, block, meta, world, x, y, z, side);
+                if (justConverted) return true;
+            }
         }
         return false;
     }
 
-    // Block-invoked convert does not have access to usingEntity
-    public static boolean convert(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int side) {
+    public static boolean secondaryCanConvert(ItemStack stack, Block block, int meta) {
+        return stack != null && block != null &&
+                SECONDARY_RULES.stream().anyMatch(rule -> rule.matches(stack, block, meta, null));
+    }
+
+    public static boolean secondaryConvert(ItemStack stack, EntityPlayer player,
+                                           Block block, int meta, World world,
+                                           int x, int y, int z, int side) {
         if (stack == null || block == null) return false;
-
-        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL) && canConvert(stack, block, meta)) {
-            debug("Using loosen conversion");
-            justConverted = loosen(stack, block, meta, world, x, y, z, side);
+        justConverted = false;
+        for (ConversionRule rule : SECONDARY_RULES) {
+            if (rule.matches(stack, block, meta, BlockSide.fromId(side))) {
+                justConverted = rule.execute(stack, player, block, meta, world, x, y, z, side);
+                if (justConverted) return true;
+            }
         }
+        return false;
+    }
 
-        if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL) && BlockTags.is(block, meta, BlockTag.GRASS)) {
-            debug("Using sparsen conversion");
-            justConverted = sparsen(stack, block, meta, world, x, y, z, side);
-        }
-
-        if ((ItemTags.is(stack, ItemTag.CLUB))
-                && BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
-            debug("Using firm conversion");
-            justConverted = firm(stack, block, meta, world, x, y, z, side);
-        }
-
+    public static boolean hasJustConverted() {
         return justConverted;
     }
 
+    private static boolean loosen(ItemStack stack, EntityPlayer player, Block block,
+                                  int meta, World world, int x, int y, int z, int side) {
 
-    // Item-invoked convert has access to usingEntity
-    public static boolean convert(ItemStack stack, EntityPlayer player, Block block, int meta, World world, int x, int y, int z, int side) {
-        if (stack == null || block == null) return false;
-
-        if (ItemTags.isAll(stack, ItemTag.WOOD, ItemTag.CHISEL) && canConvert(stack, block, meta)) {
-            debug("Using loosen conversion");
-            justConverted = loosen(stack, block, meta, world, x, y, z, side);
-        }
-
-        if (ItemTags.isAll(stack, ItemTag.STONE, ItemTag.CHISEL) && BlockTags.is(block, meta, BlockTag.GRASS)) {
-            debug("Using sparsen conversion");
-            justConverted = sparsen(stack, block, meta, world, x, y, z, side);
-        }
-
-        if ((ItemTags.is(stack, ItemTag.CLUB))
-                && BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
-            debug("Using firm conversion");
-            justConverted = firm(stack, block, meta, world, x, y, z, side);
-        }
-
-        return justConverted;
-    }
-
-    // Right-click-usage conversions
-    public static boolean trySecondaryConvert(ItemStack stack, EntityPlayer player, Block block, int meta, World world, int x, int y, int z, int side) {
-        if (secondaryCanConvert(stack, block, meta, world, x, y, z, side)) {
-            if (!world.isRemote) debug("secondaryCanConvert returned true.");
-            return secondaryConvert(stack, player, block, meta, world, x, y, z, side);
-        }
-        if (!world.isRemote) debug("secondaryCanConvert returned false.");
-        return false;
-    }
-
-    public static boolean secondaryCanConvert(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int side) {
-        if (stack == null || block == null) return false;
-
-        // firming
-        if (ItemTags.is(stack, ItemTag.SHOVEL) &&
-                BlockTags.is(block, meta, BlockTag.LOOSE_DIRTLIKE)) {
-            return true;
-        }
-
-        // packing
-        if (ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE) &&
-                BlockTags.isAll(block, meta,
-                        BlockTag.DIRTLIKE, BlockTag.FIRM, BlockTag.CUBE)) {
-            return true;
-        }
-        if (!world.isRemote) debug(BlockTags.getTags(block, meta).toString());
-        if (ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE) &&
-                BlockTags.isAll(block, meta,
-                        BlockTag.PACKED_EARTH, BlockTag.SLAB)) {
-            return true; // Still must check if neighbor below is dirt
-        }
-
-        return false;
-    }
-
-    public static boolean secondaryConvert(ItemStack stack, EntityPlayer player, Block block, int meta, World world, int x, int y, int z, int side) {
-        if (stack == null || block == null) return false;
-
-        if ((ItemTags.is(stack, ItemTag.SHOVEL))
-                && BlockTags.is(block, meta, BlockTag.LOOSE_DIRTLIKE)) {
-            debug("Using firm conversion");
-            if (firm(stack, block, meta, world, x, y, z, side)) {
-                ItemDamage.damageByAmount(stack, player, 1);
-            }
-            return true;
-        }
-
-        if ((ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE))
-                && BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM) && side == 1) {
-            debug("Converting dirt block to packed-earth slab");
-            if (pack(stack, block, meta, world, x, y, z, side)) {
-                ItemDamage.damageByAmount(stack, player, 1);
-            }
-            return true;
-        }
-
-        if ((ItemTags.isButNot(stack, ItemTag.SHOVEL, ItemTag.STONE))
-                && BlockTags.isAll(block, meta, BlockTag.PACKED_EARTH, BlockTag.SLAB) && side == 1) {
-            debug("Attempting pack downward.");
-            if (pack(stack, block, meta, world, x, y, z, side)) {
-                ItemDamage.damageByAmount(stack, player, 1);
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    // ---------- Conversion Methods ----------
-
-
-    public static boolean pack(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int side) {
-        if (block == null) return false;
-
-        debug(block.getUnlocalizedName() + " with meta " + meta);
-        Block newBlock = null;
-        int newMeta = meta;
-
-        // packing step 1
-        if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM) && side == 1) {
-            newBlock = BTWBlocks.dirtSlab;
-            // DirtSlabBlock.SUBTYPE_PACKED_EARTH gives 3, which is actually wrong.
-            newMeta = 6; // matches full-block metadata value of AestheticOpaqueEarthBlock for packed earth
-            swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
-            return true;
-        }
-
-        // packing step 2
-        if (block == BTWBlocks.dirtSlab && meta == 6 && side == 1) {
-            // check neighboring block below for potential two-block conversion
-            debug(String.format("%d\n", world.getBlockId(x, y - 1, z)));
-            if (world.getBlockId(x, y - 1, z) == Block.dirt.blockID) {
-
-                newBlock = BTWBlocks.aestheticEarth;
-                swapBlock(world, x, y - 1, z, block, meta, newBlock, 6);
-                world.setBlockToAir(x, y, z);
-            }
-            return true;
-        }
-
-
-        return false;
-    }
-
-    public static boolean loosen(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
-        if (BlockTags.isNotAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM)) return false;
+        // Only firm dirt should be loosened
+        if (!BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM)
+                || BlockTags.is(block, meta, BlockTag.LOOSE_DIRTLIKE)) return false;
 
         Block newBlock = null;
         int newMeta = meta;
 
         if (BlockTags.is(block, meta, BlockTag.DIRT)) {
-            if (BlockTags.is(block, meta, BlockTag.CUBE)) newBlock = BTWBlocks.looseDirt;
-            else if (BlockTags.is(block, meta, BlockTag.SLAB)) newBlock = BTWBlocks.looseDirtSlab;
+            newBlock = BlockTags.is(block, meta, BlockTag.CUBE) ? BTWBlocks.looseDirt : BTWBlocks.looseDirtSlab;
         } else if (BlockTags.isAll(block, meta, BlockTag.SPARSE, BlockTag.GRASS)) {
             if (BlockTags.is(block, meta, BlockTag.CUBE)) {
                 newBlock = BTWBlocks.looseSparseGrass;
@@ -223,8 +143,11 @@ public class Convert {
         return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
     }
 
-    public static boolean firm(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
-        if (BlockTags.isNotAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) return false;
+    private static boolean firm(ItemStack stack, EntityPlayer player, Block block,
+                                int meta, World world, int x, int y, int z, int side) {
+
+        // Only loose dirt should be firmed
+        if (!BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) return false;
 
         Block newBlock = null;
         int newMeta = meta;
@@ -233,12 +156,10 @@ public class Convert {
         if (block == BTWBlocks.looseDirt) {
             newBlock = Block.dirt;
             toSwap = true;
-        }
-        else if (block == BTWBlocks.looseDirtSlab) {
+        } else if (block == BTWBlocks.looseDirtSlab) {
             newBlock = BTWBlocks.dirtSlab;
             toSwap = true;
-        }
-        else if (block == BTWBlocks.looseSparseGrass) {
+        } else if (block == BTWBlocks.looseSparseGrass) {
             newBlock = Block.grass;
             newMeta = 1;
             toSwap = true;
@@ -248,12 +169,16 @@ public class Convert {
             toSwap = true;
         }
 
-        if (toSwap && ItemTags.is(stack, ItemTag.CLUB)) ItemDamage.amount = 2;
+        if (toSwap && ItemTags.is(stack, ItemTag.CLUB)) {
+            ItemDamage.amount = 2;
+        }
 
         return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
     }
 
-    public static boolean sparsen(ItemStack stack, Block block, int meta, World world, int x, int y, int z, int fromSide) {
+    private static boolean sparsen(ItemStack stack, EntityPlayer player, Block block,
+                                   int meta, World world, int x, int y, int z, int side) {
+
         if (!BlockTags.is(block, meta, BlockTag.GRASS)) return false;
 
         Block newBlock = null;
@@ -281,27 +206,49 @@ public class Convert {
             }
         }
 
-        // Eject hemp seeds randomly
         if (!world.isRemote && world.rand.nextInt(VERY_LOW_HEMP_SEED_CHANCE) == 0) {
-            debug("Ejecting hemp seeds at (" + x + "," + y + "," + z + ")");
-            ItemUtils.ejectStackFromBlockTowardsFacing(world, x, y, z, new ItemStack(BTWItems.hempSeeds), fromSide);
+            ItemUtils.ejectStackFromBlockTowardsFacing(world, x, y, z,
+                    new ItemStack(BTWItems.hempSeeds), side);
         }
 
         return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
     }
 
-    // ---------- Helper Methods ----------
+    private static boolean pack(ItemStack stack, EntityPlayer player, Block block,
+                                int meta, World world, int x, int y, int z, int side) {
 
-    private static boolean swapBlock(World world, int x, int y, int z, Block oldBlock, int oldMeta, Block newBlock, int newMeta) {
+        if (block == null) return false;
+        Block newBlock = null;
+        int newMeta = meta;
+
+        if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM) && side == 1) {
+            newBlock = BTWBlocks.dirtSlab;
+            newMeta = 6;
+            swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
+            return true;
+        }
+
+        if (block == BTWBlocks.dirtSlab && meta == 6 && side == 1) {
+            if (world.getBlockId(x, y - 1, z) == Block.dirt.blockID) {
+                newBlock = BTWBlocks.aestheticEarth;
+                swapBlock(world, x, y - 1, z, block, meta, newBlock, 6);
+                world.setBlockToAir(x, y, z);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    private static boolean swapBlock(World world, int x, int y, int z,
+                                     Block oldBlock, int oldMeta, Block newBlock, int newMeta) {
 
         if (newBlock == null) return false;
-
         boolean swapped = false;
 
         if (newBlock != oldBlock || newMeta != oldMeta) {
             world.setBlockAndMetadataWithNotify(x, y, z, newBlock.blockID, newMeta);
             swapped = true;
-            debug("Block swapped at (" + x + "," + y + "," + z + ")");
         }
 
         if (!world.isRemote && swapped) {

@@ -1,6 +1,8 @@
 package btw.community.abbyread.categories;
 
 import net.minecraft.src.Block;
+import btw.community.abbyread.categories.BlockTags;
+import btw.community.abbyread.categories.ItemTags;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 

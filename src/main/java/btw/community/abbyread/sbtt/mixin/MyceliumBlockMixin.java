@@ -31,21 +31,23 @@ public class MyceliumBlockMixin {
     }
 
     @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
-    private void abbyread$canConvertBlock(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+    private void abbyread$unifiedCanConvertBlock(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
         if (stack == null) return;
-        Block block = (Block)(Object)this;
+        Block block = (Block) (Object) this;
         int meta = world.getBlockMetadata(x, y, z);
+
         if (Convert.canConvert(stack, block, meta)) {
             cir.setReturnValue(true);
         }
     }
 
     @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
-    private void abbyread$convertBlock(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir) {
+    private void abbyread$unifiedConvertBlock(ItemStack stack, World world, int x, int y, int z, int fromSide, CallbackInfoReturnable<Boolean> cir) {
         if (stack == null) return;
-        Block block = (Block)(Object)this;
+        Block block = (Block) (Object) this;
         int meta = world.getBlockMetadata(x, y, z);
-        if (Convert.convert(stack, block, meta, world, x, y, z, fromSide)) {
+
+        if (Convert.convert(stack, null, block, meta, world, x, y, z, fromSide)) {
             cir.setReturnValue(true);
         }
     }
