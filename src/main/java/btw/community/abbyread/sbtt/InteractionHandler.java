@@ -3,6 +3,7 @@ package btw.community.abbyread.sbtt;
 import btw.block.BTWBlocks;
 import btw.client.fx.BTWEffectManager;
 import btw.community.abbyread.categories.*;
+import btw.community.abbyread.sbtt.api.SBTTPlayerExtension;
 import btw.item.BTWItems;
 import btw.item.util.ItemUtils;
 import net.minecraft.src.Block;
@@ -25,8 +26,6 @@ public class InteractionHandler {
                     return size() > 512; // LRU cache, max 512 entries
                 }
             };
-
-    private static boolean justConverted = false;
 
     // ===== Cache Key =====
 
@@ -168,7 +167,6 @@ public class InteractionHandler {
                                    World world, int x, int y, int z, BlockSide side, InteractionType type) {
         if (stack == null || block == null) return false;
 
-        justConverted = false;
         Optional<InteractionDefinition> def = findInteraction(stack, block, meta, side, type);
         //noinspection OptionalIsPresent
         if (def.isEmpty()) return false;
@@ -176,20 +174,7 @@ public class InteractionHandler {
         return def.get().action.apply(stack, player, block, meta, world, x, y, z, side);
     }
 
-    public static boolean hasJustConverted() {
-        return justConverted;
-    }
-
-    /**
-     * Checks if a conversion just happened and immediately resets the flag
-     * to ensure the "just converted" state is only "consumed" once.
-     */
-    public static boolean consumeJustConvertedFlag() {
-        boolean flagValue = justConverted;
-        justConverted = false;
-        return flagValue;
-    }
-
+    @SuppressWarnings("unused")
     public static void clearCache() {
         INTERACTION_CACHE.clear();
     }
@@ -254,8 +239,14 @@ public class InteractionHandler {
             newMeta = 0;
         }
 
-        justConverted = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
-        return justConverted;
+        boolean swapped = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
+
+        if (swapped && player != null) {
+            ((SBTTPlayerExtension) player).sbtt_setJustConvertedFlag(true);
+
+        }
+
+        return swapped;
     }
 
     private static boolean firm(ItemStack stack, EntityPlayer player, Block block,
@@ -275,8 +266,14 @@ public class InteractionHandler {
             newMeta = 2;
         }
 
-        justConverted = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
-        return justConverted;
+        boolean swapped = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
+
+        if (swapped && player != null) {
+            ((SBTTPlayerExtension) player).sbtt_setJustConvertedFlag(true);
+
+        }
+
+        return swapped;
     }
 
     private static boolean sparsen(ItemStack stack, EntityPlayer player, Block block,
@@ -314,32 +311,40 @@ public class InteractionHandler {
                     new ItemStack(BTWItems.hempSeeds), side.getId());
         }
 
-        justConverted = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
-        return justConverted;
+        boolean swapped = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
+
+        if (swapped && player != null) {
+            ((SBTTPlayerExtension) player).sbtt_setJustConvertedFlag(true);
+
+        }
+
+        return swapped;
     }
 
     private static boolean pack(ItemStack stack, EntityPlayer player, Block block,
                                 int meta, World world, int x, int y, int z, BlockSide side) {
         if (block == null) return false;
 
-        Block newBlock = null;
-        int newMeta = meta;
+        Block newBlock;
+        int newMeta;
+        boolean swapped = false;
 
         if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM) && side == BlockSide.UP) {
             newBlock = BTWBlocks.dirtSlab;
             newMeta = 6;
-            swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
-            return true;
-        }
-
-        if (block == BTWBlocks.dirtSlab && meta == 6 && side == BlockSide.UP) {
+            swapped = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
+        } else if (block == BTWBlocks.dirtSlab && meta == 6 && side == BlockSide.UP) {
             if (world.getBlockId(x, y - 1, z) == Block.dirt.blockID) {
-                swapBlock(world, x, y - 1, z, block, meta, BTWBlocks.aestheticEarth, 6);
+                swapped = swapBlock(world, x, y - 1, z, block, meta, BTWBlocks.aestheticEarth, 6);
                 world.setBlockToAir(x, y, z);
             }
-            return true;
         }
 
-        return false;
+        if (swapped && player != null) {
+            ((SBTTPlayerExtension) player).sbtt_setJustConvertedFlag(true);
+        }
+
+        return swapped;
     }
+
 }

@@ -1,5 +1,6 @@
 package btw.community.abbyread.sbtt;
 
+import btw.community.abbyread.sbtt.api.SBTTPlayerExtension;
 import net.minecraft.src.*;
 
 public class ItemDamage {
@@ -30,7 +31,7 @@ public class ItemDamage {
         }
 
         // Check if interaction handler just performed a conversion
-        boolean conversionByTool = InteractionHandler.consumeJustConvertedFlag(); // NEW
+        boolean conversionByTool = ((SBTTPlayerExtension) player).sbtt_consumeJustConvertedFlag();
 
         // Check if there's a special interaction defined for this combo
         int blockMeta = world.getBlockMetadata(x, y, z);

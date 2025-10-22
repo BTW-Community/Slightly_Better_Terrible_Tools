@@ -16,6 +16,7 @@
     "ChiselItemWoodMixin",
     "ClubItem_ItemMixin",
     "ClubItemMixin",
+    "EntityPlayerMixin",
     "ItemAccessor",
     "ItemInWorldManagerMixin",
     "ItemStackMixin",
