@@ -2,6 +2,11 @@ package btw.community.abbyread.sbtt.api;
 
 import net.minecraft.src.*;
 
+/**
+ * Handles logic for damaging tools based on use.
+ * Integrates with SBTTPlayerExtension to respect variable damage
+ * from custom interactions.
+ */
 public class ItemDamage {
     public static int amount = 1; // default amount if damaging item
 
@@ -29,23 +34,27 @@ public class ItemDamage {
             return damageByAmount(stack, player, amount);
         }
 
-        // Check if interaction handler just performed a conversion
-        boolean conversionByTool = ((SBTTPlayerExtension) player).sbtt_consumeItemUsedFlag();
+        // --- New section: handle special interaction-driven damage ---
+        SBTTPlayerExtension ext = (SBTTPlayerExtension) player;
+        boolean conversionByTool = ext.sbtt_consumeItemUsedFlag();
+        int extraDamage = ext.sbtt_consumeItemUsedDamage();
 
         // Check if there's a special interaction defined for this combo
         int blockMeta = world.getBlockMetadata(x, y, z);
-        boolean hasSpecialInteraction = InteractionHandler.canInteract(stack, block, blockMeta,
-                InteractionHandler.InteractionType.PRIMARY_LEFT_CLICK);
+        boolean hasSpecialInteraction = InteractionHandler.canInteract(
+                stack, block, blockMeta, InteractionHandler.InteractionType.PRIMARY_LEFT_CLICK
+        );
 
         boolean betterThanNothing = conversionByTool || hasSpecialInteraction;
 
         if (betterThanNothing) {
-            int damage = damageByAmount(stack, player, amount);
-            amount = 1; // reset to default
-            return damage;
+            // Use custom damage if available; otherwise default
+            int appliedDamage = damageByAmount(stack, player, extraDamage > 0 ? extraDamage : amount);
+            amount = 1; // reset to default for next call
+            return appliedDamage;
         }
 
-        return 0; // no damage
+        return 0; // no damage applied
     }
 
     public static int damageByAmount(ItemStack stack, EntityPlayer player, int amountOfDamage) {

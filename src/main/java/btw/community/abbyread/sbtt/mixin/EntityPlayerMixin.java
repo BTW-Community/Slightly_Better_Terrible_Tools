@@ -12,24 +12,25 @@ public abstract class EntityPlayerMixin implements SBTTPlayerExtension {
     private boolean sbtt_itemUsed = false;
 
     @Unique
-    private int sbtt_pendingItemDamage = 0;
+    private int sbtt_itemDamageAmount = 0;
 
     @Override
     public void sbtt_setItemUsedFlag(boolean value, int damageAmount) {
         this.sbtt_itemUsed = value;
-        this.sbtt_pendingItemDamage = value ? damageAmount : 0;
+        this.sbtt_itemDamageAmount = damageAmount;
     }
 
     @Override
     public boolean sbtt_consumeItemUsedFlag() {
-        boolean value = this.sbtt_itemUsed;
-        this.sbtt_itemUsed = false; // reset the flag
-        this.sbtt_pendingItemDamage = 0; // clear damage after consumption
-        return value;
+        boolean result = this.sbtt_itemUsed;
+        this.sbtt_itemUsed = false; // reset
+        return result;
     }
 
     @Override
-    public int sbtt_getPendingItemDamage() {
-        return this.sbtt_pendingItemDamage;
+    public int sbtt_consumeItemUsedDamage() {
+        int result = this.sbtt_itemDamageAmount;
+        this.sbtt_itemDamageAmount = 0; // reset
+        return result;
     }
 }
