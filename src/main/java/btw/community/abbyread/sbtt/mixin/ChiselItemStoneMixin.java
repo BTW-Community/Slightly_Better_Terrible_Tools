@@ -1,7 +1,7 @@
 package btw.community.abbyread.sbtt.mixin;
 
-import btw.community.abbyread.categories.BlockTag;
-import btw.community.abbyread.categories.BlockTags;
+import btw.community.abbyread.categories.BlockType;
+import btw.community.abbyread.categories.BlockSet;
 import btw.community.abbyread.sbtt.helper.Efficiency;
 import btw.item.items.ChiselItemStone;
 import net.minecraft.src.Block;
@@ -24,7 +24,7 @@ public class ChiselItemStoneMixin {
         float mod = 1.5F;
 
         // *** Specific-to-sharp-stone use boost (cutting grass) ***
-        if (BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.FIRM)) {
+        if (BlockSet.isAll(block, meta, BlockType.GRASS, BlockType.FIRM)) {
             float base = cir.getReturnValue();
             float modifier = Efficiency.modifier * mod;
             cir.setReturnValue(base * modifier);
@@ -34,7 +34,7 @@ public class ChiselItemStoneMixin {
 
         // Web harvesting is already doubled in the source code.
         //   Boosting just a little more.
-        if (BlockTags.is(block, meta, BlockTag.WEB)) {
+        if (BlockSet.is(block, meta, BlockType.WEB)) {
             mod = 0.75F; // Reduce Efficiency.modifier just a bit
             float base = cir.getReturnValue();
             float modifier = (Efficiency.modifier - 1) * mod + 1;
@@ -42,14 +42,14 @@ public class ChiselItemStoneMixin {
         }
 
         // Solid, single-harvest stonelike blocks easier to pick up with chisels
-        if (BlockTags.is(block, meta, BlockTag.EASY_SOLID_STONELIKE)) {
+        if (BlockSet.is(block, meta, BlockType.EASY_SOLID_STONELIKE)) {
             float base = cir.getReturnValue();
             float modifier = (Efficiency.modifier - 1) * mod + 1;
             cir.setReturnValue(base * modifier);
         }
 
         // Shatterables shattered or picked up faster by chisels
-        if (BlockTags.is(block, meta, BlockTag.SHATTERABLE)) {
+        if (BlockSet.is(block, meta, BlockType.SHATTERABLE)) {
             float base = cir.getReturnValue();
             float modifier = (Efficiency.modifier - 1) * mod + 1;
             cir.setReturnValue(base * modifier);

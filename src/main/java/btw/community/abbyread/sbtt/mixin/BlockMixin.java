@@ -1,8 +1,8 @@
 package btw.community.abbyread.sbtt.mixin;
 
 import btw.community.abbyread.categories.BlockSide;
-import btw.community.abbyread.categories.BlockTags;
-import btw.community.abbyread.categories.BlockTag;
+import btw.community.abbyread.categories.BlockSet;
+import btw.community.abbyread.categories.BlockType;
 import btw.community.abbyread.sbtt.helper.Efficiency;
 import btw.community.abbyread.sbtt.helper.InteractionHandler;
 import net.minecraft.src.*;
@@ -25,23 +25,23 @@ public class BlockMixin {
         Block self = (Block)(Object)this;
         int meta = world.getBlockMetadata(x, y, z);
 
-        Set<BlockTag> tags = BlockTags.of(self, meta);
-        if (tags.contains(BlockTag.LOG)) {
+        Set<BlockType> tags = BlockSet.of(self, meta);
+        if (tags.contains(BlockType.LOG)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier);
         }
 
-        if (tags.contains(BlockTag.LOOSE_DIRTLIKE)) {
+        if (tags.contains(BlockType.LOOSE_DIRTLIKE)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier * 1.5F);
         }
 
-        if (tags.contains(BlockTag.SAND)) {
+        if (tags.contains(BlockType.SAND)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier * 1.25F);
         }
 
-        if (tags.contains(BlockTag.GRAVEL)) {
+        if (tags.contains(BlockType.GRAVEL)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier);
         }

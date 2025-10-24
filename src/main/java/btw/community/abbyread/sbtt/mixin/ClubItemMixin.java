@@ -1,7 +1,7 @@
 package btw.community.abbyread.sbtt.mixin;
 
-import btw.community.abbyread.categories.BlockTag;
-import btw.community.abbyread.categories.BlockTags;
+import btw.community.abbyread.categories.BlockType;
+import btw.community.abbyread.categories.BlockSet;
 import btw.community.abbyread.categories.BlockSide;
 import btw.community.abbyread.sbtt.helper.InteractionHandler;
 import btw.community.abbyread.sbtt.helper.InteractionHandler.InteractionType;
@@ -25,7 +25,7 @@ public class ClubItemMixin {
         int meta = world.getBlockMetadata(x, y, z);
 
         // Only react for club → dirtlike conversions
-        if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) {
+        if (BlockSet.isAll(block, meta, BlockType.DIRTLIKE, BlockType.LOOSE_DIRTLIKE)) {
             boolean didConvert = InteractionHandler.interact(stack, player, block, meta, world, x, y, z,
                     BlockSide.DOWN, InteractionType.PRIMARY_LEFT_CLICK);
             if (didConvert) {

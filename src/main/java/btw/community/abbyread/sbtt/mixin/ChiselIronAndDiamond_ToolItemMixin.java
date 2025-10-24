@@ -1,7 +1,7 @@
 package btw.community.abbyread.sbtt.mixin;
 
-import btw.community.abbyread.categories.BlockTags;
-import btw.community.abbyread.categories.BlockTag;
+import btw.community.abbyread.categories.BlockSet;
+import btw.community.abbyread.categories.BlockType;
 import btw.community.abbyread.categories.ItemTags;
 import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.sbtt.helper.Efficiency;
@@ -63,7 +63,7 @@ public class ChiselIronAndDiamond_ToolItemMixin {
 
 
         // diamond chisel base multiplier toward web blocks is already high (8).
-        if (BlockTags.is(block, meta, BlockTag.WEB)
+        if (BlockSet.is(block, meta, BlockType.WEB)
             && stack.getItem() instanceof ChiselItemIron) {
             float base = cir.getReturnValue();
             float modifier = (Efficiency.modifier - 1) * mod + 1;
@@ -71,21 +71,21 @@ public class ChiselIronAndDiamond_ToolItemMixin {
         }
 
         // Loose masonry blocks easier to pick up with chisels
-        if (BlockTags.is(block, meta, BlockTag.LOOSE_STONELIKE)) {
+        if (BlockSet.is(block, meta, BlockType.LOOSE_STONELIKE)) {
             float base = cir.getReturnValue();
             float modifier = Efficiency.modifier * mod;
             cir.setReturnValue(base * modifier);
         }
 
         // Solid, single-harvest stonelike blocks easier to pick up with chisels
-        if (BlockTags.is(block, meta, BlockTag.EASY_SOLID_STONELIKE)) {
+        if (BlockSet.is(block, meta, BlockType.EASY_SOLID_STONELIKE)) {
             float base = cir.getReturnValue();
             float modifier = (Efficiency.modifier - 1) * mod + 1;
             cir.setReturnValue(base * modifier);
         }
 
         // Shatterables shattered or picked up faster by chisels
-        if (BlockTags.is(block, meta, BlockTag.SHATTERABLE)) {
+        if (BlockSet.is(block, meta, BlockType.SHATTERABLE)) {
             float base = cir.getReturnValue();
             float modifier = (Efficiency.modifier - 1) * mod + 1;
             cir.setReturnValue(base * modifier);

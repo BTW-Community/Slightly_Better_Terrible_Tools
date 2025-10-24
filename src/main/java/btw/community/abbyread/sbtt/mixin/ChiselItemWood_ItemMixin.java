@@ -1,7 +1,7 @@
 package btw.community.abbyread.sbtt.mixin;
 
-import btw.community.abbyread.categories.BlockTag;
-import btw.community.abbyread.categories.BlockTags;
+import btw.community.abbyread.categories.BlockType;
+import btw.community.abbyread.categories.BlockSet;
 import btw.community.abbyread.categories.ItemTag;
 import btw.community.abbyread.categories.ItemTags;
 import btw.community.abbyread.sbtt.helper.Efficiency;
@@ -26,8 +26,8 @@ public class ChiselItemWood_ItemMixin {
 
         // Check if block is valid for loosening
         int meta = world.getBlockMetadata(i, j, k); // meta is ignored here; expand if needed
-        if (BlockTags.isAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE, BlockTag.FIRM)
-                || BlockTags.isAll(block, meta, BlockTag.DIRT, BlockTag.FIRM)) {
+        if (BlockSet.isAll(block, meta, BlockType.GRASS, BlockType.SPARSE, BlockType.FIRM)
+                || BlockSet.isAll(block, meta, BlockType.DIRT, BlockType.FIRM)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Efficiency.modifier * 1.5F);
         }
@@ -50,7 +50,7 @@ public class ChiselItemWood_ItemMixin {
         float mod = 4F;
 
         // Loose masonry blocks easier to pry up with Pointy Stick
-        if (BlockTags.is(block, meta, BlockTag.LOOSE_STONELIKE)) {
+        if (BlockSet.is(block, meta, BlockType.LOOSE_STONELIKE)) {
             float base = cir.getReturnValue();
             float modifier = Efficiency.modifier * mod;
             cir.setReturnValue(base * modifier);

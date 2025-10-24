@@ -78,21 +78,21 @@ public class InteractionHandler {
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.WOOD, ItemTag.CHISEL),
-                    Set.of(BlockTag.FIRM, BlockTag.DIRTLIKE, BlockTag.GRASS),
+                    Set.of(BlockType.FIRM, BlockType.DIRTLIKE, BlockType.GRASS),
                     null,
                     InteractionHandler::loosen
             ),
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.STONE, ItemTag.CHISEL),
-                    Set.of(BlockTag.GRASS),
+                    Set.of(BlockType.GRASS),
                     null,
                     InteractionHandler::sparsen
             ),
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.CLUB),
-                    Set.of(BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE),
+                    Set.of(BlockType.DIRTLIKE, BlockType.LOOSE_DIRTLIKE),
                     null,
                     InteractionHandler::firm,
                     2 // clubs take double damage when firming loose dirt
@@ -100,35 +100,35 @@ public class InteractionHandler {
             new InteractionDefinition(
                     InteractionType.SECONDARY_RIGHT_CLICK,
                     Set.of(ItemTag.SHOVEL),
-                    Set.of(BlockTag.LOOSE_DIRTLIKE),
+                    Set.of(BlockType.LOOSE_DIRTLIKE),
                     null,
                     InteractionHandler::firm
             ),
             new InteractionDefinition(
                     InteractionType.SECONDARY_RIGHT_CLICK,
                     Set.of(ItemTag.SHOVEL),
-                    Set.of(BlockTag.DIRTLIKE, BlockTag.FIRM, BlockTag.CUBE),
+                    Set.of(BlockType.DIRTLIKE, BlockType.FIRM, BlockType.CUBE),
                     Set.of(BlockSide.UP),
                     InteractionHandler::pack
             ),
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.SHEARS),
-                    Set.of(BlockTag.TALL_GRASS),
+                    Set.of(BlockType.TALL_GRASS),
                     null,
                     (stack, player, block, meta, world, x, y, z, side) -> true
             ),
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.HOE),
-                    Set.of(BlockTag.GRASS),
+                    Set.of(BlockType.GRASS),
                     null,
                     (stack, player, block, meta, world, x, y, z, side) -> true
             ),
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
                     Set.of(ItemTag.HOE),
-                    Set.of(BlockTag.DIRT),
+                    Set.of(BlockType.DIRT),
                     null,
                     (stack, player, block, meta, world, x, y, z, side) -> true
             )
@@ -137,12 +137,12 @@ public class InteractionHandler {
     private static class InteractionDefinition {
         final InteractionType type;
         final Set<ItemTag> itemTags;
-        final Set<BlockTag> blockTags;
+        final Set<BlockType> blockTags;
         final Set<BlockSide> validSides;
         final ConversionAction action;
         final int damageAmount;
 
-        InteractionDefinition(InteractionType type, Set<ItemTag> itemTags, Set<BlockTag> blockTags,
+        InteractionDefinition(InteractionType type, Set<ItemTag> itemTags, Set<BlockType> blockTags,
                               Set<BlockSide> validSides, ConversionAction action, int damageAmount) {
             this.type = type;
             this.itemTags = itemTags;
@@ -153,14 +153,14 @@ public class InteractionHandler {
         }
 
         // Optional default-damage constructor (keeps old definitions valid)
-        InteractionDefinition(InteractionType type, Set<ItemTag> itemTags, Set<BlockTag> blockTags,
+        InteractionDefinition(InteractionType type, Set<ItemTag> itemTags, Set<BlockType> blockTags,
                               Set<BlockSide> validSides, ConversionAction action) {
             this(type, itemTags, blockTags, validSides, action, 1);
         }
 
         boolean matches(ItemStack stack, Block block, int meta, BlockSide side) {
             if (stack == null || itemTags.stream().noneMatch(tag -> ItemTags.is(stack, tag))) return false;
-            if (block == null || blockTags.stream().noneMatch(tag -> BlockTags.is(block, meta, tag))) return false;
+            if (block == null || blockTags.stream().noneMatch(tag -> BlockSet.is(block, meta, tag))) return false;
             return validSides == null || side == null || validSides.contains(side);
         }
     }
@@ -239,18 +239,18 @@ public class InteractionHandler {
 
     private static boolean loosen(ItemStack stack, EntityPlayer player, Block block,
                                   int meta, World world, int x, int y, int z, BlockSide side) {
-        if (!BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM)
-                || BlockTags.is(block, meta, BlockTag.LOOSE_DIRTLIKE)) return false;
+        if (!BlockSet.isAll(block, meta, BlockType.DIRTLIKE, BlockType.FIRM)
+                || BlockSet.is(block, meta, BlockType.LOOSE_DIRTLIKE)) return false;
 
         Block newBlock = null;
         int newMeta = meta;
 
-        if (BlockTags.is(block, meta, BlockTag.DIRT)) {
-            if (BlockTags.is(block, meta, BlockTag.CUBE)) newBlock = BTWBlocks.looseDirt;
-            else if (BlockTags.is(block, meta, BlockTag.SLAB)) newBlock = BTWBlocks.looseDirtSlab;
-        } else if (BlockTags.isAll(block, meta, BlockTag.SPARSE, BlockTag.GRASS)) {
-            if (BlockTags.is(block, meta, BlockTag.CUBE)) newBlock = BTWBlocks.looseSparseGrass;
-            else if (BlockTags.is(block, meta, BlockTag.SLAB)) newBlock = BTWBlocks.looseSparseGrassSlab;
+        if (BlockSet.is(block, meta, BlockType.DIRT)) {
+            if (BlockSet.is(block, meta, BlockType.CUBE)) newBlock = BTWBlocks.looseDirt;
+            else if (BlockSet.is(block, meta, BlockType.SLAB)) newBlock = BTWBlocks.looseDirtSlab;
+        } else if (BlockSet.isAll(block, meta, BlockType.SPARSE, BlockType.GRASS)) {
+            if (BlockSet.is(block, meta, BlockType.CUBE)) newBlock = BTWBlocks.looseSparseGrass;
+            else if (BlockSet.is(block, meta, BlockType.SLAB)) newBlock = BTWBlocks.looseSparseGrassSlab;
             newMeta = 0;
         }
 
@@ -259,7 +259,7 @@ public class InteractionHandler {
 
     private static boolean firm(ItemStack stack, EntityPlayer player, Block block,
                                 int meta, World world, int x, int y, int z, BlockSide side) {
-        if (!BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.LOOSE_DIRTLIKE)) return false;
+        if (!BlockSet.isAll(block, meta, BlockType.DIRTLIKE, BlockType.LOOSE_DIRTLIKE)) return false;
         Block newBlock = null;
         int newMeta = meta;
 
@@ -278,29 +278,29 @@ public class InteractionHandler {
 
     private static boolean sparsen(ItemStack stack, EntityPlayer player, Block block,
                                    int meta, World world, int x, int y, int z, BlockSide side) {
-        if (!BlockTags.is(block, meta, BlockTag.GRASS)) return false;
+        if (!BlockSet.is(block, meta, BlockType.GRASS)) return false;
 
         Block newBlock = null;
         int newMeta = meta;
 
-        if (BlockTags.is(block, meta, BlockTag.CUBE)) {
-            if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.FULLY_GROWN)) {
+        if (BlockSet.is(block, meta, BlockType.CUBE)) {
+            if (BlockSet.isAll(block, meta, BlockType.FIRM, BlockType.FULLY_GROWN)) {
                 newBlock = block;
                 newMeta = 1;
-            } else if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.SPARSE)) {
+            } else if (BlockSet.isAll(block, meta, BlockType.FIRM, BlockType.SPARSE)) {
                 newBlock = Block.dirt;
                 newMeta = 0;
-            } else if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.SPARSE)) {
+            } else if (BlockSet.isAll(block, meta, BlockType.LOOSE_DIRTLIKE, BlockType.SPARSE)) {
                 newBlock = BTWBlocks.looseDirt;
             }
-        } else if (BlockTags.is(block, meta, BlockTag.SLAB)) {
-            if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.FULLY_GROWN)) {
+        } else if (BlockSet.is(block, meta, BlockType.SLAB)) {
+            if (BlockSet.isAll(block, meta, BlockType.FIRM, BlockType.FULLY_GROWN)) {
                 newBlock = block;
                 newMeta = 2;
-            } else if (BlockTags.isAll(block, meta, BlockTag.FIRM, BlockTag.SPARSE)) {
+            } else if (BlockSet.isAll(block, meta, BlockType.FIRM, BlockType.SPARSE)) {
                 newBlock = BTWBlocks.dirtSlab;
                 newMeta = 0;
-            } else if (BlockTags.isAll(block, meta, BlockTag.LOOSE_DIRTLIKE, BlockTag.SPARSE)) {
+            } else if (BlockSet.isAll(block, meta, BlockType.LOOSE_DIRTLIKE, BlockType.SPARSE)) {
                 newBlock = BTWBlocks.looseDirtSlab;
             }
         }
@@ -308,7 +308,7 @@ public class InteractionHandler {
         final int VERY_LOW_HEMP_SEED_CHANCE = 1000;
         if (!world.isRemote && world.rand.nextInt(VERY_LOW_HEMP_SEED_CHANCE) == 0) {
             ItemUtils.ejectStackFromBlockTowardsFacing(world, x, y, z,
-                    new ItemStack(BTWItems.hempSeeds), side.getId());
+                    new ItemStack(BTWItems.hempSeeds), side.getValue());
         }
 
         return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
@@ -322,7 +322,7 @@ public class InteractionHandler {
         int newMeta;
         boolean swapped = false;
 
-        if (BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM) && side == BlockSide.UP) {
+        if (BlockSet.isAll(block, meta, BlockType.DIRTLIKE, BlockType.FIRM) && side == BlockSide.UP) {
             newBlock = BTWBlocks.dirtSlab;
             newMeta = 6;
             swapped = swapBlock(world, x, y, z, block, meta, newBlock, newMeta);

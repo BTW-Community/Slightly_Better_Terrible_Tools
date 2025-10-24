@@ -8,20 +8,20 @@ public enum BlockSide {
     WEST(4),
     EAST(5);
 
-    private final int id;
+    private final int value;
 
-    BlockSide(int id) {
-        this.id = id;
+    BlockSide(int value) {
+        this.value = value;
     }
 
-    public int getId() {
-        return id;
+    public int getValue() {
+        return value;
     }
 
-    public static BlockSide fromId(int id) {
+    public static BlockSide fromId(int value) {
         for (BlockSide side : values()) {
-            if (side.id == id) return side;
+            if (side.value == value) return side;
         }
-        throw new IllegalArgumentException("Invalid block side id: " + id);
+        throw new IllegalArgumentException("Invalid block side value: " + value);
     }
 }
