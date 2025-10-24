@@ -1,4 +1,4 @@
-package btw.community.abbyread.sbtt.api;
+package btw.community.abbyread.sbtt.helper;
 
 public class Efficiency {
 

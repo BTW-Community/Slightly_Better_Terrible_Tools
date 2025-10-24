@@ -3,7 +3,7 @@ package btw.community.abbyread.sbtt.mixin;
 import btw.block.BTWBlocks;
 import btw.client.fx.BTWEffectManager;
 import btw.community.abbyread.categories.BlockSide;
-import btw.community.abbyread.sbtt.api.InteractionHandler;
+import btw.community.abbyread.sbtt.helper.InteractionHandler;
 import btw.item.items.ShovelItemStone;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;

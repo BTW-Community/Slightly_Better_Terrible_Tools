@@ -1,6 +1,6 @@
 package btw.community.abbyread.sbtt.mixin;
 
-import btw.community.abbyread.sbtt.api.SBTTPlayerExtension;
+import btw.community.abbyread.sbtt.helper.SBTTPlayerExtension;
 import net.minecraft.src.EntityPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

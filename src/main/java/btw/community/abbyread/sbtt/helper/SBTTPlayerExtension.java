@@ -1,4 +1,4 @@
-package btw.community.abbyread.sbtt.api;
+package btw.community.abbyread.sbtt.helper;
 
 /**
  * Extension interface added to players via mixin to track custom

@@ -1,7 +1,7 @@
-package btw.community.abbyread.sbtt.api;
+package btw.community.abbyread.sbtt.helper;
 
 import net.minecraft.src.*;
-import btw.community.abbyread.sbtt.api.InteractionHandler.InteractionType;
+import btw.community.abbyread.sbtt.helper.InteractionHandler.InteractionType;
 
 /**
  * Handles logic for damaging tools based on use.

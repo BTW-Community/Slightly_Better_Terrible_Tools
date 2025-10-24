@@ -4,7 +4,7 @@ import btw.community.abbyread.categories.BlockTags;
 import btw.community.abbyread.categories.BlockTag;
 import btw.community.abbyread.categories.ItemTags;
 import btw.community.abbyread.categories.ItemTag;
-import btw.community.abbyread.sbtt.api.Efficiency;
+import btw.community.abbyread.sbtt.helper.Efficiency;
 import btw.item.items.ChiselItemDiamond;
 import btw.item.items.ChiselItemIron;
 import btw.item.items.ToolItem;
