@@ -25,7 +25,10 @@ public class ShovelItem_ToolItemMixin {
                                          CallbackInfoReturnable<Boolean> cir) {
 
         // Only continue if this is actually a shovel
-        if (ItemTags.isNot(stack, ItemTag.SHOVEL)) return;
+        if (ItemSet.isNot(stack, ItemType.SHOVEL)) return;
+
+        // Prevent conversion when placing in a block
+        if (player.isUsingSpecialKey()) return;
 
         int blockID = world.getBlockId(x, y, z);
         Block clickedBlock = Block.blocksList[blockID];
@@ -43,4 +46,5 @@ public class ShovelItem_ToolItemMixin {
             cir.setReturnValue(true);
         }
     }
+
 }
