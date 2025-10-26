@@ -2,8 +2,8 @@ package btw.community.abbyread.sbtt.mixin;
 
 import btw.community.abbyread.categories.BlockType;
 import btw.community.abbyread.categories.BlockSet;
-import btw.community.abbyread.categories.ItemTag;
-import btw.community.abbyread.categories.ItemTags;
+import btw.community.abbyread.categories.ItemType;
+import btw.community.abbyread.categories.ItemSet;
 import btw.community.abbyread.sbtt.helper.Efficiency;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +22,7 @@ public class ChiselItemWood_ItemMixin {
         if (stack == null || block == null) return;
 
         // Return early if not pointy stick
-        if (ItemTags.isNotAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) return;
+        if (ItemSet.isNotAll(stack, ItemType.WOOD, ItemType.CHISEL)) return;
 
         // Check if block is valid for loosening
         int meta = world.getBlockMetadata(i, j, k); // meta is ignored here; expand if needed
@@ -42,7 +42,7 @@ public class ChiselItemWood_ItemMixin {
         if (stack == null || block == null) return;
 
         // Return early if not pointy stick
-        if (ItemTags.isNotAll(stack, ItemTag.WOOD, ItemTag.CHISEL)) return;
+        if (ItemSet.isNotAll(stack, ItemType.WOOD, ItemType.CHISEL)) return;
 
 
         int meta = world.getBlockMetadata(i, j, k);

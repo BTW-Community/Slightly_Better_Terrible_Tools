@@ -1,7 +1,7 @@
 package btw.community.abbyread.sbtt.mixin;
 
 import btw.community.abbyread.categories.BlockSet;
-import btw.community.abbyread.categories.ItemTags;
+import btw.community.abbyread.categories.ItemSet;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -26,7 +26,7 @@ public class PlayerControllerMPMixin {
             if (block == null) return;
             int meta = world.getBlockMetadata(x, y, z);
             // System.out.println(block.getUnlocalizedName() + " with meta: " + meta);
-            System.out.println(ItemTags.getTags(stack));
+            System.out.println(ItemSet.getTags(stack));
             System.out.println(BlockSet.getTags(block, meta));
             System.out.println(stack.getDisplayName() + " durability " + (stack.getMaxDamage() - stack.getItemDamage()));
         }

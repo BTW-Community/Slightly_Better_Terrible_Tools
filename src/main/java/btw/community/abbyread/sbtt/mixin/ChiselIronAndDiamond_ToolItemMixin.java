@@ -2,8 +2,8 @@ package btw.community.abbyread.sbtt.mixin;
 
 import btw.community.abbyread.categories.BlockSet;
 import btw.community.abbyread.categories.BlockType;
-import btw.community.abbyread.categories.ItemTags;
-import btw.community.abbyread.categories.ItemTag;
+import btw.community.abbyread.categories.ItemSet;
+import btw.community.abbyread.categories.ItemType;
 import btw.community.abbyread.sbtt.helper.Efficiency;
 import btw.item.items.ChiselItemDiamond;
 import btw.item.items.ChiselItemIron;
@@ -30,7 +30,7 @@ public class ChiselIronAndDiamond_ToolItemMixin {
         if (stack == null || block == null) return;
 
         // Check if item is an iron or diamond chisel
-        if (ItemTags.isAny(stack, ItemTag.WOOD, ItemTag.STONE)) return;
+        if (ItemSet.isAny(stack, ItemType.WOOD, ItemType.STONE)) return;
 
         int meta = world.getBlockMetadata(i, j, k);
 

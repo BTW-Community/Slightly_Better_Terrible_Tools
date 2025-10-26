@@ -77,21 +77,21 @@ public class InteractionHandler {
     private static final List<InteractionDefinition> INTERACTIONS = List.of(
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
-                    Set.of(ItemTag.WOOD, ItemTag.CHISEL),
+                    Set.of(ItemType.WOOD, ItemType.CHISEL),
                     Set.of(BlockType.FIRM, BlockType.DIRTLIKE, BlockType.GRASS),
                     null,
                     InteractionHandler::loosen
             ),
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
-                    Set.of(ItemTag.STONE, ItemTag.CHISEL),
+                    Set.of(ItemType.STONE, ItemType.CHISEL),
                     Set.of(BlockType.GRASS),
                     null,
                     InteractionHandler::sparsen
             ),
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
-                    Set.of(ItemTag.CLUB),
+                    Set.of(ItemType.CLUB),
                     Set.of(BlockType.DIRTLIKE, BlockType.LOOSE_DIRTLIKE),
                     null,
                     InteractionHandler::firm,
@@ -99,35 +99,35 @@ public class InteractionHandler {
             ),
             new InteractionDefinition(
                     InteractionType.SECONDARY_RIGHT_CLICK,
-                    Set.of(ItemTag.SHOVEL),
+                    Set.of(ItemType.SHOVEL),
                     Set.of(BlockType.LOOSE_DIRTLIKE),
                     null,
                     InteractionHandler::firm
             ),
             new InteractionDefinition(
                     InteractionType.SECONDARY_RIGHT_CLICK,
-                    Set.of(ItemTag.SHOVEL),
+                    Set.of(ItemType.SHOVEL),
                     Set.of(BlockType.DIRTLIKE, BlockType.FIRM, BlockType.CUBE),
                     Set.of(BlockSide.UP),
                     InteractionHandler::pack
             ),
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
-                    Set.of(ItemTag.SHEARS),
+                    Set.of(ItemType.SHEARS),
                     Set.of(BlockType.TALL_GRASS),
                     null,
                     (stack, player, block, meta, world, x, y, z, side) -> true
             ),
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
-                    Set.of(ItemTag.HOE),
+                    Set.of(ItemType.HOE),
                     Set.of(BlockType.GRASS),
                     null,
                     (stack, player, block, meta, world, x, y, z, side) -> true
             ),
             new InteractionDefinition(
                     InteractionType.PRIMARY_LEFT_CLICK,
-                    Set.of(ItemTag.HOE),
+                    Set.of(ItemType.HOE),
                     Set.of(BlockType.DIRT),
                     null,
                     (stack, player, block, meta, world, x, y, z, side) -> true
@@ -136,13 +136,13 @@ public class InteractionHandler {
 
     private static class InteractionDefinition {
         final InteractionType type;
-        final Set<ItemTag> itemTags;
+        final Set<ItemType> itemTags;
         final Set<BlockType> blockTags;
         final Set<BlockSide> validSides;
         final ConversionAction action;
         final int damageAmount;
 
-        InteractionDefinition(InteractionType type, Set<ItemTag> itemTags, Set<BlockType> blockTags,
+        InteractionDefinition(InteractionType type, Set<ItemType> itemTags, Set<BlockType> blockTags,
                               Set<BlockSide> validSides, ConversionAction action, int damageAmount) {
             this.type = type;
             this.itemTags = itemTags;
@@ -153,13 +153,13 @@ public class InteractionHandler {
         }
 
         // Optional default-damage constructor (keeps old definitions valid)
-        InteractionDefinition(InteractionType type, Set<ItemTag> itemTags, Set<BlockType> blockTags,
+        InteractionDefinition(InteractionType type, Set<ItemType> itemTags, Set<BlockType> blockTags,
                               Set<BlockSide> validSides, ConversionAction action) {
             this(type, itemTags, blockTags, validSides, action, 1);
         }
 
         boolean matches(ItemStack stack, Block block, int meta, BlockSide side) {
-            if (stack == null || itemTags.stream().noneMatch(tag -> ItemTags.is(stack, tag))) return false;
+            if (stack == null || itemTags.stream().noneMatch(tag -> ItemSet.is(stack, tag))) return false;
             if (block == null || blockTags.stream().noneMatch(tag -> BlockSet.is(block, meta, tag))) return false;
             return validSides == null || side == null || validSides.contains(side);
         }

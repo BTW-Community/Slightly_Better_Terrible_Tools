@@ -1,8 +1,8 @@
 package btw.community.abbyread.sbtt.mixin;
 
 import btw.client.fx.BTWEffectManager;
-import btw.community.abbyread.categories.ItemTags;
-import btw.community.abbyread.categories.ItemTag;
+import btw.community.abbyread.categories.ItemSet;
+import btw.community.abbyread.categories.ItemType;
 import btw.community.abbyread.categories.BlockSide;
 import btw.community.abbyread.sbtt.helper.InteractionHandler;
 import btw.community.abbyread.sbtt.helper.InteractionHandler.InteractionType;
@@ -24,7 +24,7 @@ public class BlockDirtMixin {
         if (stack == null) return;
 
         // Probably only comes up for stone shovels, but target all anyway
-        if (ItemTags.isAll(stack, ItemTag.SHOVEL, ItemTag.STONE)) {
+        if (ItemSet.isAll(stack, ItemType.SHOVEL, ItemType.STONE)) {
 
             // Unrolled: super.onBlockDestroyedWithImproperTool(world, player, x, y, z, metadata);
             world.playAuxSFX( BTWEffectManager.BLOCK_DESTROYED_WITH_IMPROPER_TOOL_EFFECT_ID, x, y, z, world.getBlockId(x, y, z) + ( metadata << 12 ) );
