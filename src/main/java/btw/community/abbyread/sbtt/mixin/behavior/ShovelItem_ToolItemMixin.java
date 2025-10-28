@@ -50,27 +50,39 @@ public abstract class ShovelItem_ToolItemMixin {
         return FROM_TO;
     }
 
-    @Inject(method = "onItemUse", at = @At("RETURN"))
+    @Inject(method = "onItemUse", at = @At("HEAD"), cancellable = true)
     private void shovelRightClickOnBlock(ItemStack stack, EntityPlayer player, World world,
                                          int x, int y, int z, int iFacing,
                                          float fClickX, float fClickY, float fClickZ,
                                          CallbackInfoReturnable<Boolean> cir) {
         if (ThisItem.isNot(stack, ItemType.SHOVEL)) return;
+
+        // Skip swapping logic entirely if the special key is held
+        if (player.isUsingSpecialKey()) return;
+
         int blockID = world.getBlockId(x, y, z);
         int metadata = world.getBlockMetadata(x, y, z);
         QualifiedBlock from = new QualifiedBlock(blockID, metadata);
-
         QualifiedBlock to = getFromToMap().get(from);
+
         if (to == null) return;
 
         SwapContext ctx = new SwapContext(stack, player, world, x, y, z);
         swapTo(to.blockID, to.metadata, ctx);
+
+        // Tell Minecraft the use was successful so client plays SFX/animation
+        cir.setReturnValue(true);
     }
 
     @Unique
     private static void swapTo(int blockID, int metadata, SwapContext ctx) {
-        ctx.world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, ctx.x, ctx.y, ctx.z, 0);
+
         ctx.world.setBlockAndMetadataWithNotify(ctx.x, ctx.y, ctx.z, blockID, metadata);
         ctx.stack.damageItem(2, ctx.player);
+
+        // Play tilled dirt effect client-side
+        if (ctx.world.isRemote) {
+            ctx.world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, ctx.x, ctx.y, ctx.z, 0);
+        }
     }
 }
