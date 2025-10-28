@@ -19,7 +19,6 @@
     "EntityPlayerMixin",
     "ItemAccessor",
     "ItemInWorldManagerMixin",
-    "ItemStackMixin",
     "LooseDirtBlockMixin",
     "LooseSparseGrassBlockMixin",
     "MyceliumBlockMixin",

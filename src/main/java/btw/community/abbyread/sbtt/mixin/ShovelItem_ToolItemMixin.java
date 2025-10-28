@@ -43,6 +43,7 @@ public class ShovelItem_ToolItemMixin {
 
         // If conversion happened, override return
         if (didConvert) {
+            stack.damageItem(2, player);
             cir.setReturnValue(true);
         }
     }
