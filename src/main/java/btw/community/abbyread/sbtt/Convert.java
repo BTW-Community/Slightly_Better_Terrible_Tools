@@ -139,7 +139,7 @@ public class Convert {
                 && BlockTags.is(block, meta, BlockTag.LOOSE_DIRTLIKE)) {
             debug("Using firm conversion");
             if (firm(stack, block, meta, world, x, y, z, side)) {
-                ItemDamage.damageByAmount(stack, player, 1);
+                stack.damageItem(2, player);
             }
             return true;
         }
@@ -148,7 +148,7 @@ public class Convert {
                 && BlockTags.isAll(block, meta, BlockTag.DIRTLIKE, BlockTag.FIRM) && side == 1) {
             debug("Converting dirt block to packed-earth slab");
             if (pack(stack, block, meta, world, x, y, z, side)) {
-                ItemDamage.damageByAmount(stack, player, 1);
+                stack.damageItem(2, player);
             }
             return true;
         }
@@ -157,7 +157,7 @@ public class Convert {
                 && BlockTags.isAll(block, meta, BlockTag.PACKED_EARTH, BlockTag.SLAB) && side == 1) {
             debug("Attempting pack downward.");
             if (pack(stack, block, meta, world, x, y, z, side)) {
-                ItemDamage.damageByAmount(stack, player, 1);
+                stack.damageItem(2, player);
             }
             return true;
         }
@@ -228,27 +228,20 @@ public class Convert {
 
         Block newBlock = null;
         int newMeta = meta;
-        boolean toSwap = false;
 
         if (block == BTWBlocks.looseDirt) {
             newBlock = Block.dirt;
-            toSwap = true;
         }
         else if (block == BTWBlocks.looseDirtSlab) {
             newBlock = BTWBlocks.dirtSlab;
-            toSwap = true;
         }
         else if (block == BTWBlocks.looseSparseGrass) {
             newBlock = Block.grass;
             newMeta = 1;
-            toSwap = true;
         } else if (block == BTWBlocks.looseSparseGrassSlab) {
             newBlock = BTWBlocks.grassSlab;
             newMeta = 2;
-            toSwap = true;
         }
-
-        if (toSwap && ItemTags.is(stack, ItemTag.CLUB)) ItemDamage.amount = 2;
 
         return swapBlock(world, x, y, z, block, meta, newBlock, newMeta);
     }

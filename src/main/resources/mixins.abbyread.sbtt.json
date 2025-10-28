@@ -18,7 +18,6 @@
     "ClubItemMixin",
     "ItemAccessor",
     "ItemInWorldManagerMixin",
-    "ItemStackMixin",
     "LooseDirtBlockMixin",
     "LooseSparseGrassBlockMixin",
     "MyceliumBlockMixin",
