@@ -1,6 +1,6 @@
 package btw.community.abbyread.sbtt.mixin.speed;
 
-import btw.community.abbyread.sbtt.Globals;
+import btw.community.abbyread.sbtt.util.Globals;
 import btw.item.items.ChiselItemWood;
 import btw.item.items.ToolItem;
 import net.minecraft.src.Block;

@@ -1,9 +1,9 @@
 package btw.community.abbyread.sbtt.mixin.speed;
 
-import btw.community.abbyread.categories.BlockSet;
-import btw.community.abbyread.categories.BlockTag;
-import btw.community.abbyread.categories.ItemTag;
-import btw.community.abbyread.categories.ItemSet;
+import btw.community.abbyread.categories.ThisBlock;
+import btw.community.abbyread.categories.BlockType;
+import btw.community.abbyread.categories.ItemType;
+import btw.community.abbyread.categories.ThisItem;
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
@@ -18,12 +18,12 @@ public class ClubItem_ItemMixin {
     @Inject(method = "getStrVsBlock", at = @At("RETURN"), cancellable = true)
     private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block, int x, int y, int z, CallbackInfoReturnable<Float> cir) {
 
-        if (ItemSet.hasNot(stack, ItemTag.CLUB)) return;
+        if (ThisItem.isNot(stack, ItemType.CLUB)) return;
 
         int meta = world.getBlockMetadata(x, y, z);
 
         // Negate speed boost toward loose dirtlikes when firming with club
-        if (BlockSet.has(block, meta, BlockTag.LOOSE_DIRTLIKE)) {
+        if (ThisBlock.is(block, meta, BlockType.LOOSE_DIRTLIKE)) {
             float normal = cir.getReturnValue();
             cir.setReturnValue(normal * 0.5F);
         }

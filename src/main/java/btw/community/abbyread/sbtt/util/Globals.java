@@ -1,4 +1,4 @@
-package btw.community.abbyread.sbtt;
+package btw.community.abbyread.sbtt.util;
 
 public class Globals {
 

@@ -1,8 +1,8 @@
 package btw.community.abbyread.sbtt.mixin.speed;
 
-import btw.community.abbyread.categories.BlockTag;
-import btw.community.abbyread.categories.BlockSet;
-import btw.community.abbyread.sbtt.Globals;
+import btw.community.abbyread.categories.BlockType;
+import btw.community.abbyread.categories.ThisBlock;
+import btw.community.abbyread.sbtt.util.Globals;
 import btw.item.BTWItems;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,7 +29,7 @@ public class ChiselItemWood_ItemMixin {
         float mod = 6F; // TODO: Mention added boost in release changes
 
         // Loose masonry blocks easier to pry up with Pointy Stick
-        if (BlockSet.has(block, meta, BlockTag.LOOSE_STONELIKE)) {
+        if (ThisBlock.is(block, meta, BlockType.LOOSE_STONELIKE)) {
             float base = cir.getReturnValue();
             float modifier = Globals.modifier * mod;
             cir.setReturnValue(base * modifier);

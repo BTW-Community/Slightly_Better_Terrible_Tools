@@ -1,6 +1,6 @@
 package btw.community.abbyread.sbtt.mixin.unrelated;
 
-import btw.community.abbyread.categories.BlockSet;
+import btw.community.abbyread.categories.ThisBlock;
 import net.minecraft.src.Block;
 import net.minecraft.src.ItemInWorldManager;
 import net.minecraft.src.World;
@@ -23,7 +23,7 @@ public class ItemInWorldManagerMixin {
         if (DEBUG) {
             Block block = Block.blocksList[theWorld.getBlockId(x, y, z)];
             int metadata = theWorld.getBlockMetadata(x, y, z);
-            System.out.println("onBlockClicked reports block tags: " + BlockSet.getTags(block, metadata));
+            System.out.println("onBlockClicked reports block tags: " + ThisBlock.getTags(block, metadata));
         }
     }
 }

@@ -1,7 +1,7 @@
 package btw.community.abbyread.categories;
 
 @SuppressWarnings("unused")
-public enum ItemTag {
+public enum ItemType {
     // Misc
     NULL,
     UNHELPFUL,

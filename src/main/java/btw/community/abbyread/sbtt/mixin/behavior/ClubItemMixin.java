@@ -1,7 +1,7 @@
 package btw.community.abbyread.sbtt.mixin.behavior;
 
-import btw.community.abbyread.categories.BlockTag;
-import btw.community.abbyread.categories.BlockSet;
+import btw.community.abbyread.categories.BlockType;
+import btw.community.abbyread.categories.ThisBlock;
 import btw.item.items.ClubItem;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +19,7 @@ public class ClubItemMixin {
 
         if (world.isRemote) return;
 
-        if (BlockSet.has(block, meta, BlockTag.LOOSE_DIRTLIKE)) {
+        if (ThisBlock.is(block, meta, BlockType.LOOSE_DIRTLIKE)) {
 
             // Convert to firm block counterpart
 

@@ -7,7 +7,7 @@ import net.minecraft.src.ItemStack;
 import java.util.*;
 
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-public class ItemSet {
+public class ThisItem {
 
     // ===== Material sets =====
     // Some of these will list invalid items like wooden shovels, but doesn't matter.
@@ -206,72 +206,72 @@ public class ItemSet {
 
     // ===== Tag resolution =====
 
-    public static Set<ItemTag> of(Item item) {
-        Set<ItemTag> tags = new HashSet<>();
+    public static Set<ItemType> of(Item item) {
+        Set<ItemType> tags = new HashSet<>();
 
         // --- Materials ---
-        if (WOOD_ITEMS.contains(item)) tags.add(ItemTag.WOOD);
-        if (STONE_ITEMS.contains(item)) tags.add(ItemTag.STONE);
-        if (IRON_ITEMS.contains(item)) tags.add(ItemTag.IRON);
-        if (DIAMOND_ITEMS.contains(item)) tags.add(ItemTag.DIAMOND);
-        if (GOLD_ITEMS.contains(item)) tags.add(ItemTag.GOLD);
-        if (STEEL_ITEMS.contains(item)) tags.add(ItemTag.STEEL);
-        if (BONE_ITEMS.contains(item)) tags.add(ItemTag.BONE);
+        if (WOOD_ITEMS.contains(item)) tags.add(ItemType.WOOD);
+        if (STONE_ITEMS.contains(item)) tags.add(ItemType.STONE);
+        if (IRON_ITEMS.contains(item)) tags.add(ItemType.IRON);
+        if (DIAMOND_ITEMS.contains(item)) tags.add(ItemType.DIAMOND);
+        if (GOLD_ITEMS.contains(item)) tags.add(ItemType.GOLD);
+        if (STEEL_ITEMS.contains(item)) tags.add(ItemType.STEEL);
+        if (BONE_ITEMS.contains(item)) tags.add(ItemType.BONE);
 
         // --- Tools ---
-        if (CHISELS.contains(item)) { tags.add(ItemTag.TOOL); tags.add(ItemTag.CHISEL); }
-        if (SHOVELS.contains(item)) { tags.add(ItemTag.TOOL); tags.add(ItemTag.SHOVEL); }
-        if (PICKAXES.contains(item)) { tags.add(ItemTag.TOOL); tags.add(ItemTag.PICKAXE); }
-        if (AXES.contains(item)) { tags.add(ItemTag.TOOL); tags.add(ItemTag.AXE); }
-        if (HOES.contains(item)) { tags.add(ItemTag.TOOL); tags.add(ItemTag.HOE); }
-        if (SHEARS.contains(item)) { tags.add(ItemTag.TOOL); tags.add(ItemTag.SHEARS); }
-        if (BATTLEAXES.contains(item)) { tags.add(ItemTag.TOOL); tags.add(ItemTag.BATTLEAXE); tags.add(ItemTag.WEAPON); }
+        if (CHISELS.contains(item)) { tags.add(ItemType.TOOL); tags.add(ItemType.CHISEL); }
+        if (SHOVELS.contains(item)) { tags.add(ItemType.TOOL); tags.add(ItemType.SHOVEL); }
+        if (PICKAXES.contains(item)) { tags.add(ItemType.TOOL); tags.add(ItemType.PICKAXE); }
+        if (AXES.contains(item)) { tags.add(ItemType.TOOL); tags.add(ItemType.AXE); }
+        if (HOES.contains(item)) { tags.add(ItemType.TOOL); tags.add(ItemType.HOE); }
+        if (SHEARS.contains(item)) { tags.add(ItemType.TOOL); tags.add(ItemType.SHEARS); }
+        if (BATTLEAXES.contains(item)) { tags.add(ItemType.TOOL); tags.add(ItemType.BATTLEAXE); tags.add(ItemType.WEAPON); }
 
         // --- Weapons ---
-        if (SWORDS.contains(item)) { tags.add(ItemTag.WEAPON); tags.add(ItemTag.SWORD); }
-        if (CLUBS.contains(item)) { tags.add(ItemTag.WEAPON); tags.add(ItemTag.CLUB); }
-        if (BOWS.contains(item)) { tags.add(ItemTag.WEAPON); tags.add(ItemTag.BOW); }
-        if (AMMO.contains(item)) { tags.add(ItemTag.AMMO); }
+        if (SWORDS.contains(item)) { tags.add(ItemType.WEAPON); tags.add(ItemType.SWORD); }
+        if (CLUBS.contains(item)) { tags.add(ItemType.WEAPON); tags.add(ItemType.CLUB); }
+        if (BOWS.contains(item)) { tags.add(ItemType.WEAPON); tags.add(ItemType.BOW); }
+        if (AMMO.contains(item)) { tags.add(ItemType.AMMO); }
 
         // --- Misc ---
-        if (FOODS.contains(item)) tags.add(ItemTag.FOOD);
-        if (FUELS.contains(item)) tags.add(ItemTag.FUEL);
+        if (FOODS.contains(item)) tags.add(ItemType.FOOD);
+        if (FUELS.contains(item)) tags.add(ItemType.FUEL);
 
         return tags;
     }
 
     // ===== Public API =====
 
-    public static Set<ItemTag> getTags(ItemStack stack) {
+    public static Set<ItemType> getTags(ItemStack stack) {
         if (stack == null || stack.getItem() == null) return Collections.emptySet();
         return of(stack.getItem());
     }
 
-    public static boolean has(ItemStack stack, ItemTag tag) {
+    public static boolean is(ItemStack stack, ItemType tag) {
         return getTags(stack).contains(tag);
     }
 
-    public static boolean hasNot(ItemStack stack, ItemTag tag) {
-        return !has(stack, tag);
+    public static boolean isNot(ItemStack stack, ItemType tag) {
+        return !is(stack, tag);
     }
 
-    public static boolean hasAny(ItemStack stack, ItemTag... tags) {
-        Set<ItemTag> stackTags = getTags(stack);
-        for (ItemTag tag : tags) {
+    public static boolean isAny(ItemStack stack, ItemType... tags) {
+        Set<ItemType> stackTags = getTags(stack);
+        for (ItemType tag : tags) {
             if (stackTags.contains(tag)) return true;
         }
         return false;
     }
 
-    public static boolean hasAll(ItemStack stack, ItemTag... tags) {
-        Set<ItemTag> stackTags = getTags(stack);
-        for (ItemTag tag : tags) {
+    public static boolean isAll(ItemStack stack, ItemType... tags) {
+        Set<ItemType> stackTags = getTags(stack);
+        for (ItemType tag : tags) {
             if (!stackTags.contains(tag)) return false;
         }
         return true;
     }
 
-    public static boolean hasButNot(ItemStack stack, ItemTag isTag, ItemTag... notTags) {
-        return has(stack, isTag) && !hasAny(stack, notTags);
+    public static boolean isButNot(ItemStack stack, ItemType isTag, ItemType... notTags) {
+        return is(stack, isTag) && !isAny(stack, notTags);
     }
 }

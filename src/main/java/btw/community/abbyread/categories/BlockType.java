@@ -1,7 +1,7 @@
 package btw.community.abbyread.categories;
 
 @SuppressWarnings("unused")
-public enum BlockTag {
+public enum BlockType {
     // Block shapes
     CUBE,
     SLAB,

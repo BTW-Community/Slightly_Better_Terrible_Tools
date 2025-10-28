@@ -1,6 +1,6 @@
 package btw.community.abbyread.sbtt.mixin.speed;
 
-import btw.community.abbyread.sbtt.Globals;
+import btw.community.abbyread.sbtt.util.Globals;
 import btw.community.abbyread.sbtt.mixin.access.ToolItemAccessor;
 import btw.item.items.ShovelItemStone;
 import org.spongepowered.asm.mixin.Mixin;

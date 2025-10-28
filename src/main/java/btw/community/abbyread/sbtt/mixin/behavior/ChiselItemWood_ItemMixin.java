@@ -1,10 +1,8 @@
 package btw.community.abbyread.sbtt.mixin.behavior;
 
-import btw.community.abbyread.categories.BlockSet;
-import btw.community.abbyread.categories.BlockTag;
-import btw.community.abbyread.categories.ItemSet;
-import btw.community.abbyread.categories.ItemTag;
-import btw.community.abbyread.sbtt.Globals;
+import btw.community.abbyread.categories.ThisBlock;
+import btw.community.abbyread.categories.BlockType;
+import btw.community.abbyread.sbtt.util.Globals;
 import btw.item.BTWItems;
 import net.minecraft.src.Block;
 import net.minecraft.src.Item;
@@ -30,8 +28,8 @@ public class ChiselItemWood_ItemMixin {
 
         // Check if block is valid for loosening
         int meta = world.getBlockMetadata(i, j, k); // meta is ignored here; expand if needed
-        if (BlockSet.hasAll(block, meta, BlockTag.GRASS, BlockTag.SPARSE, BlockTag.FIRM)
-                || BlockSet.hasAll(block, meta, BlockTag.DIRT, BlockTag.FIRM)) {
+        if (ThisBlock.isAll(block, meta, BlockType.GRASS, BlockType.SPARSE, BlockType.FIRM)
+                || ThisBlock.isAll(block, meta, BlockType.DIRT, BlockType.FIRM)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * Globals.modifier * 1.5F);
         }
