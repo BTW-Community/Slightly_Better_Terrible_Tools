@@ -10,7 +10,7 @@ import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 
 public class SlightlyBetterTerribleTools extends BTWAddon {
-    private final float effMod = Efficiency.modifier;
+    private final float effMod = Globals.modifier;
     private final String percentage = String.format("%.0f%%", effMod * 100 - 100);
     public SlightlyBetterTerribleTools() {
         super();
@@ -35,7 +35,7 @@ public class SlightlyBetterTerribleTools extends BTWAddon {
                 }
         );
         RecipeManager.addShapelessRecipe(
-                new ItemStack(Block.dirt ),
+                new ItemStack(Block.dirt),
                 new Object[] {
                 new ItemStack( BTWItems.dirtPile),
                 new ItemStack( BTWItems.dirtPile),
