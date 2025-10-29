@@ -44,6 +44,13 @@ public class ThisBlock {
         DIRTLIKE_BLOCKS = Set.copyOf(temp);
     }
 
+    private static final Set<Block> FIRM_DIRTLIKE_BLOCKS;
+    static {
+        Set<Block> temp = new HashSet<>(DIRTLIKE_BLOCKS);
+        temp.removeAll(LOOSE_DIRTLIKE_BLOCKS);
+        FIRM_DIRTLIKE_BLOCKS = Set.copyOf(temp);
+    }
+
     private static final Set<Block> CUBE_BLOCKS = Set.of(
             Block.cobblestone,
             Block.dirt,
@@ -127,7 +134,7 @@ public class ThisBlock {
             BTWBlocks.lightBlockOn,
             BTWBlocks.lightBlockOff
     );
-    
+
     private static final Set<Block> LOOSE_STONELIKE_BLOCKS = Set.of(
             BTWBlocks.looseBrick,
             BTWBlocks.looseBrickSlab,
@@ -192,7 +199,7 @@ public class ThisBlock {
             BTWBlocks.infestedMossyStoneBrick,
             BTWBlocks.infestedCrackedStoneBrick,
             BTWBlocks.infestedChiseledStoneBrick
-            );
+    );
 
     // ===== Public method =====
 
@@ -206,11 +213,11 @@ public class ThisBlock {
         if (DIRT_BLOCKS.contains(block)) tags.add(BlockType.DIRT);
         if (DIRTLIKE_BLOCKS.contains(block)) tags.add(BlockType.DIRTLIKE);
         if (LOOSE_DIRTLIKE_BLOCKS.contains(block)) tags.add(BlockType.LOOSE_DIRTLIKE);
+        if (FIRM_DIRTLIKE_BLOCKS.contains(block)) tags.add(BlockType.FIRM);
         if (LOOSE_STONELIKE_BLOCKS.contains(block)) tags.add(BlockType.LOOSE_STONELIKE);
         if (EASY_SOLID_STONELIKE_BLOCKS.contains(block)) tags.add(BlockType.EASY_SOLID_STONELIKE);
         if (SHATTERABLE_BLOCKS.contains(block)) tags.add(BlockType.SHATTERABLE);
 
-        if (isFirm(block, metadata)) tags.add(BlockType.FIRM);
         if (block == Block.web || block == BTWBlocks.web) tags.add(BlockType.WEB);
         if (block == Block.sand ||
                 (block == BTWBlocks.sandAndGravelSlab && (((SandAndGravelSlabBlock)block).getSubtypeFromMetadata(metadata)
@@ -247,10 +254,6 @@ public class ThisBlock {
         return false;
     }
 
-    private static boolean isFirm(Block block, int metadata) {
-        return DIRTLIKE_BLOCKS.contains(block) && !LOOSE_DIRTLIKE_BLOCKS.contains(block);
-    }
-
     private static boolean isSparse(Block block, int metadata) {
         if (SPARSE_BLOCKS.contains(block)) return true;
         if (block instanceof BlockGrass) return ((BlockGrass) block).isSparse(metadata);
@@ -281,12 +284,12 @@ public class ThisBlock {
         return of(block, metadata); // reuse your existing of() method
     }
 
-    public static boolean is(Block block, int metadata, BlockType tag) {
+    public static boolean is(BlockType tag, Block block, int metadata) {
         Set<BlockType> blockTags = getTags(block, metadata);
         return blockTags.contains(tag);
     }
 
-    public static boolean isNot(Block block, int metadata, BlockType tag) {
+    public static boolean isNot(BlockType tag, Block block, int metadata) {
         Set<BlockType> blockTags = getTags(block, metadata);
         return !blockTags.contains(tag);
     }
@@ -316,6 +319,6 @@ public class ThisBlock {
     }
 
     public static boolean isButNot(Block block, int metadata, BlockType isTag, BlockType... notTags) {
-        return is(block, metadata, isTag) && !isAny(block, metadata, notTags);
+        return is(isTag, block, metadata) && !isAny(block, metadata, notTags);
     }
 }

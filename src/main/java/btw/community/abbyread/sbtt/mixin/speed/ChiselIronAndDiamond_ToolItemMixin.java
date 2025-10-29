@@ -63,7 +63,7 @@ public class ChiselIronAndDiamond_ToolItemMixin {
 
 
         // diamond chisel base multiplier toward web blocks is already high (8).
-        if (ThisBlock.is(block, meta, BlockType.WEB)
+        if (ThisBlock.is(BlockType.WEB, block, meta)
             && stack.getItem() instanceof ChiselItemIron) {
             float base = cir.getReturnValue();
             float modifier = (Globals.modifier - 1) * mod + 1;
@@ -71,21 +71,21 @@ public class ChiselIronAndDiamond_ToolItemMixin {
         }
 
         // Loose masonry blocks easier to pick up with chisels
-        if (ThisBlock.is(block, meta, BlockType.LOOSE_STONELIKE)) {
+        if (ThisBlock.is(BlockType.LOOSE_STONELIKE, block, meta)) {
             float base = cir.getReturnValue();
             float modifier = Globals.modifier * mod;
             cir.setReturnValue(base * modifier);
         }
 
         // Solid, single-harvest stonelike blocks easier to pick up with chisels
-        if (ThisBlock.is(block, meta, BlockType.EASY_SOLID_STONELIKE)) {
+        if (ThisBlock.is(BlockType.EASY_SOLID_STONELIKE, block, meta)) {
             float base = cir.getReturnValue();
             float modifier = (Globals.modifier - 1) * mod + 1;
             cir.setReturnValue(base * modifier);
         }
 
         // Shatterables shattered or picked up faster by chisels
-        if (ThisBlock.is(block, meta, BlockType.SHATTERABLE)) {
+        if (ThisBlock.is(BlockType.SHATTERABLE, block, meta)) {
             float base = cir.getReturnValue();
             float modifier = (Globals.modifier - 1) * mod + 1;
             cir.setReturnValue(base * modifier);

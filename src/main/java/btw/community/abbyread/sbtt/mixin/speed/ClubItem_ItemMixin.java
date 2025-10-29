@@ -18,12 +18,12 @@ public class ClubItem_ItemMixin {
     @Inject(method = "getStrVsBlock", at = @At("RETURN"), cancellable = true)
     private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block, int x, int y, int z, CallbackInfoReturnable<Float> cir) {
 
-        if (ThisItem.isNot(stack, ItemType.CLUB)) return;
+        if (ThisItem.isNot(ItemType.CLUB, stack)) return;
 
         int meta = world.getBlockMetadata(x, y, z);
 
         // Negate speed boost toward loose dirtlikes when firming with club
-        if (ThisBlock.is(block, meta, BlockType.LOOSE_DIRTLIKE)) {
+        if (ThisBlock.is(BlockType.LOOSE_DIRTLIKE, block, meta)) {
             float normal = cir.getReturnValue();
             cir.setReturnValue(normal * 0.5F);
         }

@@ -34,7 +34,7 @@ public class ChiselItemStoneMixin {
 
         // Web harvesting is already doubled in the source code.
         //   Boosting just a little more.
-        if (ThisBlock.is(block, meta, BlockType.WEB)) {
+        if (ThisBlock.is(BlockType.WEB, block, meta)) {
             mod = 0.75F; // Reduce Efficiency.modifier just a bit
             float base = cir.getReturnValue();
             float modifier = (Globals.modifier - 1) * mod + 1;
@@ -42,14 +42,14 @@ public class ChiselItemStoneMixin {
         }
 
         // Solid, single-harvest stonelike blocks easier to pick up with chisels
-        if (ThisBlock.is(block, meta, BlockType.EASY_SOLID_STONELIKE)) {
+        if (ThisBlock.is(BlockType.EASY_SOLID_STONELIKE, block, meta)) {
             float base = cir.getReturnValue();
             float modifier = (Globals.modifier - 1) * mod + 1;
             cir.setReturnValue(base * modifier);
         }
 
         // Shatterables shattered or picked up faster by chisels
-        if (ThisBlock.is(block, meta, BlockType.SHATTERABLE)) {
+        if (ThisBlock.is(BlockType.SHATTERABLE, block, meta)) {
             float base = cir.getReturnValue();
             float modifier = (Globals.modifier - 1) * mod + 1;
             cir.setReturnValue(base * modifier);

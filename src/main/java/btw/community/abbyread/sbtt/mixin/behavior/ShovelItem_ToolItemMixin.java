@@ -55,7 +55,7 @@ public abstract class ShovelItem_ToolItemMixin {
                                          int x, int y, int z, int iFacing,
                                          float fClickX, float fClickY, float fClickZ,
                                          CallbackInfoReturnable<Boolean> cir) {
-        if (ThisItem.isNot(stack, ItemType.SHOVEL)) return;
+        if (ThisItem.isNot(ItemType.SHOVEL, stack)) return;
 
         // Skip swapping logic entirely if the special key is held
         if (player.isUsingSpecialKey()) return;

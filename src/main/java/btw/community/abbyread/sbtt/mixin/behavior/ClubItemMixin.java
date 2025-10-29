@@ -19,7 +19,7 @@ public class ClubItemMixin {
 
         if (world.isRemote) return;
 
-        if (ThisBlock.is(block, meta, BlockType.LOOSE_DIRTLIKE)) {
+        if (ThisBlock.is(BlockType.LOOSE_DIRTLIKE, block, meta)) {
 
             // Convert to firm block counterpart
 

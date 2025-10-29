@@ -247,12 +247,12 @@ public class ThisItem {
         return of(stack.getItem());
     }
 
-    public static boolean is(ItemStack stack, ItemType tag) {
+    public static boolean is(ItemType tag, ItemStack stack) {
         return getTags(stack).contains(tag);
     }
 
-    public static boolean isNot(ItemStack stack, ItemType tag) {
-        return !is(stack, tag);
+    public static boolean isNot(ItemType tag, ItemStack stack) {
+        return !is(tag, stack);
     }
 
     public static boolean isAny(ItemStack stack, ItemType... tags) {
@@ -272,6 +272,6 @@ public class ThisItem {
     }
 
     public static boolean isButNot(ItemStack stack, ItemType isTag, ItemType... notTags) {
-        return is(stack, isTag) && !isAny(stack, notTags);
+        return is(isTag, stack) && !isAny(stack, notTags);
     }
 }
