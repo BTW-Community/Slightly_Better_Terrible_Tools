@@ -24,7 +24,8 @@ public class PlayerControllerMPMixin {
             Block block = Block.blocksList[world.getBlockId(x, y, z)];
             if (block == null) return;
             int meta = world.getBlockMetadata(x, y, z);
-            // System.out.println(block.getUnlocalizedName() + " with meta: " + meta);
+            System.out.println(block.getUnlocalizedName() + " with meta: " + meta);
+            System.out.println(block.getClass());
             System.out.println(ThisBlock.getTags(block, meta));
             System.out.println(stack.getDisplayName() + " durability " + (stack.getMaxDamage() - stack.getItemDamage()));
         }

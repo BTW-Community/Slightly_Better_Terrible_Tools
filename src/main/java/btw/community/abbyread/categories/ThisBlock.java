@@ -213,7 +213,7 @@ public class ThisBlock {
         if (DIRT_BLOCKS.contains(block)) tags.add(BlockType.DIRT);
         if (DIRTLIKE_BLOCKS.contains(block)) tags.add(BlockType.DIRTLIKE);
         if (LOOSE_DIRTLIKE_BLOCKS.contains(block)) tags.add(BlockType.LOOSE_DIRTLIKE);
-        if (FIRM_DIRTLIKE_BLOCKS.contains(block)) tags.add(BlockType.FIRM);
+        if (FIRM_DIRTLIKE_BLOCKS.contains(block)) tags.add(BlockType.FIRM_DIRTLIKE);
         if (LOOSE_STONELIKE_BLOCKS.contains(block)) tags.add(BlockType.LOOSE_STONELIKE);
         if (EASY_SOLID_STONELIKE_BLOCKS.contains(block)) tags.add(BlockType.EASY_SOLID_STONELIKE);
         if (SHATTERABLE_BLOCKS.contains(block)) tags.add(BlockType.SHATTERABLE);
@@ -287,6 +287,11 @@ public class ThisBlock {
     public static boolean is(BlockType tag, Block block, int metadata) {
         Set<BlockType> blockTags = getTags(block, metadata);
         return blockTags.contains(tag);
+    }
+
+    public static boolean isAnd(BlockType tag1, BlockType tag2, Block block, int metadata) {
+        Set<BlockType> blockTags = getTags(block, metadata);
+        return blockTags.contains(tag1) && blockTags.contains(tag2);
     }
 
     public static boolean isNot(BlockType tag, Block block, int metadata) {

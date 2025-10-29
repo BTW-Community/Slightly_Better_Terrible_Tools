@@ -13,6 +13,7 @@ public enum BlockType {
     DIRT,
     SAND,
     GRAVEL,
+    FIRM_DIRTLIKE,
     LOOSE_DIRTLIKE,
     FIRM,
     PACKED_EARTH,
