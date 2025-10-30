@@ -18,15 +18,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Mixin(ItemInWorldManager.class)
-public class ClubItem_ItemInWorldManagerMixin {
-
-    @Shadow
-    public World theWorld;
+public abstract class ClubItem_ItemInWorldManagerMixin {
     @Shadow
     public EntityPlayerMP thisPlayerMP;
 
     @Unique
-    private static final int TRY_PACKING = 0; // a blockID sentinel value (air)
+    private static final int TRY_PACKING = 0; // a blockID sentinel value
 
     @Unique
     private static final int PACKED_EARTH = 6; // the metadata value for it
@@ -38,138 +35,136 @@ public class ClubItem_ItemInWorldManagerMixin {
     private static final int PACKING_COST = 4;
 
     @Unique
-    private static Map<QualifiedBlock, QualifiedBlock> FROM_TO;
+    private static Map<QualifiedBlock, QualifiedBlock> WOOD_FROM_TO;
 
     @Unique
-    private static Map<QualifiedBlock, QualifiedBlock> getFromToMap() {
-        if (FROM_TO == null) {
-            FROM_TO = new HashMap<>();
-            FROM_TO.put( // Firm loose dirt blocks
-                    new QualifiedBlock(BTWBlocks.looseDirt.blockID, 0), // loose dirt block
-                    new QualifiedBlock(Block.dirt.blockID, 0) // firm dirt block
+    private static Map<QualifiedBlock, QualifiedBlock> BONE_FROM_TO;
+
+    @Unique
+    private static Map<QualifiedBlock, QualifiedBlock> getWoodClubMap() {
+        if (WOOD_FROM_TO == null) {
+            WOOD_FROM_TO = new HashMap<>();
+            // Wood clubs can only firm loose blocks
+            WOOD_FROM_TO.put(
+                    new QualifiedBlock(BTWBlocks.looseDirt.blockID, 0),
+                    new QualifiedBlock(Block.dirt.blockID, 0)
             );
-            FROM_TO.put( // Firm loose dirt slabs
-                    new QualifiedBlock(BTWBlocks.looseDirtSlab.blockID, 0), // loose dirt slab
-                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, 0) // firm dirt slab
+            WOOD_FROM_TO.put(
+                    new QualifiedBlock(BTWBlocks.looseDirtSlab.blockID, 0),
+                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, 0)
             );
-            FROM_TO.put( // Firm loose sparse grass blocks
-                    new QualifiedBlock(BTWBlocks.looseSparseGrass.blockID, 0), // loose sparse grass
-                    new QualifiedBlock(Block.grass.blockID, 1) // sparse grass block
+            WOOD_FROM_TO.put(
+                    new QualifiedBlock(BTWBlocks.looseSparseGrass.blockID, 0),
+                    new QualifiedBlock(Block.grass.blockID, 1)
             );
-            FROM_TO.put( // Firm loose sparse grass slabs
-                    new QualifiedBlock(BTWBlocks.looseSparseGrassSlab.blockID, 0), // as named
-                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, 2) // sparse grass slab
-            );
-            FROM_TO.put( // Pack firm dirt downwards
-                    new QualifiedBlock(Block.dirt.blockID, 0), // firm dirt
-                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, 6) // packed earth slab
-            );
-            FROM_TO.put( // Pack fully-grown grass blocks downward
-                    new QualifiedBlock(Block.grass.blockID, 0), // fully-grown grass
-                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, 6) // packed earth slab
-            );
-            FROM_TO.put( // Pack sparse grass blocks downward
-                    new QualifiedBlock(Block.grass.blockID, 1), // sparse grass
-                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, 6) // packed earth slab
-            );
-            FROM_TO.put( // Pack downward; needs extra check for lower neighbor to be a firm dirtlike block
-                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, 6), // packed earth slab
-                    new QualifiedBlock(TRY_PACKING, 0) // sentinel value to indicate making air
+            WOOD_FROM_TO.put(
+                    new QualifiedBlock(BTWBlocks.looseSparseGrassSlab.blockID, 0),
+                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, 2)
             );
         }
-        return FROM_TO;
+        return WOOD_FROM_TO;
     }
 
+    @Unique
+    private static Map<QualifiedBlock, QualifiedBlock> getBoneClubMap() {
+        if (BONE_FROM_TO == null) {
+            BONE_FROM_TO = new HashMap<>();
+            // Bone clubs can firm loose blocks AND pack firm blocks
+            BONE_FROM_TO.put(
+                    new QualifiedBlock(BTWBlocks.looseDirt.blockID, 0),
+                    new QualifiedBlock(Block.dirt.blockID, 0)
+            );
+            BONE_FROM_TO.put(
+                    new QualifiedBlock(BTWBlocks.looseDirtSlab.blockID, 0),
+                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, 0)
+            );
+            BONE_FROM_TO.put(
+                    new QualifiedBlock(BTWBlocks.looseSparseGrass.blockID, 0),
+                    new QualifiedBlock(Block.grass.blockID, 1)
+            );
+            BONE_FROM_TO.put(
+                    new QualifiedBlock(BTWBlocks.looseSparseGrassSlab.blockID, 0),
+                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, 2)
+            );
+            // Packing conversions for bone clubs
+            BONE_FROM_TO.put(
+                    new QualifiedBlock(Block.dirt.blockID, 0),
+                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, PACKED_EARTH)
+            );
+            BONE_FROM_TO.put(
+                    new QualifiedBlock(Block.grass.blockID, 0),
+                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, PACKED_EARTH)
+            );
+            BONE_FROM_TO.put(
+                    new QualifiedBlock(Block.grass.blockID, 1),
+                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, PACKED_EARTH)
+            );
+            BONE_FROM_TO.put(
+                    new QualifiedBlock(BTWBlocks.dirtSlab.blockID, PACKED_EARTH),
+                    new QualifiedBlock(TRY_PACKING, 0)
+            );
+        }
+        return BONE_FROM_TO;
+    }
 
-    @Inject(
-            method = "survivalTryHarvestBlock",
-            at = @At("RETURN"),
-            cancellable = true
-    )
-    private void firmOrPackDirt(int x, int y, int z, int side, CallbackInfoReturnable<Boolean> cir) {
-        // Only handle clubs for this mixin inject
-        ItemStack stack = thisPlayerMP.getCurrentEquippedItem();
-        if (stack == null || ThisItem.isNot(ItemType.CLUB, stack)) return;
-
-        World world = theWorld;
-        EntityPlayer player = thisPlayerMP;
+    @Inject(method = "survivalTryHarvestBlock", at = @At("HEAD"), cancellable = true)
+    private void clubLeftClickConversion(int x, int y, int z, int iFromSide,
+                                         CallbackInfoReturnable<Boolean> cir) {
+        World world = ((ItemInWorldManager) (Object) this).theWorld;
+        EntityPlayerMP player = thisPlayerMP;
 
         int blockID = world.getBlockId(x, y, z);
+        Block block = Block.blocksList[blockID];
+
+        if (block == null) return;
+
         int metadata = world.getBlockMetadata(x, y, z);
+        ItemStack heldItem = player.getCurrentEquippedItem();
+
+        if (heldItem == null || ThisItem.isNot(ItemType.CLUB, heldItem)) return;
+
+        boolean isBoneClub = ThisItem.is(ItemType.BONE, heldItem);
+        Map<QualifiedBlock, QualifiedBlock> conversionMap = isBoneClub ? getBoneClubMap() : getWoodClubMap();
 
         QualifiedBlock from = new QualifiedBlock(blockID, metadata);
-        QualifiedBlock to = getFromToMap().get(from);
+        QualifiedBlock to = conversionMap.get(from);
 
-        // Return early if no possible conversion found via getFromToMap
-        if (to == null) {
-            System.out.println("[DEBUG] No conversion found for " + from);
-            for (QualifiedBlock key : getFromToMap().keySet()) {
-                System.out.println("    Map contains: " + key);
-            }
-            return;
-        }
+        if (to == null) return;
 
-        System.out.println("to is not null");
-
-        // For brevity:
-        // PEB stands for Packed Earth Block
-        // PES stands for Packed Earth Slab
-
-        // Require air above the clicked-on block in order to pack firm dirtlike block into PES
-        Block block = Block.blocksList[from.blockID];
-        if (block != null && ThisBlock.is(BlockType.FIRM_DIRTLIKE, block, metadata)) {
-            // Prevent packing downward if there is a solid block above
-            if (WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y + 1, z, 0) ) return;
+        // Require air above the clicked-on block in order to pack firm dirtlike into slab
+        if (isBoneClub && ThisBlock.is(BlockType.FIRM_DIRTLIKE, block, metadata)) {
+            if (WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y + 1, z, 0)) return;
         }
 
         if (to.blockID == TRY_PACKING) { // triggered if clicked block was a packed earth slab
-            // Check lower neighbor to determine if/how to pack
-
             int lowerNeighborID = world.getBlockId(x, y - 1, z);
             int lowerNeighborMetadata = world.getBlockMetadata(x, y - 1, z);
             Block lowerNeighbor = Block.blocksList[lowerNeighborID];
 
             if (lowerNeighbor == null) return;
 
-            // Pack downward if the lower neighbor is a firm dirtlike block
-            if (
-                    ThisItem.isNot(ItemType.BONE, stack) &&
-                            ThisBlock.isAnd(
-                                    BlockType.FIRM_DIRTLIKE,
-                                    BlockType.CUBE,
-                                    lowerNeighbor, lowerNeighborMetadata)
-            ) {
-                // Prepare conversion context for lower neighbor block
-                SwapContext lowerCtx = new SwapContext(stack, player, world, x, y - 1, z);
-
-                // Set clicked on block to air
+            // Pack downward if the lower neighbor is a firm dirtlike cube
+            if (ThisBlock.isAll(lowerNeighbor, lowerNeighborMetadata, BlockType.FIRM_DIRTLIKE, BlockType.CUBE)) {
+                SwapContext lowerCtx = new SwapContext(heldItem, player, world, x, y - 1, z);
                 world.setBlockToAir(x, y, z);
-
-                // Make the lower neighbor a packed earth cube
                 convertBlock(
                         BTWBlocks.aestheticEarth.blockID,
                         AestheticOpaqueEarthBlock.SUBTYPE_PACKED_EARTH,
                         lowerCtx, PACKING_COST);
                 cir.setReturnValue(true);
             }
-
-            // Firm the dirtlike block below (basically, to prepare for packing next round)
-            else if (ThisBlock.isAnd(BlockType.LOOSE_DIRTLIKE, BlockType.CUBE, lowerNeighbor, lowerNeighborMetadata)) {
-                // Change lower block to firm dirt; leave upper block as-is
-                SwapContext lowerCtx = new SwapContext(stack, player, world, x, y - 1, z);
+            // Firm the loose dirtlike block below
+            else if (ThisBlock.isAll(lowerNeighbor, lowerNeighborMetadata, BlockType.LOOSE_DIRTLIKE, BlockType.CUBE)) {
+                SwapContext lowerCtx = new SwapContext(heldItem, player, world, x, y - 1, z);
                 convertBlock(Block.dirt.blockID, 0, lowerCtx, FIRMING_COST);
                 cir.setReturnValue(true);
             }
-
         }
         else { // Firm or pack the dirtlike block that was clicked
-            SwapContext ctx = new SwapContext(stack, player, world, x, y, z);
+            SwapContext ctx = new SwapContext(heldItem, player, world, x, y, z);
             if (to.metadata == PACKED_EARTH) {
-                // Only pack if holding a bone club
-                if (ThisItem.isNot(ItemType.BONE, stack)) {
-                    convertBlock(to.blockID, to.metadata, ctx, PACKING_COST);
-                    cir.setReturnValue(true);
-                }
+                convertBlock(to.blockID, to.metadata, ctx, PACKING_COST);
+                cir.setReturnValue(true);
             }
             else {
                 convertBlock(to.blockID, to.metadata, ctx, FIRMING_COST);
@@ -180,7 +175,6 @@ public class ClubItem_ItemInWorldManagerMixin {
 
     @Unique
     private static void convertBlock(int toBlockID, int toMetadata, SwapContext ctx, int damageToItem) {
-
         ctx.world.setBlockAndMetadataWithNotify(ctx.x, ctx.y, ctx.z, toBlockID, toMetadata);
         ctx.stack.damageItem(damageToItem, ctx.player);
 
