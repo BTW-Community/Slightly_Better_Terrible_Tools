@@ -22,6 +22,7 @@ public abstract class ClubItem_ItemInWorldManagerMixin {
     @Shadow
     public EntityPlayerMP thisPlayerMP;
 
+    @Shadow public World theWorld;
     @Unique
     private static final int TRY_PACKING = 0; // a blockID sentinel value
 
@@ -110,7 +111,8 @@ public abstract class ClubItem_ItemInWorldManagerMixin {
     @Inject(method = "survivalTryHarvestBlock", at = @At("HEAD"), cancellable = true)
     private void clubLeftClickConversion(int x, int y, int z, int iFromSide,
                                          CallbackInfoReturnable<Boolean> cir) {
-        World world = ((ItemInWorldManager) (Object) this).theWorld;
+        if (theWorld.isRemote) return;
+        World world = theWorld;
         EntityPlayerMP player = thisPlayerMP;
 
         int blockID = world.getBlockId(x, y, z);
@@ -178,9 +180,14 @@ public abstract class ClubItem_ItemInWorldManagerMixin {
         ctx.world.setBlockAndMetadataWithNotify(ctx.x, ctx.y, ctx.z, toBlockID, toMetadata);
         ctx.stack.damageItem(damageToItem, ctx.player);
 
-        // Play tilled dirt effect client-side
-        if (ctx.world.isRemote) {
-            ctx.world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, ctx.x, ctx.y, ctx.z, 0);
-        }
+        // Send packet to player for client sync
+        WorldUtils.sendPacketToPlayer(((EntityPlayerMP) ctx.player).playerNetServerHandler,
+                new Packet53BlockChange(ctx.x, ctx.y, ctx.z, ctx.world));
+
+        Packet103SetSlot packet = new Packet103SetSlot(0, ctx.player.inventory.currentItem + 36, ctx.stack);
+        WorldUtils.sendPacketToPlayer(((EntityPlayerMP) ctx.player).playerNetServerHandler, packet);
+
+        // Play effect on server (will be networked to clients via the block change)
+        ctx.world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, ctx.x, ctx.y, ctx.z, 0);
     }
 }
