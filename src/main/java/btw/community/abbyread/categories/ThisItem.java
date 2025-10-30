@@ -97,7 +97,8 @@ public class ThisItem {
             Item.shovelStone,
             Item.shovelIron,
             Item.shovelDiamond,
-            Item.shovelGold
+            Item.shovelGold,
+            BTWItems.steelShovel
     );
 
     private static final Set<Item> PICKAXES = Set.of(
@@ -105,7 +106,8 @@ public class ThisItem {
             Item.pickaxeStone,
             Item.pickaxeIron,
             Item.pickaxeDiamond,
-            Item.pickaxeGold
+            Item.pickaxeGold,
+            BTWItems.steelPickaxe
     );
 
     private static final Set<Item> AXES = Set.of(
@@ -114,6 +116,7 @@ public class ThisItem {
             Item.axeIron,
             Item.axeDiamond,
             Item.axeGold,
+            BTWItems.steelAxe,
             BTWItems.battleaxe
     );
 
@@ -122,7 +125,8 @@ public class ThisItem {
             Item.hoeStone,
             Item.hoeIron,
             Item.hoeDiamond,
-            Item.hoeGold
+            Item.hoeGold,
+            BTWItems.steelHoe
     );
 
     private static final Set<Item> SHEARS = Set.of(
@@ -142,7 +146,8 @@ public class ThisItem {
             Item.swordStone,
             Item.swordIron,
             Item.swordDiamond,
-            Item.swordGold
+            Item.swordGold,
+            BTWItems.steelSword
     );
 
     private static final Set<Item> CLUBS = Set.of(
@@ -182,7 +187,10 @@ public class ThisItem {
 
     // ===== Composite sets =====
 
+    @SuppressWarnings("unused")
     private static final Set<Item> TOOL_ITEMS;
+
+    @SuppressWarnings("unused")
     private static final Set<Item> WEAPON_ITEMS;
 
     static {
@@ -271,6 +279,7 @@ public class ThisItem {
         return true;
     }
 
+    @SuppressWarnings("unused")
     public static boolean isButNot(ItemStack stack, ItemType isTag, ItemType... notTags) {
         return is(isTag, stack) && !isAny(stack, notTags);
     }

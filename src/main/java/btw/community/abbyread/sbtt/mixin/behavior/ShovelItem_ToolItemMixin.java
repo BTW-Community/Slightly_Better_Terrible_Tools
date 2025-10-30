@@ -21,13 +21,13 @@ import java.util.Map;
 public abstract class ShovelItem_ToolItemMixin {
 
     @Unique
-    private static final int TRY_PACKING = -1;
+    private static final int TRY_PACKING = 0; // a blockID sentinel value
 
     @Unique
     private static final int FIRMING_COST = 2;
 
     @Unique
-    private static final int PACKING_COST = 3;
+    private static final int PACKING_COST = 4;
 
     @Unique
     private static Map<QualifiedBlock, QualifiedBlock> FROM_TO;
@@ -66,7 +66,7 @@ public abstract class ShovelItem_ToolItemMixin {
             );
             FROM_TO.put( // Pack downward; needs extra check for lower neighbor to be a firm dirtlike block
                     new QualifiedBlock(BTWBlocks.dirtSlab.blockID, 6), // packed earth slab
-                    new QualifiedBlock(-1, 0) // sentinel value to indicate making air
+                    new QualifiedBlock(TRY_PACKING, 0) // sentinel value to indicate making air
             );
         }
         return FROM_TO;
@@ -77,20 +77,24 @@ public abstract class ShovelItem_ToolItemMixin {
                                          int x, int y, int z, int iFacing,
                                          float fClickX, float fClickY, float fClickZ,
                                          CallbackInfoReturnable<Boolean> cir) {
+        // Only handle shovels in this mixin
         if (ThisItem.isNot(ItemType.SHOVEL, stack)) return;
-
-        // Skip swapping logic entirely if the special key is held
-        if (player.isUsingSpecialKey()) return;
 
         int blockID = world.getBlockId(x, y, z);
         int metadata = world.getBlockMetadata(x, y, z);
 
-        // Tall grass gets in the way too much.
+        // Destroy tall grass as if punching it
         if (blockID == Block.tallGrass.blockID) {
             if (!world.isRemote) world.destroyBlock(x, y, z, false);
             player.addExhaustion(0.025f);
             cir.setReturnValue(true);
         }
+
+        // Skip block conversion logic entirely if the special key is held
+        if (player.isUsingSpecialKey()) return;
+
+        // Require iron shovel or better to firm or pack
+        boolean toolCanPack = ThisItem.isNot(ItemType.STONE, stack);
 
         QualifiedBlock from = new QualifiedBlock(blockID, metadata);
         QualifiedBlock to = getFromToMap().get(from);
@@ -100,12 +104,12 @@ public abstract class ShovelItem_ToolItemMixin {
 
         // Require air above the clicked-on block in order to pack firm dirtlike into slab
         Block block = Block.blocksList[from.blockID];
-        if (block != null && ThisBlock.is(BlockType.FIRM_DIRTLIKE, block, metadata)) {
+        if (toolCanPack && block != null && ThisBlock.is(BlockType.FIRM_DIRTLIKE, block, metadata)) {
             // Prevent packing downward if there is a solid block above
             if (WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y + 1, z, 0) ) return;
         }
 
-        if (to.blockID == TRY_PACKING) { // triggered if clicked block was a packed earth slab
+        if (toolCanPack && to.blockID == TRY_PACKING) { // triggered if clicked block was a packed earth slab
             // Check lower neighbor to determine if/how to pack
 
             int lowerNeighborID = world.getBlockId(x, y - 1, z);
