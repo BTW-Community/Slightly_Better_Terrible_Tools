@@ -24,6 +24,9 @@ public abstract class ShovelItem_ToolItemMixin {
     private static final int TRY_PACKING = 0; // a blockID sentinel value
 
     @Unique
+    private static final int PACKED_EARTH = 6; // the metadata value for it
+
+    @Unique
     private static final int FIRMING_COST = 2;
 
     @Unique
@@ -93,9 +96,6 @@ public abstract class ShovelItem_ToolItemMixin {
         // Skip block conversion logic entirely if the special key is held
         if (player.isUsingSpecialKey()) return;
 
-        // Require iron shovel or better to firm or pack
-        boolean toolCanPack = ThisItem.isNot(ItemType.STONE, stack);
-
         QualifiedBlock from = new QualifiedBlock(blockID, metadata);
         QualifiedBlock to = getFromToMap().get(from);
 
@@ -104,12 +104,12 @@ public abstract class ShovelItem_ToolItemMixin {
 
         // Require air above the clicked-on block in order to pack firm dirtlike into slab
         Block block = Block.blocksList[from.blockID];
-        if (toolCanPack && block != null && ThisBlock.is(BlockType.FIRM_DIRTLIKE, block, metadata)) {
+        if (block != null && ThisBlock.is(BlockType.FIRM_DIRTLIKE, block, metadata)) {
             // Prevent packing downward if there is a solid block above
             if (WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y + 1, z, 0) ) return;
         }
 
-        if (toolCanPack && to.blockID == TRY_PACKING) { // triggered if clicked block was a packed earth slab
+        if (to.blockID == TRY_PACKING) { // triggered if clicked block was a packed earth slab
             // Check lower neighbor to determine if/how to pack
 
             int lowerNeighborID = world.getBlockId(x, y - 1, z);
@@ -119,7 +119,13 @@ public abstract class ShovelItem_ToolItemMixin {
             if (lowerNeighbor == null) return;
 
             // Pack downward if the lower neighbor is a firm dirtlike block
-            if (ThisBlock.isAnd(BlockType.FIRM_DIRTLIKE, BlockType.CUBE, lowerNeighbor, lowerNeighborMetadata)) {
+            if (
+                    ThisItem.isNot(ItemType.STONE, stack) &&
+                    ThisBlock.isAnd(
+                            BlockType.FIRM_DIRTLIKE,
+                            BlockType.CUBE,
+                            lowerNeighbor, lowerNeighborMetadata)
+                ) {
                 // Prepare conversion context for lower neighbor block
                 SwapContext lowerCtx = new SwapContext(stack, player, world, x, y - 1, z);
 
@@ -131,6 +137,7 @@ public abstract class ShovelItem_ToolItemMixin {
                         BTWBlocks.aestheticEarth.blockID,
                         AestheticOpaqueEarthBlock.SUBTYPE_PACKED_EARTH,
                         lowerCtx, PACKING_COST);
+                cir.setReturnValue(true);
             }
 
             // Firm the dirtlike block below (basically, to prepare for packing next round)
@@ -138,15 +145,24 @@ public abstract class ShovelItem_ToolItemMixin {
                 // Change lower block to firm dirt; leave upper block as-is
                 SwapContext lowerCtx = new SwapContext(stack, player, world, x, y - 1, z);
                 convertBlock(Block.dirt.blockID, 0, lowerCtx, FIRMING_COST);
+                cir.setReturnValue(true);
             }
 
         }
-        else { // Firm the dirtlike block that was clicked
+        else { // Firm or pack the dirtlike block that was clicked
             SwapContext ctx = new SwapContext(stack, player, world, x, y, z);
-            convertBlock(to.blockID, to.metadata, ctx, FIRMING_COST);
+            if (to.metadata == PACKED_EARTH) {
+                // Only pack if shovel is better than stone
+                if (ThisItem.isNot(ItemType.STONE, stack)) {
+                    convertBlock(to.blockID, to.metadata, ctx, PACKING_COST);
+                    cir.setReturnValue(true);
+                }
+            }
+            else {
+                convertBlock(to.blockID, to.metadata, ctx, FIRMING_COST);
+                cir.setReturnValue(true);
+            }
         }
-        // Tell Minecraft the use was successful so client plays SFX/animation
-        cir.setReturnValue(true);
     }
 
     @Unique
