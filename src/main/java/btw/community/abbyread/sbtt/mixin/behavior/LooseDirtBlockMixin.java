@@ -29,7 +29,7 @@ public abstract class LooseDirtBlockMixin {
             return;
         }
 
-        // Convert loose dirt to firm dirt (Block.dirt, metadata 0)
+        // Convert loose dirt to firm dirt
         world.setBlockAndMetadataWithNotify(x, y, z, Block.dirt.blockID, 0);
 
         // Play the tilling effect
