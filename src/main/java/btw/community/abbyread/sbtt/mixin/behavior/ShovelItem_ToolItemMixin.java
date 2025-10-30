@@ -84,6 +84,14 @@ public abstract class ShovelItem_ToolItemMixin {
 
         int blockID = world.getBlockId(x, y, z);
         int metadata = world.getBlockMetadata(x, y, z);
+
+        // Tall grass gets in the way too much.
+        if (blockID == Block.tallGrass.blockID) {
+            if (!world.isRemote) world.destroyBlock(x, y, z, false);
+            player.addExhaustion(0.025f);
+            cir.setReturnValue(true);
+        }
+
         QualifiedBlock from = new QualifiedBlock(blockID, metadata);
         QualifiedBlock to = getFromToMap().get(from);
 
