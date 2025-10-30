@@ -259,6 +259,10 @@ public class ThisItem {
         return getTags(stack).contains(tag);
     }
 
+    public static boolean isAnd(ItemType tag1, ItemType tag2, ItemStack stack) {
+        return getTags(stack).contains(tag1) && getTags(stack).contains(tag2);
+    }
+
     public static boolean isNot(ItemType tag, ItemStack stack) {
         return !is(tag, stack);
     }

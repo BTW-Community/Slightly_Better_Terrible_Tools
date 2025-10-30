@@ -15,7 +15,6 @@
     "behavior.OreBlockStagedMixin",
     "behavior.ShovelItem_ToolItemMixin",
     "damage.ClubItemMixin",
-    "damage.ItemStackMixin",
     "durability.ChiselItemWoodMixin",
     "durability.ShovelItemStoneMixin",
     "speed.BlockMixin",

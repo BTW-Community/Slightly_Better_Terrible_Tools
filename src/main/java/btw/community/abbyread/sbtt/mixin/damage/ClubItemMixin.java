@@ -33,11 +33,16 @@ public abstract class ClubItemMixin {
 
         // Damage based on packing with bone club
         if (ThisBlock.is(BlockType.FIRM_DIRTLIKE, block, metadata) &&
-            ThisItem.is(ItemType.BONE, stack) &&
-            usingEntity instanceof EntityPlayer) {
+                ThisItem.is(ItemType.BONE, stack) &&
+                usingEntity instanceof EntityPlayer) {
+
+            // Verify conversion was possible (no solid block above, for instance)
+            if (!block.canConvertBlock(stack, world, x, y, z)) return;
+
             // Damage more if packing dirt
             stack.damageItem(PACKING_COST, usingEntity);
             cir.setReturnValue(true);
+
         } // Damage based on firming with either club
         else if (ThisBlock.is(BlockType.LOOSE_DIRTLIKE, block, metadata) &&
             usingEntity instanceof EntityPlayer) {
