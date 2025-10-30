@@ -22,7 +22,9 @@ public abstract class ClubItem_ItemInWorldManagerMixin {
     @Shadow
     public EntityPlayerMP thisPlayerMP;
 
-    @Shadow public World theWorld;
+    @Shadow
+    public World theWorld;
+
     @Unique
     private static final int TRY_PACKING = 0; // a blockID sentinel value
 
@@ -108,22 +110,24 @@ public abstract class ClubItem_ItemInWorldManagerMixin {
         return BONE_FROM_TO;
     }
 
-    @Inject(method = "survivalTryHarvestBlock", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "survivalTryHarvestBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/ItemInWorldManager;removeBlock(III)Z"), cancellable = true)
     private void clubLeftClickConversion(int x, int y, int z, int iFromSide,
                                          CallbackInfoReturnable<Boolean> cir) {
+        // Only run on server
         if (theWorld.isRemote) return;
-        World world = theWorld;
-        EntityPlayerMP player = thisPlayerMP;
 
-        int blockID = world.getBlockId(x, y, z);
+        EntityPlayerMP player = thisPlayerMP;
+        int blockID = theWorld.getBlockId(x, y, z);
         Block block = Block.blocksList[blockID];
 
         if (block == null) return;
 
-        int metadata = world.getBlockMetadata(x, y, z);
+        int metadata = theWorld.getBlockMetadata(x, y, z);
         ItemStack heldItem = player.getCurrentEquippedItem();
 
         if (heldItem == null || ThisItem.isNot(ItemType.CLUB, heldItem)) return;
+
+        System.out.println("[Club] Injection triggered for block: " + block.getClass());
 
         boolean isBoneClub = ThisItem.is(ItemType.BONE, heldItem);
         Map<QualifiedBlock, QualifiedBlock> conversionMap = isBoneClub ? getBoneClubMap() : getWoodClubMap();
@@ -135,20 +139,20 @@ public abstract class ClubItem_ItemInWorldManagerMixin {
 
         // Require air above the clicked-on block in order to pack firm dirtlike into slab
         if (isBoneClub && ThisBlock.is(BlockType.FIRM_DIRTLIKE, block, metadata)) {
-            if (WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y + 1, z, 0)) return;
+            if (WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(theWorld, x, y + 1, z, 0)) return;
         }
 
         if (to.blockID == TRY_PACKING) { // triggered if clicked block was a packed earth slab
-            int lowerNeighborID = world.getBlockId(x, y - 1, z);
-            int lowerNeighborMetadata = world.getBlockMetadata(x, y - 1, z);
+            int lowerNeighborID = theWorld.getBlockId(x, y - 1, z);
+            int lowerNeighborMetadata = theWorld.getBlockMetadata(x, y - 1, z);
             Block lowerNeighbor = Block.blocksList[lowerNeighborID];
 
             if (lowerNeighbor == null) return;
 
             // Pack downward if the lower neighbor is a firm dirtlike cube
             if (ThisBlock.isAll(lowerNeighbor, lowerNeighborMetadata, BlockType.FIRM_DIRTLIKE, BlockType.CUBE)) {
-                SwapContext lowerCtx = new SwapContext(heldItem, player, world, x, y - 1, z);
-                world.setBlockToAir(x, y, z);
+                SwapContext lowerCtx = new SwapContext(heldItem, player, theWorld, x, y - 1, z);
+                theWorld.setBlockToAir(x, y, z);
                 convertBlock(
                         BTWBlocks.aestheticEarth.blockID,
                         AestheticOpaqueEarthBlock.SUBTYPE_PACKED_EARTH,
@@ -157,13 +161,13 @@ public abstract class ClubItem_ItemInWorldManagerMixin {
             }
             // Firm the loose dirtlike block below
             else if (ThisBlock.isAll(lowerNeighbor, lowerNeighborMetadata, BlockType.LOOSE_DIRTLIKE, BlockType.CUBE)) {
-                SwapContext lowerCtx = new SwapContext(heldItem, player, world, x, y - 1, z);
+                SwapContext lowerCtx = new SwapContext(heldItem, player, theWorld, x, y - 1, z);
                 convertBlock(Block.dirt.blockID, 0, lowerCtx, FIRMING_COST);
                 cir.setReturnValue(true);
             }
         }
         else { // Firm or pack the dirtlike block that was clicked
-            SwapContext ctx = new SwapContext(heldItem, player, world, x, y, z);
+            SwapContext ctx = new SwapContext(heldItem, player, theWorld, x, y, z);
             if (to.metadata == PACKED_EARTH) {
                 convertBlock(to.blockID, to.metadata, ctx, PACKING_COST);
                 cir.setReturnValue(true);
@@ -180,14 +184,11 @@ public abstract class ClubItem_ItemInWorldManagerMixin {
         ctx.world.setBlockAndMetadataWithNotify(ctx.x, ctx.y, ctx.z, toBlockID, toMetadata);
         ctx.stack.damageItem(damageToItem, ctx.player);
 
-        // Send packet to player for client sync
+        // Send packet to player for immediate client sync
         WorldUtils.sendPacketToPlayer(((EntityPlayerMP) ctx.player).playerNetServerHandler,
                 new Packet53BlockChange(ctx.x, ctx.y, ctx.z, ctx.world));
 
-        Packet103SetSlot packet = new Packet103SetSlot(0, ctx.player.inventory.currentItem + 36, ctx.stack);
-        WorldUtils.sendPacketToPlayer(((EntityPlayerMP) ctx.player).playerNetServerHandler, packet);
-
-        // Play effect on server (will be networked to clients via the block change)
+        // Play effect on server (will be networked to clients automatically)
         ctx.world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, ctx.x, ctx.y, ctx.z, 0);
     }
 }
