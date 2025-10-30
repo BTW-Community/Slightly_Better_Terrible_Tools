@@ -10,6 +10,7 @@
     "behavior.BlockGrassMixin",
     "behavior.BlockMyceliumMixin",
     "behavior.ChiselItemWood_ItemMixin",
+    "behavior.ClubItem_ItemInWorldManagerMixin",
     "behavior.ClubItemMixin",
     "behavior.MyceliumBlockMixin",
     "behavior.OreBlockStagedMixin",
