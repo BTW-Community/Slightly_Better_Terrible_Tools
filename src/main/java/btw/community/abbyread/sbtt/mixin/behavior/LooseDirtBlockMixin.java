@@ -1,7 +1,7 @@
 package btw.community.abbyread.sbtt.mixin.behavior;
 
+import btw.block.BTWBlocks;
 import btw.block.blocks.LooseDirtBlock;
-import btw.client.fx.BTWEffectManager;
 import btw.community.abbyread.categories.*;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +34,8 @@ public abstract class LooseDirtBlockMixin {
 
         // Play the tilling effect
         if (!world.isRemote) {
-            world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
+            Block block = BTWBlocks.looseDirt;
+            world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.stepSound.getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch());
         }
 
         cir.setReturnValue(true);

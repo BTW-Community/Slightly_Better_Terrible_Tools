@@ -46,7 +46,7 @@ public class BlockDirtMixin {
             if (!WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y + 1, z, 0)) {
                 cir.setReturnValue(true);
             }
-            
+
         }
     }
 
@@ -63,7 +63,10 @@ public class BlockDirtMixin {
 
         // Play the tilling effect
         if (!world.isRemote) {
-            world.playAuxSFX(BTWEffectManager.DIRT_TILLING_EFFECT_ID, x, y, z, 0);
+            world.playAuxSFX(BTWEffectManager.BLOCK_DESTROYED_WITH_IMPROPER_TOOL_EFFECT_ID, x, y, z, 0);
+            Block block = Block.dirt;
+
+            world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
         }
 
         cir.setReturnValue(true);
