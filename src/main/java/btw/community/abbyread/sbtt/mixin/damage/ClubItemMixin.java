@@ -1,5 +1,6 @@
 package btw.community.abbyread.sbtt.mixin.damage;
 
+import btw.block.BTWBlocks;
 import btw.community.abbyread.categories.BlockType;
 import btw.community.abbyread.categories.ItemType;
 import btw.community.abbyread.categories.ThisBlock;
@@ -19,6 +20,8 @@ public abstract class ClubItemMixin {
     private static final int FIRMING_COST = 2;
     @Unique
     private static final int PACKING_COST = 4;
+    @Unique
+    private static final int PACKED_EARTH = 6; // a metadata value
 
     @Inject(
             method = "onBlockDestroyed",
@@ -27,29 +30,41 @@ public abstract class ClubItemMixin {
                     target = "Lnet/minecraft/src/ItemStack;damageItem(ILnet/minecraft/src/EntityLivingBase;)V"
             ),
             cancellable = true)
-    private void sbtt$onBlockDestroyed(ItemStack stack, World world, int blockID, int x, int y, int z, EntityLivingBase usingEntity, CallbackInfoReturnable<Boolean> cir) {
+    private void determineAndApplyDamageAmount(ItemStack stack, World world, int blockID, int x, int y, int z, EntityLivingBase usingEntity, CallbackInfoReturnable<Boolean> cir) {
         Block block = Block.blocksList[blockID];
         int metadata = world.getBlockMetadata(x, y, z);
 
-        // Damage based on packing with bone club
-        if (ThisBlock.is(BlockType.FIRM_DIRTLIKE, block, metadata) &&
-                ThisItem.is(ItemType.BONE, stack) &&
-                usingEntity instanceof EntityPlayer) {
+        if (!(usingEntity instanceof EntityPlayer)) return;
 
-            // Verify conversion was possible (no solid block above, for instance)
+        if // Damage based on packing with bone club
+        (
+            (   // Starting from a firm dirtlike:
+                ThisBlock.is(BlockType.FIRM_DIRTLIKE, block, metadata) ||
+                // Starting from a packed earth slab:
+                (blockID == BTWBlocks.dirtSlab.blockID && metadata == PACKED_EARTH)
+            ) // Bone club is required.
+            && ThisItem.is(ItemType.BONE, stack)
+        ) {
+            // Verify conversion was possible; assume it happened
             if (!block.canConvertBlock(stack, world, x, y, z)) return;
 
-            // Damage more if packing dirt
+            // Apply damage to club
             stack.damageItem(PACKING_COST, usingEntity);
-            cir.setReturnValue(true);
 
-        } // Damage based on firming with either club
-        else if (ThisBlock.is(BlockType.LOOSE_DIRTLIKE, block, metadata) &&
-            usingEntity instanceof EntityPlayer) {
-            stack.damageItem(FIRMING_COST, usingEntity);
+            // DEBUG:
+            if (!world.isRemote) System.out.println("ClubItemMixin::stack.damageItem(" + PACKING_COST + ", usingEntity);");
+
             cir.setReturnValue(true);
         }
+        // Damage based on firming with either club
+        else if (ThisBlock.is(BlockType.LOOSE_DIRTLIKE, block, metadata)) {
+            stack.damageItem(FIRMING_COST, usingEntity);
 
+            // DEBUG:
+            if (!world.isRemote) System.out.println("ClubItemMixin::stack.damageItem(" + FIRMING_COST + ", usingEntity);");
+
+            cir.setReturnValue(true);
+        }
         // Proceed normally if it didn't fall into the conditions above
     }
 
