@@ -41,10 +41,9 @@ public class LooseSparseGrassBlockMixin {
 
         // Convert loose sparse grass to firm sparse grass
         world.setBlockAndMetadataWithNotify(x, y, z, Block.grass.blockID, SPARSE);
-        // Process seed chance once (just on server)
-        if (!world.isRemote) maybeGetSeeds(world, x, y, z, side);
 
         Block block = (Block) (Object) this;
+
         world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
         cir.setReturnValue(true);
 
