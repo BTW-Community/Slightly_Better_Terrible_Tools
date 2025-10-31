@@ -55,6 +55,9 @@ public class GrassSlabBlock_BlockMixin {
         if (toBlock != null) {
             world.setBlockAndMetadataWithNotify(x, y, z, toBlock.blockID, toBlock.metadata);
 
+            // Process seed chance once (just on server)
+            if (!world.isRemote) maybeGetSeeds(world, x, y, z, side);
+
             cir.setReturnValue(true);
         }
     }
@@ -84,9 +87,6 @@ public class GrassSlabBlock_BlockMixin {
         // Only loosen if grass is sparse
         if (metadata == SPARSE) {
             world.setBlockAndMetadataWithNotify(x, y, z, BTWBlocks.looseSparseGrassSlab.blockID, DIRT);
-
-            // Process seed chance once (just on server)
-            if (!world.isRemote) maybeGetSeeds(world, x, y, z, side);
 
             world.playSoundEffect((float) x + 0.5f, (float) y + 0.5f, (float) z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
             cir.setReturnValue(true);
