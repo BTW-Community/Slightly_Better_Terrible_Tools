@@ -4,6 +4,7 @@ import btw.block.BTWBlocks;
 import btw.block.blocks.LooseSparseGrassSlabBlock;
 import btw.community.abbyread.categories.ItemType;
 import btw.community.abbyread.categories.ThisItem;
+import btw.item.items.ChiselItemStone;
 import net.minecraft.src.Block;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
@@ -46,6 +47,27 @@ public class LooseSparseGrassSlabBlock_BlockMixin {
         world.setBlockAndMetadataWithNotify(x, y, z, BTWBlocks.grassSlab.blockID, SPARSE);
 
         cir.setReturnValue(true);
+    }
+
+    @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
+    private void canSparsenWithSharpStone(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+        if (stack == null || !(stack.getItem() instanceof ChiselItemStone)) return;
+
+        Block block = (Block) (Object) this;
+        if (block instanceof LooseSparseGrassSlabBlock) cir.setReturnValue(true);
+
+        // Continue with the rest of the method's logic otherwise
+    }
+    @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
+    private void sparsenWithSharpStone(ItemStack stack, World world, int x, int y, int z, int side, CallbackInfoReturnable<Boolean> cir) {
+        if (stack == null || !(stack.getItem() instanceof ChiselItemStone)) return;
+
+        Block block = (Block) (Object) this;
+        if (!(block instanceof LooseSparseGrassSlabBlock)) return;
+
+        world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirtSlab.blockID);
+        cir.setReturnValue(true);
+
     }
 
 }

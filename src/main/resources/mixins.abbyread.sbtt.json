@@ -18,7 +18,7 @@
     "behavior.MyceliumBlockMixin",
     "behavior.OreBlockStagedMixin",
     "behavior.PointyStickOnDirtSlab_BlockMixin",
-    "behavior.SharpStoneOnGrassSlab_BlockMixin",
+    "behavior.GrassSlabBlock_BlockMixin",
     "behavior.ShovelItem_ToolItemMixin",
     "damage.ClubItemMixin",
     "durability.ChiselItemWoodMixin",
