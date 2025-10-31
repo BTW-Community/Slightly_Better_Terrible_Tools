@@ -4,9 +4,11 @@ import btw.block.BTWBlocks;
 import btw.client.fx.BTWEffectManager;
 import btw.community.abbyread.categories.ItemType;
 import btw.community.abbyread.categories.ThisItem;
+import btw.item.BTWItems;
 import btw.item.items.ChiselItemStone;
 import btw.item.items.ChiselItemWood;
 import btw.item.items.ShovelItemStone;
+import btw.item.util.ItemUtils;
 import btw.world.util.WorldUtils;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import static btw.community.abbyread.sbtt.util.Globals.OUT_OF_CHANCE;
 
 @Mixin(BlockGrass.class)
 public abstract class BlockGrassMixin {
@@ -128,9 +132,20 @@ public abstract class BlockGrassMixin {
         } else {
             world.setBlockAndMetadataWithNotify(x, y, z, Block.grass.blockID, SPARSE);
         }
+
+        // Process seed chance once (just on server)
+        if (!world.isRemote) maybeGetSeeds(world, x, y, z, side);
+
         world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
         cir.setReturnValue(true);
 
+    }
+
+    @Unique
+    private void maybeGetSeeds(World world, int x, int y, int z, int side) {
+        if (world.rand.nextInt(OUT_OF_CHANCE) == 0) {
+            ItemUtils.ejectStackFromBlockTowardsFacing(world, x, y, z, new ItemStack(BTWItems.hempSeeds), side);
+        }
     }
 
 }

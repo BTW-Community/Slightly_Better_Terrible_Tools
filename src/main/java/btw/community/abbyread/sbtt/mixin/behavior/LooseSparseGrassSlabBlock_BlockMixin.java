@@ -4,7 +4,9 @@ import btw.block.BTWBlocks;
 import btw.block.blocks.LooseSparseGrassSlabBlock;
 import btw.community.abbyread.categories.ItemType;
 import btw.community.abbyread.categories.ThisItem;
+import btw.item.BTWItems;
 import btw.item.items.ChiselItemStone;
+import btw.item.util.ItemUtils;
 import net.minecraft.src.Block;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.World;
@@ -13,6 +15,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import static btw.community.abbyread.sbtt.util.Globals.OUT_OF_CHANCE;
 
 @Mixin(Block.class)
 public class LooseSparseGrassSlabBlock_BlockMixin {
@@ -66,8 +70,20 @@ public class LooseSparseGrassSlabBlock_BlockMixin {
         if (!(block instanceof LooseSparseGrassSlabBlock)) return;
 
         world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirtSlab.blockID);
+
+        // Process seed chance once (just on server)
+        if (!world.isRemote) maybeGetSeeds(world, x, y, z, side);
+
+        world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
         cir.setReturnValue(true);
 
+    }
+
+    @Unique
+    private void maybeGetSeeds(World world, int x, int y, int z, int side) {
+        if (world.rand.nextInt(OUT_OF_CHANCE) == 0) {
+            ItemUtils.ejectStackFromBlockTowardsFacing(world, x, y, z, new ItemStack(BTWItems.hempSeeds), side);
+        }
     }
 
 }
