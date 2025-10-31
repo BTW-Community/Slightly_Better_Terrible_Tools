@@ -4,6 +4,7 @@ import btw.block.BTWBlocks;
 import btw.client.fx.BTWEffectManager;
 import btw.community.abbyread.categories.ItemType;
 import btw.community.abbyread.categories.ThisItem;
+import btw.item.items.ChiselItemStone;
 import btw.item.items.ChiselItemWood;
 import btw.item.items.ShovelItemStone;
 import btw.world.util.WorldUtils;
@@ -18,8 +19,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockGrass.class)
 public abstract class BlockGrassMixin {
 
-    @Unique
-    private static final int PACKED_EARTH = 6; // metadata value
+    // Metadata values
+    @Unique private static final int PACKED_EARTH = 6;
+    @Unique private static final int FIRM_DIRT = 0;
+    @Unique private static final int SPARSE = 1;
 
     @Inject(
         method = "onNeighborDirtDugWithImproperTool",
@@ -63,7 +66,6 @@ public abstract class BlockGrassMixin {
 
         }
     }
-
     @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
     private void clubConvert(ItemStack stack, World world, int x, int y, int z, int iFromSide,
                              CallbackInfoReturnable<Boolean> cir) {
@@ -86,6 +88,7 @@ public abstract class BlockGrassMixin {
         cir.setReturnValue(true);
     }
 
+    // Loosen with pointy stick
     @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
     private void canLoosenWithPointyStick(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
         if (stack == null || !(stack.getItem() instanceof ChiselItemWood)) return;
@@ -105,4 +108,31 @@ public abstract class BlockGrassMixin {
 
         cir.setReturnValue(true);
     }
+
+    // Sparsen with sharp stone
+    @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
+    private void canSparsenWithSharpStone(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+        if (stack == null || !(stack.getItem() instanceof ChiselItemStone)) return;
+
+        cir.setReturnValue(true);
+    }
+    @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
+    private void sparsenWithSharpStone(ItemStack stack, World world, int x, int y, int z, int side, CallbackInfoReturnable<Boolean> cir) {
+        if (stack == null || !(stack.getItem() instanceof ChiselItemStone)) return;
+
+        BlockGrass block = (BlockGrass) (Object) this;
+        int metadata = world.getBlockMetadata(x, y, z);
+
+        if (block.isSparse(metadata)) {
+            world.setBlockAndMetadataWithNotify(x, y, z, Block.dirt.blockID, FIRM_DIRT);
+            world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
+            cir.setReturnValue(true);
+        } else {
+            world.setBlockAndMetadataWithNotify(x, y, z, Block.grass.blockID, SPARSE);
+            world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
+            cir.setReturnValue(true);
+        }
+
+    }
+
 }
