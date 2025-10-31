@@ -16,19 +16,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ChiselItemStoneMixin {
 
     @Inject(method = "getStrVsBlock", at = @At("RETURN"), cancellable = true)
-    private void abbyread$getStrVsBlock(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
+    private void sharpStoneSpeedBoosts(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
         if (block == null) return;
 
         int meta = world.getBlockMetadata(i, j, k);
 
         float mod = 1.5F;
 
-        // *** Specific-to-sharp-stone use boost (cutting grass) ***
-        if (ThisBlock.isAll(block, meta, BlockType.GRASS, BlockType.FIRM)) {
+        // Unnecessary due to isEfficientVsBlock being set to true, boosting it.
+        /*
+        if (ThisBlock.isAll(block, meta, BlockType.GRASS)) {
             float base = cir.getReturnValue();
-            float modifier = Globals.modifier * mod;
+            float modifier = Globals.modifier;
             cir.setReturnValue(base * modifier);
         }
+        */
 
         // ** Boost categories common to chisels stone and above **
 
