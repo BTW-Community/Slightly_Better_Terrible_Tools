@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ShovelItemStoneMixin {
 
     @Inject(method = "applyStandardEfficiencyModifiers", at = @At("RETURN"),remap = false)
-    private void abbyread$modifyEfficiencyOnProperMaterial(CallbackInfo ci) {
+    private void modifyEfficiencyOnProperMaterial(CallbackInfo ci) {
         // Boost speed of use on proper material to offset the nerf a bit
         float normal = ((ToolItemAccessor)this).abbyread$getEfficiencyOnProperMaterial();
         ((ToolItemAccessor)this).abbyread$setEfficiencyOnProperMaterial(normal * Globals.modifier);

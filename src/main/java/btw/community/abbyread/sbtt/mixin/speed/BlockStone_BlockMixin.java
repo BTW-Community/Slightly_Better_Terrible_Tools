@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Block.class)
 public class BlockStone_BlockMixin {
     @Inject(method = "arechiselseffectiveon(Lnet/minecraft/src/World;III)Z", at = @At("RETURN"), cancellable = true)
-    public void abbyread$yasChisels(World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+    public void chiselsAreEffectiveOnStone(World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
         Block self = (Block)(Object)this;
         if (self instanceof BlockStone) cir.setReturnValue(true);
     }
