@@ -125,13 +125,11 @@ public abstract class BlockGrassMixin {
 
         if (block.isSparse(metadata)) {
             world.setBlockAndMetadataWithNotify(x, y, z, Block.dirt.blockID, FIRM_DIRT);
-            world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
-            cir.setReturnValue(true);
         } else {
             world.setBlockAndMetadataWithNotify(x, y, z, Block.grass.blockID, SPARSE);
-            world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
-            cir.setReturnValue(true);
         }
+        world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
+        cir.setReturnValue(true);
 
     }
 
