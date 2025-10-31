@@ -323,7 +323,7 @@ public class ThisBlock {
         return true;
     }
 
-    public static boolean isButNot(Block block, int metadata, BlockType isTag, BlockType... notTags) {
-        return is(isTag, block, metadata) && !isAny(block, metadata, notTags);
+    public static boolean isButNot(BlockType isType, BlockType notType, Block block, int metadata) {
+        return is(isType, block, metadata) && !isAny(block, metadata, notType);
     }
 }

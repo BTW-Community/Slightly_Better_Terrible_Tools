@@ -18,21 +18,51 @@ public class ChiselItemWood_ItemMixin {
             at = @At("RETURN"),
             cancellable = true
     )
-    private void abbyread$pryLooseMasonry(ItemStack stack, World world, Block block, int i, int j, int k, CallbackInfoReturnable<Float> cir) {
+    private void pointyStickEfficiencyBoosts(ItemStack stack, World world, Block block, int x, int y, int z, CallbackInfoReturnable<Float> cir) {
         if (stack == null || block == null) return;
 
         // Return early if not pointy stick
         if (stack.getItem().itemID != BTWItems.pointyStick.itemID) return;
 
-        int meta = world.getBlockMetadata(i, j, k);
+        int metadata = world.getBlockMetadata(x, y, z);
 
         float mod = 6F; // TODO: Mention added boost in release changes
 
         // Loose masonry blocks easier to pry up with Pointy Stick
-        if (ThisBlock.is(BlockType.LOOSE_STONELIKE, block, meta)) {
+        if (ThisBlock.is(BlockType.LOOSE_STONELIKE, block, metadata)) {
             float base = cir.getReturnValue();
             float modifier = Globals.modifier * mod;
             cir.setReturnValue(base * modifier);
+        }
+
+        // Boost clay harvest
+        if (block instanceof BlockClay) {
+            float base = cir.getReturnValue();
+            float modifier = Globals.modifier * 2;
+            cir.setReturnValue(base * modifier);
+        }
+
+        // Boost toward loosening blocks
+        if (ThisBlock.isButNot(BlockType.FIRM_DIRTLIKE, BlockType.FULLY_GROWN, block, metadata)) {
+            float base = cir.getReturnValue();
+            float modifier = Globals.modifier * 2;
+            cir.setReturnValue(base * modifier);
+        }
+
+    }
+
+    @Inject(method = "isEfficientVsBlock", at = @At("HEAD"), cancellable = true)
+    private void addEfficienciesToPointyStick(ItemStack stack, World world, Block block, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+        // Note: Because BTW nerfs the efficiency modifier on pointy sticks, this is mostly
+        //       intended to be used as a flag saying that pointy sticks are useful on these blocks.
+        //       The plan is for Prevent Wasted Uses to pick up on that and handle things appropriately.
+
+        int metadata = world.getBlockMetadata(x, y, z);
+
+        if (block instanceof BlockClay) cir.setReturnValue(true);
+        if (ThisBlock.is(BlockType.LOOSE_STONELIKE, block, metadata)) cir.setReturnValue(true);
+        if (ThisBlock.isButNot(BlockType.FIRM_DIRTLIKE, BlockType.FULLY_GROWN, block, metadata)) {
+            cir.setReturnValue(true);
         }
     }
 
