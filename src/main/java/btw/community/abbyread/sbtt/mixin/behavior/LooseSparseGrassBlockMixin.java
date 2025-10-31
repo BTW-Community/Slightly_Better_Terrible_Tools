@@ -1,9 +1,11 @@
 package btw.community.abbyread.sbtt.mixin.behavior;
 
+import btw.block.BTWBlocks;
 import btw.block.blocks.LooseSparseGrassBlock;
 import btw.community.abbyread.categories.ItemType;
 import btw.community.abbyread.categories.ThisItem;
 import btw.item.BTWItems;
+import btw.item.items.ChiselItemStone;
 import btw.item.util.ItemUtils;
 import net.minecraft.src.Block;
 import net.minecraft.src.ItemStack;
@@ -19,8 +21,9 @@ import static btw.community.abbyread.sbtt.util.Globals.OUT_OF_CHANCE;
 @Mixin(LooseSparseGrassBlock.class)
 public class LooseSparseGrassBlockMixin {
 
-    @Unique
-    private static final int SPARSE = 1;
+    @Unique private static final int DIRT = 0;
+    @Unique private static final int SPARSE = 1;
+
 
     @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
     private void canClubConvert(ItemStack stack, World world, int x, int y, int z,
@@ -49,6 +52,35 @@ public class LooseSparseGrassBlockMixin {
 
     }
 
+    @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
+    private void canSparsenWithSharpStone(ItemStack stack, World world, int x, int y, int z,
+                                CallbackInfoReturnable<Boolean> cir) {
+        // Allow sparsening conversion
+        if (stack != null && stack.getItem() instanceof ChiselItemStone) {
+            cir.setReturnValue(true);
+        }
+    }
+
+    @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
+    private void sparsenWithSharpStone(ItemStack stack, World world, int x, int y, int z, int side,
+                             CallbackInfoReturnable<Boolean> cir) {
+        // Return early if not holding a sharp stone
+        if (stack == null || !(stack.getItem() instanceof ChiselItemStone)) return;
+
+        // Convert loose sparse grass to loose dirt
+        world.setBlockAndMetadataWithNotify(x, y, z, BTWBlocks.looseDirt.blockID, DIRT);
+
+        // Process seed chance once (just on server)
+        if (!world.isRemote) maybeGetSeeds(world, x, y, z, side);
+
+        Block block = (Block) (Object) this;
+        world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
+        cir.setReturnValue(true);
+
+    }
+
+    /*
+     */
     @Unique
     private void maybeGetSeeds(World world, int x, int y, int z, int side) {
         if (world.rand.nextInt(OUT_OF_CHANCE) == 0) {
