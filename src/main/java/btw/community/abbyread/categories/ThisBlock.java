@@ -234,7 +234,7 @@ public class ThisBlock {
         if (isFullyGrown(block, metadata)) tags.add(BlockType.FULLY_GROWN);
         if (isPackedEarth(block, metadata)) {
             tags.add(BlockType.PACKED_EARTH);
-            tags.remove(BlockType.FIRM);
+            tags.remove(BlockType.FIRM_DIRTLIKE);
         }
 
         return tags;
@@ -273,8 +273,9 @@ public class ThisBlock {
         if (block instanceof AestheticOpaqueEarthBlock)
             return metadata == AestheticOpaqueEarthBlock.SUBTYPE_PACKED_EARTH;
         // DirtSlabBlock.SUBTYPE_PACKED_EARTH gives 3, which is actually wrong.
-        if (block instanceof DirtSlabBlock)
-            return metadata == 6;
+        if (block instanceof DirtSlabBlock && metadata == 6) {
+            return true;
+        }
         return false;
     }
 

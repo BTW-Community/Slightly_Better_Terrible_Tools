@@ -54,6 +54,13 @@ public class ChiselItemWood_ItemMixin {
             cir.setReturnValue(base * modifier);
         }
 
+        // Boost toward unpacking blocks
+        if (ThisBlock.is(BlockType.PACKED_EARTH, block, metadata)) {
+            float base = cir.getReturnValue();
+            float modifier = Globals.modifier * 2;
+            cir.setReturnValue(base * modifier);
+        }
+
     }
 
     @Inject(method = "isEfficientVsBlock", at = @At("HEAD"), cancellable = true)
@@ -69,6 +76,7 @@ public class ChiselItemWood_ItemMixin {
         if (ThisBlock.isButNot(BlockType.FIRM_DIRTLIKE, BlockType.FULLY_GROWN, block, metadata)) {
             cir.setReturnValue(true);
         }
+        if (ThisBlock.is(BlockType.PACKED_EARTH, block, metadata)) cir.setReturnValue(true);
     }
 
 }

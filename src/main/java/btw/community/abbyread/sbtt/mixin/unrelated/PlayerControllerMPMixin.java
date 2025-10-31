@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerControllerMP.class)
 public class PlayerControllerMPMixin {
 
-    @Unique private final boolean DEBUG = false;
+    @Unique private final boolean DEBUG = true;
 
     @Inject(method = "onPlayerRightClick",
             at = @At("RETURN"))

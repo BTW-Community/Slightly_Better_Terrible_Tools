@@ -23,15 +23,6 @@ public class ChiselItemStoneMixin {
 
         float mod = 1.5F;
 
-        // Unnecessary due to isEfficientVsBlock being set to true, boosting it.
-        /*
-        if (ThisBlock.isAll(block, meta, BlockType.GRASS)) {
-            float base = cir.getReturnValue();
-            float modifier = Globals.modifier;
-            cir.setReturnValue(base * modifier);
-        }
-        */
-
         // ** Boost categories common to chisels stone and above **
 
         // Web harvesting is already doubled in the source code.
