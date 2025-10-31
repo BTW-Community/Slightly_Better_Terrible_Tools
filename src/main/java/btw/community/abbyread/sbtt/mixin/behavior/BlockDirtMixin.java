@@ -36,17 +36,17 @@ public class BlockDirtMixin {
         }
     }
 
-    // Pack dirt using bone club
+    // Pack using bone club
     @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
     private void canClubConvert(ItemStack stack, World world, int x, int y, int z,
                                 CallbackInfoReturnable<Boolean> cir) {
-        // Bone clubs can convert dirt to packed earth slab
+        // Bone clubs can convert to packed earth slab
         if (stack != null && ThisItem.isAnd(ItemType.CLUB, ItemType.BONE, stack)) {
-            // Can only pack if there isn't a solid block above
-            if (!WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y + 1, z, 0)) {
+            // Can only pack if there is a solid block below and not above
+            if (!WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y + 1, z, 0) &&
+                WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y - 1, z, 0)) {
                 cir.setReturnValue(true);
             }
-
         }
     }
 
@@ -58,10 +58,10 @@ public class BlockDirtMixin {
             return;
         }
 
-        // Convert loose dirt to firm dirt if there isn't a solid block above
+        // Convert assuming canConvert already came back true
         world.setBlockAndMetadataWithNotify(x, y, z, BTWBlocks.dirtSlab.blockID, PACKED_EARTH);
 
-        // Play the tilling effect
+        // Play sound effect
         if (!world.isRemote) {
             world.playAuxSFX(BTWEffectManager.BLOCK_DESTROYED_WITH_IMPROPER_TOOL_EFFECT_ID, x, y, z, 0);
             Block block = Block.dirt;

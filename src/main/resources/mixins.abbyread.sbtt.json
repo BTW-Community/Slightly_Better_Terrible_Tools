@@ -11,6 +11,7 @@
     "behavior.BlockMyceliumMixin",
     "behavior.ChiselItemWood_ItemMixin",
     "behavior.LooseDirtBlockMixin",
+    "behavior.LooseSparseGrassBlockMixin",
     "behavior.MyceliumBlockMixin",
     "behavior.OreBlockStagedMixin",
     "behavior.ShovelItem_ToolItemMixin",
