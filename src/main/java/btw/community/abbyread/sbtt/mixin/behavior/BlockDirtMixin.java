@@ -4,6 +4,7 @@ import btw.block.BTWBlocks;
 import btw.client.fx.BTWEffectManager;
 import btw.community.abbyread.categories.ThisItem;
 import btw.community.abbyread.categories.ItemType;
+import btw.item.items.ChiselItemWood;
 import btw.world.util.WorldUtils;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -49,7 +50,6 @@ public class BlockDirtMixin {
             }
         }
     }
-
     @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
     private void clubConvert(ItemStack stack, World world, int x, int y, int z, int iFromSide,
                              CallbackInfoReturnable<Boolean> cir) {
@@ -72,4 +72,20 @@ public class BlockDirtMixin {
         cir.setReturnValue(true);
     }
 
+    @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
+    private void canLoosenWithPointyStick(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+        if (stack == null || !(stack.getItem() instanceof ChiselItemWood)) return;
+
+        // In order to loosen with pointy stick
+        cir.setReturnValue(true);
+    }
+    @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
+    private void loosenWithPointyStick(ItemStack stack, World world, int x, int y, int z, int side, CallbackInfoReturnable<Boolean> cir) {
+        if (stack == null || !(stack.getItem() instanceof ChiselItemWood)) return;
+
+        world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
+        if (!world.isRemote) world.playSoundEffect(x + 0.5f, y + 0.5f, z + 0.5f, Block.dirt.stepSound.getBreakSound(), Block.dirt.stepSound.getBreakVolume(), Block.dirt.stepSound.getBreakPitch());
+
+        cir.setReturnValue(true);
+    }
 }

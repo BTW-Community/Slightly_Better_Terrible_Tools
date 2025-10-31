@@ -4,6 +4,7 @@ import btw.block.BTWBlocks;
 import btw.client.fx.BTWEffectManager;
 import btw.community.abbyread.categories.ItemType;
 import btw.community.abbyread.categories.ThisItem;
+import btw.item.items.ChiselItemWood;
 import btw.item.items.ShovelItemStone;
 import btw.world.util.WorldUtils;
 import net.minecraft.src.*;
@@ -85,4 +86,23 @@ public abstract class BlockGrassMixin {
         cir.setReturnValue(true);
     }
 
+    @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
+    private void canLoosenWithPointyStick(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
+        if (stack == null || !(stack.getItem() instanceof ChiselItemWood)) return;
+
+        BlockGrass block = (BlockGrass) (Object) this;
+        int metadata = world.getBlockMetadata(x, y, z);
+
+        // Only allow loosening on sparse grass
+        if (block.isSparse(metadata)) cir.setReturnValue(true);
+    }
+    @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
+    private void loosenWithPointyStick(ItemStack stack, World world, int x, int y, int z, int side, CallbackInfoReturnable<Boolean> cir) {
+        if (stack == null || !(stack.getItem() instanceof ChiselItemWood)) return;
+
+        // Assuming canConvert returned true after verifying the grass is sparse
+        world.setBlockWithNotify(x, y, z, BTWBlocks.looseSparseGrass.blockID);
+
+        cir.setReturnValue(true);
+    }
 }
