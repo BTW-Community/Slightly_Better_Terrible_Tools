@@ -26,6 +26,11 @@ public class ChiselItemWood_ItemMixin {
 
         int metadata = world.getBlockMetadata(x, y, z);
 
+        if (block instanceof BlockStone) {
+            float base = cir.getReturnValue();
+            cir.setReturnValue(base * Globals.modifier);
+        }
+
         float mod = 6F; // TODO: Mention added boost in release changes
 
         // Loose masonry blocks easier to pry up with Pointy Stick

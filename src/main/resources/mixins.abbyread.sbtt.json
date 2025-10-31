@@ -29,7 +29,6 @@
     "speed.ChiselIronAndDiamond_ToolItemMixin",
     "speed.ChiselItemStoneMixin",
     "speed.ChiselItemWood_ItemMixin",
-    "speed.ChiselItemWood_ToolItemMixin",
     "speed.ClubItem_ItemMixin",
     "speed.RoughStoneBlock_BlockMixin",
     "speed.RoughStoneBlockMixin",
