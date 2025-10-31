@@ -107,9 +107,12 @@ public abstract class BlockGrassMixin {
     private void loosenWithPointyStick(ItemStack stack, World world, int x, int y, int z, int side, CallbackInfoReturnable<Boolean> cir) {
         if (stack == null || !(stack.getItem() instanceof ChiselItemWood)) return;
 
+        Block block = (Block) (Object) this;
+
         // Assuming canConvert returned true after verifying the grass is sparse
         world.setBlockWithNotify(x, y, z, BTWBlocks.looseSparseGrass.blockID);
 
+        world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
         cir.setReturnValue(true);
     }
 
