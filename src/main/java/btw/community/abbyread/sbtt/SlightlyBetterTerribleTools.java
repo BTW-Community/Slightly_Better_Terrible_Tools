@@ -20,34 +20,43 @@ public class SlightlyBetterTerribleTools extends BTWAddon {
     @Override
     public void initialize() {
         AddonHandler.logMessage(this.getName() + " Version " + this.getVersionString() + " with " + percentage + " Boost Initializing...");
+
+        // Loose Dirt + 2 slime balls -> 1 Dirt
         RecipeManager.addShapelessRecipe(
                 new ItemStack(Block.dirt, 1),
                 new Object[]{
                         new ItemStack(BTWBlocks.looseDirt),
+                        new ItemStack(Item.slimeBall),
                         new ItemStack(Item.slimeBall)
                 }
         );
+
+        // Loose Dirt Slabs x2 + 2 slime balls -> 1 Dirt
         RecipeManager.addShapelessRecipe(
                 new ItemStack(Block.dirt, 1),
                 new Object[]{
                         new ItemStack(BTWBlocks.looseDirtSlab),
                         new ItemStack(BTWBlocks.looseDirtSlab),
+                        new ItemStack(Item.slimeBall),
                         new ItemStack(Item.slimeBall)
                 }
         );
+
+        // Dirt Piles x8 + 1 slime ball -> 1 Dirt (high efficiency recipe)
         RecipeManager.addShapelessRecipe(
-                new ItemStack(Block.dirt),
-                new Object[] {
-                new ItemStack( BTWItems.dirtPile),
-                new ItemStack( BTWItems.dirtPile),
-                new ItemStack( BTWItems.dirtPile),
-                new ItemStack( BTWItems.dirtPile),
-                new ItemStack( BTWItems.dirtPile),
-                new ItemStack( BTWItems.dirtPile),
-                new ItemStack( BTWItems.dirtPile),
-                new ItemStack( BTWItems.dirtPile),
-                new ItemStack( Item.slimeBall)
-        });
+                new ItemStack(Block.dirt, 1),
+                new Object[]{
+                        new ItemStack(BTWItems.dirtPile),
+                        new ItemStack(BTWItems.dirtPile),
+                        new ItemStack(BTWItems.dirtPile),
+                        new ItemStack(BTWItems.dirtPile),
+                        new ItemStack(BTWItems.dirtPile),
+                        new ItemStack(BTWItems.dirtPile),
+                        new ItemStack(BTWItems.dirtPile),
+                        new ItemStack(BTWItems.dirtPile),
+                        new ItemStack(Item.slimeBall)
+                }
+        );
     }
 
     @Override
