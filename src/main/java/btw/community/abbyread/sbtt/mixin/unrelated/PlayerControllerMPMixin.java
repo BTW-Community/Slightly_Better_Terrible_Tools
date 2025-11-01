@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerControllerMP.class)
 public class PlayerControllerMPMixin {
 
-    @Unique private final boolean DEBUG = true;
+    @Unique private final boolean DEBUG = false;
 
     @Inject(method = "onPlayerRightClick",
             at = @At("RETURN"))
@@ -22,12 +22,13 @@ public class PlayerControllerMPMixin {
         if (DEBUG) {
             Block block = Block.blocksList[world.getBlockId(x, y, z)];
             if (block == null) return;
+            //noinspection unused
             int meta = world.getBlockMetadata(x, y, z);
-            System.out.println(block.getUnlocalizedName() + " with meta: " + meta);
-            System.out.println(block.getClass());
+//            System.out.println(block.getUnlocalizedName() + " with meta: " + meta);
+//            System.out.println(block.getClass());
 //            System.out.println(ThisItem.getTags(stack));
 //            System.out.println(ThisBlock.getTags(block, meta));
-//            System.out.println(stack.getDisplayName() + " durability " + (stack.getMaxDamage() - stack.getItemDamage()));
+            System.out.println(stack.getDisplayName() + " durability " + (stack.getMaxDamage() - stack.getItemDamage()));
         }
     }
 }
