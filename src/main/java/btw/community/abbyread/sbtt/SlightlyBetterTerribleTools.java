@@ -42,6 +42,15 @@ public class SlightlyBetterTerribleTools extends BTWAddon {
                 }
         );
 
+        // Loose Dirt Slabs x1 + 1 slime balls -> 1 Dirt slab
+        RecipeManager.addShapelessRecipe(
+                new ItemStack(BTWBlocks.dirtSlab, 1),
+                new Object[]{
+                        new ItemStack(BTWBlocks.looseDirtSlab),
+                        new ItemStack(Item.slimeBall)
+                }
+        );
+
         // Dirt Piles x8 + 1 slime ball -> 1 Dirt (high efficiency recipe)
         RecipeManager.addShapelessRecipe(
                 new ItemStack(Block.dirt, 1),
