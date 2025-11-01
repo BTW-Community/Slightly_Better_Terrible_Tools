@@ -20,8 +20,16 @@ public class ChiselItemStoneMixin {
         if (block == null) return;
 
         int meta = world.getBlockMetadata(i, j, k);
-
         float mod = 1.5F;
+
+        // Nerf loose sparse grass sparsening speed, as the speed-up from loose dirtlike
+        //   is only supposed to be for breaking the block.
+        if (ThisBlock.isAll(block, meta, BlockType.LOOSE_DIRTLIKE, BlockType.SPARSE, BlockType.GRASS)) {
+            float base = cir.getReturnValue();
+            // Since universal speed-up on loose dirtlike is base * (Globals.modifier * 1.5F),
+            //   undo that by dividing by it.
+            cir.setReturnValue(base / (Globals.modifier * 1.5F));
+        }
 
         // ** Boost categories common to chisels stone and above **
 
