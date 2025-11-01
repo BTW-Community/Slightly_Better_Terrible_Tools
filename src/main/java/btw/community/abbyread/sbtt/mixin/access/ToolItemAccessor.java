@@ -8,8 +8,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ToolItemAccessor {
 
     @Accessor(value = "efficiencyOnProperMaterial", remap = false)
-    float abbyread$getEfficiencyOnProperMaterial();
+    float getEfficiencyOnProperMaterial();
 
     @Accessor(value = "efficiencyOnProperMaterial", remap = false)
-    void abbyread$setEfficiencyOnProperMaterial(float value);
+    void setEfficiencyOnProperMaterial(float value);
+
 }
