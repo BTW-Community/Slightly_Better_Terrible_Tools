@@ -20,6 +20,7 @@
     "behavior.MyceliumBlockMixin",
     "behavior.OreBlockStagedMixin",
     "behavior.ShovelItem_ToolItemMixin",
+    "crafting.SlotCraftingMixin",
     "damage.ClubItemMixin",
     "durability.ChiselItemWoodMixin",
     "durability.ShovelItemStoneMixin",
