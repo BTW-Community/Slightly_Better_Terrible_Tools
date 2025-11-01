@@ -12,7 +12,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class BlockStone_BlockMixin {
     @Inject(method = "arechiselseffectiveon(Lnet/minecraft/src/World;III)Z", at = @At("RETURN"), cancellable = true)
     public void chiselsAreEffectiveOnStone(World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
-        Block self = (Block)(Object)this;
-        if (self instanceof BlockStone) cir.setReturnValue(true);
+        Block self = (Block) (Object) this;
+        if (!(self instanceof BlockStone block)) return;
+        int strataLevel = block.getStrata(world, x, y, z);
+
+        // All chisels effective on strata 0 stone
+        if (strataLevel == 0) {
+            cir.setReturnValue(true);
+            cir.cancel();
+            return;
+        }
     }
 }
