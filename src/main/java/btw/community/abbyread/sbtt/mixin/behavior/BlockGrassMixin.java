@@ -33,7 +33,7 @@ public abstract class BlockGrassMixin {
         at = @At("HEAD"),
         cancellable = true
     )
-    private void abby$reimplementHardcoreGrassDrop(World world, int x, int y, int z, int toFacing, CallbackInfo ci) {
+    private void reimplementHardcoreGrassDrop(World world, int x, int y, int z, int toFacing, CallbackInfo ci) {
         if (toFacing == 0) {
             world.setBlockWithNotify(x, y, z, BTWBlocks.looseDirt.blockID);
         }
@@ -41,7 +41,7 @@ public abstract class BlockGrassMixin {
     }
 
     @Inject(method = "onBlockDestroyedWithImproperTool", at = @At("HEAD"), cancellable = true)
-    private void abby$overrideDisturbanceFromStoneShovel(World world, EntityPlayer player, int x, int y, int z, int metadata, CallbackInfo ci) {
+    private void overrideDisturbanceFromStoneShovel(World world, EntityPlayer player, int x, int y, int z, int metadata, CallbackInfo ci) {
         ItemStack stack = player.inventory.getCurrentItem();
         if (stack == null) return;
 
@@ -97,11 +97,12 @@ public abstract class BlockGrassMixin {
     private void canLoosenWithPointyStick(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
         if (stack == null || !(stack.getItem() instanceof ChiselItemWood)) return;
 
-        BlockGrass block = (BlockGrass) (Object) this;
         int metadata = world.getBlockMetadata(x, y, z);
 
         // Only allow loosening on sparse grass
-        if (block.isSparse(metadata)) cir.setReturnValue(true);
+
+        if (!world.isRemote) System.out.println("metadata: " + metadata);
+        if (metadata == SPARSE) cir.setReturnValue(true);
     }
     @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
     private void loosenWithPointyStick(ItemStack stack, World world, int x, int y, int z, int side, CallbackInfoReturnable<Boolean> cir) {
@@ -113,6 +114,7 @@ public abstract class BlockGrassMixin {
         world.setBlockWithNotify(x, y, z, BTWBlocks.looseSparseGrass.blockID);
 
         world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
+        if (!world.isRemote) System.out.println("isEfficientVsBlock: " + stack.getItem().isEfficientVsBlock(stack, world, block, x, y, z));
         cir.setReturnValue(true);
     }
 

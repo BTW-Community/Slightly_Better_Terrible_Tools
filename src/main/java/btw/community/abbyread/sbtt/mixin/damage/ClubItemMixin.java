@@ -16,12 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ClubItem.class)
 public abstract class ClubItemMixin {
 
-    @Unique
-    private static final int FIRMING_COST = 2;
-    @Unique
-    private static final int PACKING_COST = 4;
-    @Unique
-    private static final int PACKED_EARTH = 6; // a metadata value
+    @Unique private static final int FIRMING_COST = 2;
+    @Unique private static final int PACKING_COST = 4;
+    @Unique private static final int PACKED_EARTH = 6; // a metadata value
 
     @Inject(
             method = "onBlockDestroyed",

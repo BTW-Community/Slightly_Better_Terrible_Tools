@@ -31,7 +31,7 @@ public class ChiselItemWood_ItemMixin {
             cir.setReturnValue(base * Globals.modifier);
         }
 
-        float mod = 6F; // TODO: Mention added boost in release changes
+        float mod = 6F;
 
         // Loose masonry blocks easier to pry up with Pointy Stick
         if (ThisBlock.is(BlockType.LOOSE_STONELIKE, block, metadata)) {
@@ -61,22 +61,6 @@ public class ChiselItemWood_ItemMixin {
             cir.setReturnValue(base * modifier);
         }
 
-    }
-
-    @Inject(method = "isEfficientVsBlock", at = @At("HEAD"), cancellable = true)
-    private void addEfficienciesToPointyStick(ItemStack stack, World world, Block block, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
-        // Note: Because BTW nerfs the efficiency modifier on pointy sticks, this is mostly
-        //       intended to be used as a flag saying that pointy sticks are useful on these blocks.
-        //       The plan is for Prevent Wasted Uses to pick up on that and handle things appropriately.
-
-        int metadata = world.getBlockMetadata(x, y, z);
-
-        if (block instanceof BlockClay) cir.setReturnValue(true);
-        if (ThisBlock.is(BlockType.LOOSE_STONELIKE, block, metadata)) cir.setReturnValue(true);
-        if (ThisBlock.isButNot(BlockType.FIRM_DIRTLIKE, BlockType.FULLY_GROWN, block, metadata)) {
-            cir.setReturnValue(true);
-        }
-        if (ThisBlock.is(BlockType.PACKED_EARTH, block, metadata)) cir.setReturnValue(true);
     }
 
 }

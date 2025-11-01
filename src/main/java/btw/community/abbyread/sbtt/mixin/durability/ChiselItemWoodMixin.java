@@ -16,7 +16,7 @@ public abstract class ChiselItemWoodMixin {
             ),
             index = 2
     )
-    private static int abbyread$increaseUses(int original) {
+    private static int doubleTheUses(int original) {
         return 4;
     }
 }
