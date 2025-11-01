@@ -27,14 +27,12 @@ public class ChiselItemStoneMixin {
         if (ThisBlock.is(BlockType.GRASS, block, meta)) {
             float base = cir.getReturnValue();
             cir.setReturnValue(base * 0.75F);
-            System.out.println("cir.getReturnValue()" + cir.getReturnValue());
             // Fall-through to also nerf loose sparse grass if it is that
         }
         // Nerf loose sparse grass sparsening speed, as the speed-up from loose dirtlike
         //   is only supposed to be for breaking the block.
         if (ThisBlock.isAll(block, meta, BlockType.LOOSE_DIRTLIKE, BlockType.SPARSE, BlockType.GRASS)) {
             float base = cir.getReturnValue();
-            System.out.println("cir.getReturnValue()" + cir.getReturnValue());
             // Since universal speed-up on loose dirtlike is base * (Globals.modifier * 1.5F),
             //   undo that by dividing by it.
             cir.setReturnValue(base / (Globals.modifier * 1.5F));
