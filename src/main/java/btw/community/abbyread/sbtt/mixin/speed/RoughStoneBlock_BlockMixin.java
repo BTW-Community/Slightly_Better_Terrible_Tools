@@ -15,12 +15,16 @@ public class RoughStoneBlock_BlockMixin {
     //  were made effective on that part too.  Still gotta be slower to disincentivize mining mostly.
     @Inject(method = "getBlockHardness", at = @At("RETURN"), cancellable = true)
     public void roughStoneIsNotAsSlowToDestroy(World world, int x, int y, int z, CallbackInfoReturnable<Float> cir) {
-        Block block = (Block)(Object)this;
-        if (!(block instanceof RoughStoneBlock)) return;
+        Block self = (Block)(Object)this;
+        if (!(self instanceof RoughStoneBlock block)) return;
+        if (block.strataLevel != 0) return;
 
         float hardness = cir.getReturnValue();
 
-        // Working from the assumption that there's a boost already from chisels being effective-on
-        if (world.getBlockMetadata(x, y, z) >= 8) cir.setReturnValue(hardness * 2);
+        // Increase block hardness to counteract the boost from chisels being effective-on,
+        //   just for the last 8 stages of rough stone before breaking completely
+        if (world.getBlockMetadata(x, y, z) >= 8) {
+            cir.setReturnValue(hardness * 2);
+        }
     }
 }

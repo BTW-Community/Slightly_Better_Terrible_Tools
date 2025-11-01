@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class RoughStoneBlockMixin {
     @Inject(method = "arechiselseffectiveon", at = @At("RETURN"), cancellable = true)
     public void chiselsAreEffectiveOnRoughStone(World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
-        cir.setReturnValue(true);
+        RoughStoneBlock self = (RoughStoneBlock)(Object)this;
+        if (self.strataLevel == 0) cir.setReturnValue(true);
     }
 }
