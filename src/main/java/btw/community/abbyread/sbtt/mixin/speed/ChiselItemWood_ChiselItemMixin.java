@@ -26,9 +26,6 @@ public class ChiselItemWood_ChiselItemMixin {
 
         int metadata = world.getBlockMetadata(x, y, z);
 
-        System.out.println("Checkpoint 1");
-        System.out.println(ThisBlock.getTags(block, metadata));
-
         if (block instanceof BlockClay) {
             cir.setReturnValue(true);
             return;
@@ -38,18 +35,15 @@ public class ChiselItemWood_ChiselItemMixin {
             return;
         }
         if (ThisBlock.isAnd(BlockType.FIRM_DIRTLIKE, BlockType.SPARSE, block, metadata)) {
-            System.out.println("Checkpoint 2");
-            System.out.println(ThisBlock.getTags(block, metadata));
             cir.setReturnValue(true);
             return;
         }
         if (ThisBlock.is(BlockType.PACKED_EARTH, block, metadata)) {
             cir.setReturnValue(true);
+            //noinspection UnnecessaryReturnStatement
             return;
         }
 
-        System.out.println("Checkpoint 3");
-        System.out.println(ThisBlock.getTags(block, metadata));
     }
 
 }
