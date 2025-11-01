@@ -1,0 +1,19 @@
+package btw.community.abbyread.sbtt.mixin.speed;
+
+import btw.community.abbyread.sbtt.mixin.access.ToolItemAccessor;
+import btw.community.abbyread.sbtt.util.Globals;
+import btw.item.items.ChiselItemWood;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(ChiselItemWood.class)
+public class ChiselItemWoodMixin {
+    @Inject(method = "applyStandardEfficiencyModifiers", at = @At("RETURN"),remap = false)
+    private void modifyEfficiencyOnProperMaterial(CallbackInfo ci) {
+        // Boost speed of use on proper material by a globally modifiable constant
+        float normal = ((ToolItemAccessor)this).getEfficiencyOnProperMaterial();
+        ((ToolItemAccessor)this).setEfficiencyOnProperMaterial(normal * Globals.modifier);
+    }
+}
