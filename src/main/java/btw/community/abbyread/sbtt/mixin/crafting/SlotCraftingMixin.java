@@ -19,7 +19,6 @@ public class SlotCraftingMixin {
     @Final
     @Shadow private IInventory craftMatrix;
     @Shadow private EntityPlayer thePlayer;
-    @Shadow private int amountCrafted;
 
     // Track whether we already played sound for this craft action
     @Unique
