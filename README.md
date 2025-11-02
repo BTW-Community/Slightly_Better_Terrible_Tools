@@ -21,7 +21,7 @@ Slightly Better Terrible Tools (SBTT) enhances the usability of BTW's early-game
 - Slight speed boost on log and stone harvesting
 - Speed boost on prying up loose cobblestone/brick blocks
 - Able to loosen a single block of dirt or sparse grass
-- Can harvest clay blocks
+- Can harvest clay piles from clay ore blocks, converting the block to loose dirt
 - Durability increased from 2 to 4 uses to add value and incentivize experimentation
 
 **Sharp Stone**
