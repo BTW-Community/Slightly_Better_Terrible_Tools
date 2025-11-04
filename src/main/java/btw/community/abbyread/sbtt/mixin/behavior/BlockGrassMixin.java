@@ -20,17 +20,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import btw.community.abbyread.sbtt.util.PlayerSeedStats;
 
+/**
+ * Custom behavior mixin for BlockGrass, adding new conversion mechanics
+ * (bone club packing, chisel loosening/sparsening) and probability-based seed drops
+ * that persist per-player across sessions.
+ */
 @Mixin(BlockGrass.class)
 public abstract class BlockGrassMixin {
 
-    // Metadata values
+    // Metadata constants
     @Unique private static final int PACKED_EARTH = 6;
     @Unique private static final int FIRM_DIRT = 0;
     @Unique private static final int SPARSE = 1;
 
-    // Cumulative probability constants
-    @Unique private static final int START_CHANCE = 5;
-    @Unique private static final int MIN_CHANCE = 0;
+    // Probability constants
+    @Unique private static final int START_CHANCE = 600;
+    @Unique private static final int MIN_CHANCE = 2;
+
+    /* ------------------------------------------------------------ */
+    /*  Override improper tool behavior                             */
+    /* ------------------------------------------------------------ */
 
     @Inject(
             method = "onNeighborDirtDugWithImproperTool",
@@ -50,49 +59,46 @@ public abstract class BlockGrassMixin {
         if (stack == null) return;
 
         if (stack.getItem() instanceof ShovelItemStone) {
-
-            // Unrolled: super.onBlockDestroyedWithImproperTool(world, player, x, y, z, metadata);
-            world.playAuxSFX( BTWEffectManager.BLOCK_DESTROYED_WITH_IMPROPER_TOOL_EFFECT_ID, x, y, z, world.getBlockId(x, y, z) + ( metadata << 12 ) );
+            // Play improper tool FX, drop components manually
+            world.playAuxSFX(BTWEffectManager.BLOCK_DESTROYED_WITH_IMPROPER_TOOL_EFFECT_ID, x, y, z,
+                    world.getBlockId(x, y, z) + (metadata << 12));
             ((Block)(Object)this).dropComponentItemsOnBadBreak(world, x, y, z, metadata, 1F);
-
             ci.cancel();
-            // Skips the call to onDirtDugWithImproperTool, which would loosen neighboring blocks.
         }
     }
 
-    // Pack dirt using bone club
+    /* ------------------------------------------------------------ */
+    /*  Block conversions                                           */
+    /* ------------------------------------------------------------ */
+
+    // Bone club -> packed earth
     @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
     private void canClubConvert(ItemStack stack, World world, int x, int y, int z,
                                 CallbackInfoReturnable<Boolean> cir) {
-        // Bone clubs can convert grass to packed earth slab
         if (stack != null && ThisItem.isAnd(ItemType.CLUB, ItemType.BONE, stack)) {
-            // Can only pack if there is a solid block below and not above
             if (!WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y + 1, z, 0) &&
                     WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y - 1, z, 0)) {
                 cir.setReturnValue(true);
             }
-
         }
     }
+
     @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
     private void clubConvert(ItemStack stack, World world, int x, int y, int z, int iFromSide,
                              CallbackInfoReturnable<Boolean> cir) {
-        // Only handle bone club conversion to packed earth slab
-        if (stack == null || !ThisItem.isAnd(ItemType.CLUB, ItemType.BONE, stack)) {
-            return;
-        }
+        if (stack == null || !ThisItem.isAnd(ItemType.CLUB, ItemType.BONE, stack)) return;
 
         // Convert loose dirt to firm dirt if there isn't a solid block above
         world.setBlockAndMetadataWithNotify(x, y, z, BTWBlocks.dirtSlab.blockID, PACKED_EARTH);
 
-        // Play the tilling effect
         if (!world.isRemote) {
             world.playAuxSFX(BTWEffectManager.BLOCK_DESTROYED_WITH_IMPROPER_TOOL_EFFECT_ID, x, y, z, 0);
             Block block = Block.dirt;
-
-            world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
+            world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f,
+                    block.getStepSound(world, x, y, z).getBreakSound(),
+                    block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f,
+                    block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
         }
-
         cir.setReturnValue(true);
     }
 
@@ -100,14 +106,12 @@ public abstract class BlockGrassMixin {
     @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
     private void canLoosenWithPointyStick(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
         if (stack == null || !(stack.getItem() instanceof ChiselItemWood)) return;
-
-        int metadata = world.getBlockMetadata(x, y, z);
-
         // Only allow loosening on sparse grass
-
-        if (!world.isRemote) System.out.println("metadata: " + metadata);
-        if (metadata == SPARSE) cir.setReturnValue(true);
+        if (world.getBlockMetadata(x, y, z) == SPARSE) {
+            cir.setReturnValue(true);
+        }
     }
+
     @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
     private void loosenWithPointyStick(ItemStack stack, World world, int x, int y, int z, int side, CallbackInfoReturnable<Boolean> cir) {
         if (stack == null || !(stack.getItem() instanceof ChiselItemWood)) return;
@@ -116,24 +120,26 @@ public abstract class BlockGrassMixin {
 
         // Assuming canConvert returned true after verifying the grass is sparse
         world.setBlockWithNotify(x, y, z, BTWBlocks.looseSparseGrass.blockID);
-
-        world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
-        if (!world.isRemote) System.out.println("isEfficientVsBlock: " + stack.getItem().isEfficientVsBlock(stack, world, block, x, y, z));
+        world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f,
+                block.getStepSound(world, x, y, z).getBreakSound(),
+                block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f,
+                block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
         cir.setReturnValue(true);
     }
 
     // Sparsen with sharp stone
     @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
     private void canSparsenWithSharpStone(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
-        if (stack == null || !(stack.getItem() instanceof ChiselItemStone)) return;
-
-        cir.setReturnValue(true);
+        if (stack != null && stack.getItem() instanceof ChiselItemStone) {
+            cir.setReturnValue(true);
+        }
     }
+
     @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
     private void sparsenWithSharpStone(ItemStack stack, World world, int x, int y, int z, int side, CallbackInfoReturnable<Boolean> cir) {
         if (stack == null || !(stack.getItem() instanceof ChiselItemStone)) return;
 
-        BlockGrass block = (BlockGrass) (Object) this;
+        BlockGrass block = (BlockGrass)(Object)this;
         int metadata = world.getBlockMetadata(x, y, z);
 
         if (block.isSparse(metadata)) {
@@ -150,9 +156,16 @@ public abstract class BlockGrassMixin {
             }
         }
 
-        world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
+        world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f,
+                block.getStepSound(world, x, y, z).getBreakSound(),
+                block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f,
+                block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
         cir.setReturnValue(true);
     }
+
+    /* ------------------------------------------------------------ */
+    /*  Seed probability mechanic                                   */
+    /* ------------------------------------------------------------ */
 
     @Unique
     private void maybeGetSeeds(EntityPlayer player, World world, int x, int y, int z, int side) {
@@ -161,13 +174,22 @@ public abstract class BlockGrassMixin {
 
         // Calculate current chance, decreasing denominator
         int chance = Math.max(START_CHANCE - attempts, MIN_CHANCE);
+        int roll = world.rand.nextInt(chance);
+        boolean success = (roll == 0);
 
-        // Roll for seed drop
-        if (world.rand.nextInt(chance) == 0) {
+        System.out.println("[SEED DROP DEBUG] Player: " + player.username +
+                " | Attempts: " + attempts +
+                " | Chance: 1/" + chance +
+                " | Roll: " + roll +
+                " | Success: " + success);
+
+        if (success) {
             ItemUtils.ejectStackFromBlockTowardsFacing(world, x, y, z, new ItemStack(BTWItems.hempSeeds), side);
-            PlayerSeedStats.set(player, 0); // reset attempts on success
+            PlayerSeedStats.reset(player);
+            System.out.println("[SEED DROP DEBUG] SEED DROPPED! Resetting attempts to 0");
         } else {
-            PlayerSeedStats.set(player, attempts + 1); // increment on failure
+            PlayerSeedStats.increment(player);
+            System.out.println("[SEED DROP DEBUG] No seed. New attempt count: " + (attempts + 1));
         }
     }
 }
