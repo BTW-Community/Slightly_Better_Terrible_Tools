@@ -12,6 +12,8 @@ import net.minecraft.src.ItemStack;
  */
 public class SeedDropChance {
 
+    private static final boolean DEBUG = true;
+
     // Chance parameters
     private static final int START_CHANCE = 600;
     private static final int MIN_CHANCE = 2;
@@ -53,11 +55,13 @@ public class SeedDropChance {
         else increment(player);
 
         // Optional debug output
-        System.out.println("[SEED DROP DEBUG] Player: " + player.username +
-                " | Attempts: " + attempts +
-                " | Chance: 1/" + chance +
-                " | Roll: " + roll +
-                " | Success: " + success);
+        if (DEBUG) {
+            System.out.println("[SEED DROP DEBUG] Player: " + player.username +
+                    " | Attempts: " + attempts +
+                    " | Chance: 1/" + chance +
+                    " | Roll: " + roll +
+                    " | Success: " + success);
+        }
 
         return success;
     }
@@ -74,7 +78,9 @@ public class SeedDropChance {
     public static void maybeDropSeed(EntityPlayer player, World world, int x, int y, int z, int side) {
         if (rollSeed(player, world)) {
             ItemUtils.ejectStackFromBlockTowardsFacing(world, x, y, z, new ItemStack(BTWItems.hempSeeds), side);
-            System.out.println("[SEED DROP DEBUG] SEED DROPPED!");
+            if (DEBUG) {
+                System.out.println("[SEED DROP DEBUG] SEED DROPPED!");
+            }
         }
     }
 }
