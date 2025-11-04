@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static btw.community.abbyread.sbtt.util.Globals.OUT_OF_CHANCE;
+import btw.community.abbyread.sbtt.util.PlayerSeedStats;
 
 @Mixin(BlockGrass.class)
 public abstract class BlockGrassMixin {
@@ -28,10 +28,14 @@ public abstract class BlockGrassMixin {
     @Unique private static final int FIRM_DIRT = 0;
     @Unique private static final int SPARSE = 1;
 
+    // Cumulative probability constants
+    @Unique private static final int START_CHANCE = 5;
+    @Unique private static final int MIN_CHANCE = 0;
+
     @Inject(
-        method = "onNeighborDirtDugWithImproperTool",
-        at = @At("HEAD"),
-        cancellable = true
+            method = "onNeighborDirtDugWithImproperTool",
+            at = @At("HEAD"),
+            cancellable = true
     )
     private void reimplementHardcoreGrassDrop(World world, int x, int y, int z, int toFacing, CallbackInfo ci) {
         if (toFacing == 0) {
@@ -64,7 +68,7 @@ public abstract class BlockGrassMixin {
         if (stack != null && ThisItem.isAnd(ItemType.CLUB, ItemType.BONE, stack)) {
             // Can only pack if there is a solid block below and not above
             if (!WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y + 1, z, 0) &&
-                WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y - 1, z, 0)) {
+                    WorldUtils.doesBlockHaveLargeCenterHardpointToFacing(world, x, y - 1, z, 0)) {
                 cir.setReturnValue(true);
             }
 
@@ -138,19 +142,32 @@ public abstract class BlockGrassMixin {
             world.setBlockAndMetadataWithNotify(x, y, z, Block.grass.blockID, SPARSE);
         }
 
-        // Process seed chance once (just on server)
-        if (!world.isRemote) maybeGetSeeds(world, x, y, z, side);
+        // Only process seed chance if on server
+        if (!world.isRemote) {
+            EntityPlayer player = world.getClosestPlayer(x + 0.5, y + 0.5, z + 0.5, 5.0);
+            if (player != null) {
+                maybeGetSeeds(player, world, x, y, z, side);
+            }
+        }
 
         world.playSoundEffect((float)x + 0.5f, (float)y + 0.5f, (float)z + 0.5f, block.getStepSound(world, x, y, z).getBreakSound(), block.getStepSound(world, x, y, z).getPlaceVolume() + 2.0f, block.getStepSound(world, x, y, z).getPlacePitch() * 0.7f);
         cir.setReturnValue(true);
-
     }
 
     @Unique
-    private void maybeGetSeeds(World world, int x, int y, int z, int side) {
-        if (world.rand.nextInt(OUT_OF_CHANCE) == 0) {
+    private void maybeGetSeeds(EntityPlayer player, World world, int x, int y, int z, int side) {
+        // Read player's current attempt count
+        int attempts = PlayerSeedStats.get(player);
+
+        // Calculate current chance, decreasing denominator
+        int chance = Math.max(START_CHANCE - attempts, MIN_CHANCE);
+
+        // Roll for seed drop
+        if (world.rand.nextInt(chance) == 0) {
             ItemUtils.ejectStackFromBlockTowardsFacing(world, x, y, z, new ItemStack(BTWItems.hempSeeds), side);
+            PlayerSeedStats.set(player, 0); // reset attempts on success
+        } else {
+            PlayerSeedStats.set(player, attempts + 1); // increment on failure
         }
     }
-
 }

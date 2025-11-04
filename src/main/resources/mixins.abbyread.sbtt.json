@@ -4,6 +4,7 @@
   "package": "btw.community.abbyread.sbtt.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "access.EntityPlayerAccessor",
     "access.ItemAccessor",
     "access.ToolItemAccessor",
     "behavior.AestheticOpaqueEarthBlockMixin",

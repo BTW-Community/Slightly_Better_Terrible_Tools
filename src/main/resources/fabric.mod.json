@@ -9,7 +9,8 @@
   ],
   "contact": {
     "homepage": "https://github.com/BTW-Community/Slightly_Better_Terrible_Tools",
-    "sources": "https://github.com/BTW-Community/Slightly_Better_Terrible_Tools"
+    "sources": "https://github.com/BTW-Community/Slightly_Better_Terrible_Tools",
+    "issues": "https://github.com/BTW-Community/Slightly_Better_Terrible_Tools/issues"
   },
   "license": "0BSD",
   "icon": "assets/abbyread/sbtt/SBTT_Thumbnail.png",
