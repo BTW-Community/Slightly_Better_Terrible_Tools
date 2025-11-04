@@ -65,8 +65,8 @@ Slightly Better Terrible Tools (SBTT) enhances the usability of BTW's early-game
 - You can now make regular dirt out of loose dirt and slime balls
   - This is primarily to have a use for slime balls beyond sticky pistons, and because we needed a way to patch up holes in ceilings still
   - Specific recipes:
-    - 1 Loose Dirt Block + 1 Slime Ball → 1 Dirt Block
-    - 2 Loose Dirt Slabs + 1 Slime Ball → 1 Dirt Block
+    - 1 Loose Dirt Block + 2 Slime Balls → 1 Dirt Block
+    - 2 Loose Dirt Slabs + 2 Slime Balls → 1 Dirt Block
     - 1 Loose Dirt Slab + 1 Slime Ball → 1 Dirt Slab
     - 8 Dirt Piles + 1 Slime Ball → 1 Dirt Block (High-Efficiency Recipe)
 
