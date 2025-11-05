@@ -15,8 +15,8 @@ public class SeedDropChance {
     private static final boolean DEBUG = true;
 
     // Chance parameters
-    private static final int START_CHANCE = 600;
-    private static final int MIN_CHANCE = 2;
+    private static final int MAX_CHANCE_DENOMINATOR = 5;
+    private static final int MIN_CHANCE_DENOMINATOR = 2;
 
     // --- Basic accessors ---
 
@@ -49,7 +49,7 @@ public class SeedDropChance {
      */
     public static boolean rollSeed(EntityPlayer player, World world) {
         int attemptsMadeAlready = get(player); // now via interface
-        int chance = Math.max(START_CHANCE - attemptsMadeAlready, MIN_CHANCE);
+        int chance = Math.max(MAX_CHANCE_DENOMINATOR - attemptsMadeAlready, MIN_CHANCE_DENOMINATOR);
         int roll = world.rand.nextInt(chance);
         boolean success = (roll == 0);
 
