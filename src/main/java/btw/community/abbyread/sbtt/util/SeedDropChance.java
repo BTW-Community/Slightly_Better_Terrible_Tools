@@ -8,10 +8,10 @@ import net.minecraft.src.ItemStack;
 
 public class SeedDropChance {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     // Chance parameters
-    private static final int MAX_CHANCE_DENOMINATOR = 5;
+    private static final int MAX_CHANCE_DENOMINATOR = 200;
     private static final int MIN_CHANCE_DENOMINATOR = 2;
 
     // --- Basic accessors ---
