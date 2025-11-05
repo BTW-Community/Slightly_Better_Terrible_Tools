@@ -6,10 +6,6 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.World;
 import net.minecraft.src.ItemStack;
 
-/**
- * Utility wrapper around the BTW data system for seed attempt tracking.
- * Handles per-player cumulative seed attempts and rolling for drops.
- */
 public class SeedDropChance {
 
     private static final boolean DEBUG = true;
