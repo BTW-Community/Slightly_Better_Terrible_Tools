@@ -48,8 +48,8 @@ public class SeedDropChance {
      * @return true if a seed should drop, false otherwise
      */
     public static boolean rollSeed(EntityPlayer player, World world) {
-        int attempts = get(player); // now via interface
-        int chance = Math.max(START_CHANCE - attempts, MIN_CHANCE);
+        int attemptsMadeAlready = get(player); // now via interface
+        int chance = Math.max(START_CHANCE - attemptsMadeAlready, MIN_CHANCE);
         int roll = world.rand.nextInt(chance);
         boolean success = (roll == 0);
 
@@ -58,7 +58,7 @@ public class SeedDropChance {
 
         if (DEBUG) {
             System.out.println("[SEED DROP DEBUG] Player: " + player.username +
-                    " | Attempts: " + attempts +
+                    " | Attempt: " + (attemptsMadeAlready + 1) +
                     " | Chance: 1/" + chance +
                     " | Roll: " + roll +
                     " | Success: " + success);
