@@ -18,7 +18,7 @@ public class BlockClay_BlockMixin {
 
     @Inject(method = "canConvertBlock", at = @At("HEAD"), cancellable = true)
     private void canHarvestAndLoosen(ItemStack stack, World world, int x, int y, int z, CallbackInfoReturnable<Boolean> cir) {
-
+        if (stack == null) return;
         Block block = (Block) (Object) this;
 
         // Can convert if using pointy stick
@@ -28,6 +28,7 @@ public class BlockClay_BlockMixin {
     }
     @Inject(method = "convertBlock", at = @At("HEAD"), cancellable = true)
     private void harvestAndLoosen(ItemStack stack, World world, int x, int y, int z, int side, CallbackInfoReturnable<Boolean> cir) {
+        if (stack == null) return;
         Block block = (Block) (Object) this;
 
         // Return early if not pointy stick used on clay block
