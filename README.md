@@ -12,7 +12,7 @@ Slightly Better Terrible Tools (SBTT) enhances the usability of BTW's early-game
 
 **Less Painfully Slow**: The crappiest tools (including bare hands) have a speed boost where it makes sense.
 
-**Prevent Wasted Uses**: Can be used by itself or with SBTT.  If a tool does not help, it will not be damaged on block-break. This is primarily a convenience feature to prevent tedious item swapping, secondarily to telegraph purpose(s) of an item.
+**[Prevent Wasted Uses](https://github.com/AbbyRead/Prevent_Wasted_Uses)**: Can be used by itself or with SBTT.  If a tool does not help, it will not be damaged on block-break. This is primarily a convenience feature to prevent tedious item swapping, secondarily to telegraph purpose(s) of an item.
 
 **Bare Hands and Non-Tools**:
 - Slight speed boost on log harvesting
