@@ -21,11 +21,13 @@ public class SeedDropChance {
     // --- Basic accessors ---
 
     public static int get(EntityPlayer player) {
-        return player.getData(ModPlayerDataEntries.SEED_ATTEMPTS);
+        PlayerDataExtension data = (PlayerDataExtension) player;
+        return data.getSeedAttempts();
     }
 
     public static void set(EntityPlayer player, int attempts) {
-        player.setData(ModPlayerDataEntries.SEED_ATTEMPTS, attempts);
+        PlayerDataExtension data = (PlayerDataExtension) player;
+        data.setSeedAttempts(attempts);
     }
 
     public static void increment(EntityPlayer player) {
@@ -46,7 +48,7 @@ public class SeedDropChance {
      * @return true if a seed should drop, false otherwise
      */
     public static boolean rollSeed(EntityPlayer player, World world) {
-        int attempts = get(player);
+        int attempts = get(player); // now via interface
         int chance = Math.max(START_CHANCE - attempts, MIN_CHANCE);
         int roll = world.rand.nextInt(chance);
         boolean success = (roll == 0);
@@ -54,7 +56,6 @@ public class SeedDropChance {
         if (success) reset(player);
         else increment(player);
 
-        // Optional debug output
         if (DEBUG) {
             System.out.println("[SEED DROP DEBUG] Player: " + player.username +
                     " | Attempts: " + attempts +

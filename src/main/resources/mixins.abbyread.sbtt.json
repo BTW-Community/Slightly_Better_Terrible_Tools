@@ -22,6 +22,8 @@
     "behavior.ShovelItem_ToolItemMixin",
     "crafting.SlotCraftingMixin",
     "damage.ClubItemMixin",
+    "data.EntityPlayerMixin",
+    "data.ServerConfigurationManagerMixin",
     "durability.ChiselItemWoodMixin",
     "durability.ShovelItemStoneMixin",
     "speed.BlockMixin",
