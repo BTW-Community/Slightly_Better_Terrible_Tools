@@ -16,6 +16,8 @@ Slightly Better Terrible Tools (SBTT) enhances the usability of BTW's early-game
 
 **Bare Hands and Non-Tools**:
 - Slight speed boost on log harvesting
+- Slight speed boost on destroying loose dirt, sand, and gravel blocks/slabs
+  - (in that order, most to least boost)
 
 **Pointy Stick**
 - Slight speed boost on log and stone harvesting
@@ -32,7 +34,7 @@ Slightly Better Terrible Tools (SBTT) enhances the usability of BTW's early-game
 
 **Stone Shovel**
 - No longer disturbs neighboring dirt/grass blocks when digging
-- Can firm up loose dirt-like blocks instantly by right-clicking (costs 2 durability)
+- Can firm up loose dirt-like blocks instantly by right-clicking (costs 2 durability, exhausts player)
 - 50% more durability (encourages digging beyond just clay)
 - 50% faster on appropriate materials (improved to incentivize use in context)
 
@@ -41,8 +43,9 @@ Slightly Better Terrible Tools (SBTT) enhances the usability of BTW's early-game
 - Bone club can pack dirt/grass blocks into packed earth slabs (costs 4 durability)
 - Bone club can pack earth downward to make a full packed earth block (costs 4 durability)
 
-**Changes to Higher Level Tools (Contextually-Necessary)**
+**Changes to Higher Level Tools**
 - Iron and better shovels can also firm-up and pack loose dirt
+  - (costs 2 and 4 durability per use, respectively, and exhausts the player)
 - Iron chisel and diamond chisel efficiency boosts toward:
   - Loose masonry blocks
   - Solid stone-like blocks
